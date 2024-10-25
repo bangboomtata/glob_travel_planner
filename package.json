@@ -16,10 +16,14 @@
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "glob_travel_planner": "file:",
     "next": "15.0.1",
     "react": "19.0.0-rc-69d4b800-20241021",
-    "react-dom": "19.0.0-rc-69d4b800-20241021"
+    "react-dom": "19.0.0-rc-69d4b800-20241021",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
