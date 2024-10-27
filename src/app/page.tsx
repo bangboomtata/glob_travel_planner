@@ -121,7 +121,7 @@ export default function AIGeneratedItinerary() {
             <CardHeader>
                <CardTitle>Your Personalized Travel Itinerary</CardTitle>
                <CardDescription>
-                  Based on your preferences, we've created the perfect 3-day
+                  Based on your preferences, we&#39;ve created the perfect 3-day
                   trip for you.
                </CardDescription>
             </CardHeader>
