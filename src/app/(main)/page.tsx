@@ -17,7 +17,7 @@ export default function WelcomeOnboarding() {
          <Lamp />
          <Card className="mx-auto w-full max-w-4xl px-8 py-4">
             <CardHeader>
-               <CardTitle>Let's Get Started on Your Next Adventure!</CardTitle>
+               <CardTitle>Let&#39;s Get Started on Your Next Adventure!</CardTitle>
                <CardDescription>
                   Follow these steps to plan your perfect trip.
                </CardDescription>
@@ -25,7 +25,7 @@ export default function WelcomeOnboarding() {
             <CardContent>
                <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Welcome aboard!</h3>
-                  <p>Here's how to get started with Glob! :</p>
+                  <p>Here&#39;s how to get started with Glob! :</p>
                   <ul className="list-inside list-disc space-y-2">
                      <li>Set your travel preferences</li>
                      <li>Explore destinations</li>
