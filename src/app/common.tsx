@@ -33,17 +33,14 @@ export function HeaderNav() {
                      className="text-sm font-medium"
                      prefetch={false}
                   >
-                     <Button className="rounded-full text-white">
+                     <Button variant="link" className="rounded-full text-white">
                         {nav.name}
                      </Button>
                   </Link>
                ))}
                {/* Example of using icons */}
-               <Button variant="ghost" className="rounded-full">
+               <Button variant="link" className="rounded-full">
                   <UserRound className="h-5 w-5 text-white" />
-               </Button>
-               <Button variant="ghost" className="rounded-full">
-                  <ShoppingCart className="h-5 w-5 text-white" />
                </Button>
             </nav>
          </header>
