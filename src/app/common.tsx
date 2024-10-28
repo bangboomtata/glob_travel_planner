@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { UserRound, ShoppingCart } from 'lucide-react'
+import { UserRound } from 'lucide-react'
 
 const navLink = [
    {
