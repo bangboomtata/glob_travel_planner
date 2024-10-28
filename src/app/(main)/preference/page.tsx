@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import {
    Card,
@@ -7,165 +9,137 @@ import {
    CardHeader,
    CardTitle,
 } from '@/components/ui/card'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
-import {
-   Plane,
-   Hotel,
-   MapPin,
-   Coffee,
-   Utensils,
-   Camera,
-   Sunrise,
-   Moon,
-} from 'lucide-react'
+import { BackgroundGradient } from '@/components/ui/background-gradient'
+import { Label } from '@/components/ui/label'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { Slider } from '@/components/ui/slider'
+import { useState } from 'react'
 
-// Mock data for the itinerary
-const itinerary = [
-    {
-       day: 1,
-       activities: [
-          {
-             time: '09:00',
-             description: 'Arrival and hotel check-in',
-             icon: <Hotel className="h-4 w-4" />,
-          },
-          {
-             time: '11:00',
-             description: 'City orientation walk',
-             icon: <MapPin className="h-4 w-4" />,
-          },
-          {
-             time: '13:00',
-             description: 'Lunch at local restaurant',
-             icon: <Utensils className="h-4 w-4" />,
-          },
-          {
-             time: '15:00',
-             description: 'Visit main historical site',
-             icon: <Camera className="h-4 w-4" />,
-          },
-          {
-             time: '19:00',
-             description: 'Dinner and evening stroll',
-             icon: <Moon className="h-4 w-4" />,
-          },
-       ],
-    },
-    {
-       day: 2,
-       activities: [
-          {
-             time: '08:00',
-             description: 'Breakfast at hotel',
-             icon: <Coffee className="h-4 w-4" />,
-          },
-          {
-             time: '10:00',
-             description: 'Guided tour of old town',
-             icon: <MapPin className="h-4 w-4" />,
-          },
-          {
-             time: '13:00',
-             description: 'Picnic in central park',
-             icon: <Utensils className="h-4 w-4" />,
-          },
-          {
-             time: '15:00',
-             description: 'Visit art museum',
-             icon: <Camera className="h-4 w-4" />,
-          },
-          {
-             time: '19:00',
-             description: 'Traditional dance show',
-             icon: <Moon className="h-4 w-4" />,
-          },
-       ],
-    },
-    {
-       day: 3,
-       activities: [
-          {
-             time: '07:00',
-             description: 'Sunrise hike',
-             icon: <Sunrise className="h-4 w-4" />,
-          },
-          {
-             time: '10:00',
-             description: 'Local market visit',
-             icon: <MapPin className="h-4 w-4" />,
-          },
-          {
-             time: '13:00',
-             description: 'Cooking class',
-             icon: <Utensils className="h-4 w-4" />,
-          },
-          {
-             time: '16:00',
-             description: 'Beach relaxation',
-             icon: <Camera className="h-4 w-4" />,
-          },
-          {
-             time: '20:00',
-             description: 'Farewell dinner',
-             icon: <Moon className="h-4 w-4" />,
-          },
-       ],
-    },
- ]
- 
- export default function AIGeneratedItinerary() {
-    return (
-       <div className="flex min-h-screen items-center justify-center">
-          <Card className="w-full max-w-4xl">
-             <CardHeader>
-                <CardTitle>Your Personalized Travel Itinerary</CardTitle>
-                <CardDescription>
-                   Based on your preferences, we&#39;ve created the perfect 3-day
-                   trip for you.
-                </CardDescription>
-             </CardHeader>
-             <CardContent>
-                <ScrollArea className="h-[60vh] pr-4">
-                   {itinerary.map((day, index) => (
-                      <div key={day.day} className="mb-6">
-                         <h3 className="mb-2 text-lg font-semibold">
-                            Day {day.day}
-                         </h3>
-                         <Card>
-                            <CardContent className="p-4">
-                               {day.activities.map((activity, actIndex) => (
-                                  <div
-                                     key={actIndex}
-                                     className="mb-4 flex items-start last:mb-0"
-                                  >
-                                     <div className="w-16 flex-shrink-0 text-sm text-gray-500">
-                                        {activity.time}
-                                     </div>
-                                     <div className="mr-3 flex-shrink-0">
-                                        {activity.icon}
-                                     </div>
-                                     <div className="flex-grow">
-                                        {activity.description}
-                                     </div>
-                                  </div>
-                               ))}
-                            </CardContent>
-                         </Card>
-                         {index < itinerary.length - 1 && (
-                            <Separator className="my-6" />
-                         )}
-                      </div>
-                   ))}
-                </ScrollArea>
-             </CardContent>
-             <CardFooter className="flex justify-between">
-                <Button variant="outline">Modify Preferences</Button>
-                <Button>
-                   <Plane className="mr-2 h-4 w-4" /> Book Flights & Hotels
-                </Button>
-             </CardFooter>
-          </Card>
-       </div>
-    )
- }
+const preference = [
+   { question: 'Doing outdoor activities' },
+   { question: 'Being in nature' },
+   { question: 'Wandering around charming villages' },
+   { question: 'Going to places of historical significance' },
+   { question: 'Visiting museums and art galleries' },
+   { question: 'Enjoying tasty local food' },
+]
+
+export default function Preference() {
+   const questionsPerPage = 3
+   const totalSteps = Math.ceil(preference.length / questionsPerPage)
+
+   const [step, setStep] = useState(1)
+   const [preferences, setPreferences] = useState<{ [key: number]: number }>(
+      preference.reduce(
+         (acc, _, index) => {
+            acc[index] = 3 // Initial value of 3 for each question
+            return acc
+         },
+         {} as { [key: number]: number }
+      )
+   )
+
+   const updatePreference = (index: any, value: any) => {
+      setPreferences((prev) => ({ ...prev, [index]: value }))
+   }
+
+   const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps))
+   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
+
+   const renderStep = () => {
+      const startIdx = (step - 1) * questionsPerPage
+      const endIdx = startIdx + questionsPerPage
+      const currentQuestions = preference.slice(startIdx, endIdx)
+
+      return (
+         <>
+            <CardHeader>
+               <CardTitle className="text-2xl">Travel preferences</CardTitle>
+               <CardDescription>Rate your interest</CardDescription>
+            </CardHeader>
+            <CardContent className="flex min-h-[300px] flex-col justify-center">
+               <div className="space-y-5">
+                  {currentQuestions.map((item, index) => (
+                     <div key={startIdx + index} className="space-y-1">
+                        <Label className="text-lg">{item.question}</Label>
+                        <div className="flex items-center space-x-4">
+                           <Slider
+                              value={[preferences[startIdx + index]]}
+                              onValueChange={([value]) =>
+                                 updatePreference(startIdx + index, value)
+                              }
+                              max={5}
+                              min={1}
+                              step={1}
+                              className="flex-grow"
+                           />
+                           <span className="w-8 text-center text-lg font-medium">
+                              {preferences[startIdx + index]}
+                           </span>
+                        </div>
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                           <span>Not at all</span>
+                           <span>Love it!</span>
+                        </div>
+                     </div>
+                  ))}
+               </div>
+            </CardContent>
+         </>
+      )
+   }
+
+   return (
+      <main className="container mx-auto max-w-3xl flex-col">
+         <BackgroundGradient className="p-2">
+            <Card className="rounded-[23px] px-4">
+               {renderStep()}
+               <CardFooter className="flex justify-center gap-x-6">
+                  <Button
+                     onClick={prevStep}
+                     disabled={step === 1}
+                     variant="ghost"
+                     size="lg"
+                  >
+                     <ArrowLeft className="mr-2 h-4 w-4" />
+                  </Button>
+
+                  <div className="text-md font-normal">
+                     Step {step} of {totalSteps}
+                  </div>
+
+                  {step === totalSteps ? (
+                     <Button
+                        variant="ghost"
+                        onClick={() => console.log(preferences)}
+                        size="lg"
+                     >
+                        Finish
+                     </Button>
+                  ) : (
+                     <Button variant="ghost" onClick={nextStep} size="lg">
+                        <ArrowRight className="mr-2 h-4 w-4" />
+                     </Button>
+                  )}
+               </CardFooter>
+            </Card>
+         </BackgroundGradient>
+      </main>
+   )
+}
+{
+   /* 
+    
+    <Slider
+        value={[preferences.beachPreference]}
+        onValueChange={([value]) =>
+        updatePreference('beachPreference', value)
+        }
+        max={5}
+        min={1}
+        step={1}
+        className="flex-grow"
+    />
+
+    */
+}

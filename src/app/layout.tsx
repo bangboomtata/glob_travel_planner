@@ -26,11 +26,13 @@ export default function RootLayout({
 }>) {
    return (
       <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-         <body className="bg-black font-sans">
+         <body className="bg-black py-8 font-sans flex flex-col gap-y-4">
             <div>
                <HeaderNav />
             </div>
-            {children}
+            <div className="mt-4">
+               {children}
+            </div>
          </body>
       </html>
    )

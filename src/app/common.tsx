@@ -9,7 +9,7 @@ const navLink = [
    },
    {
       name: 'Plan Trip',
-      url: '/plan',
+      url: '/preference',
    },
    {
       name: 'My Trips',
@@ -23,8 +23,11 @@ const navLink = [
 
 export function HeaderNav() {
    return (
-      <>
-         <header className="flex items-center py-12">
+      <div className="flex flex-col items-center gap-y-2">
+         <header>
+            <p className="mx-auto text-3xl text-white">Glob!</p>
+         </header>
+         <header className="mx-auto">
             <nav className="mx-auto grid grid-flow-col justify-center gap-x-1 rounded-full bg-primary px-10 md:gap-x-4">
                {navLink.map((nav) => (
                   <Link
@@ -44,6 +47,6 @@ export function HeaderNav() {
                </Button>
             </nav>
          </header>
-      </>
+      </div>
    )
 }
