@@ -39,7 +39,7 @@ export default function Preference() {
       )
    )
 
-   const updatePreference = (index: any, value: any) => {
+   const updatePreference = (index: number, value: number) => {
       setPreferences((prev) => ({ ...prev, [index]: value }))
    }
 
