@@ -16,80 +16,40 @@ import { Slider } from '@/components/ui/slider'
 import { useState } from 'react'
 
 const preference = [
-   { question: 'Doing outdoor activities', type: 'slider' },
-   { question: 'Being in nature', type: 'slider' },
-   { question: 'Wandering around charming villages', type: 'slider' },
-   {
-      question: "What's your budget?",
-      type: 'sliderOne',
-      min: 0,
-      max: 1000,
-      step: 50,
-      defaultValue: 500, // Added default value here
-   },
-   { question: 'Going to places of historical significance', type: 'slider' },
-   { question: 'Visiting museums and art galleries', type: 'slider' },
-   { question: 'Enjoying tasty local food', type: 'slider' },
-   {
-      question:
-         'Do you have any dietary restrictions we should know about for foodie experiences?',
-      type: 'checkbox',
-      options: ['None', 'Vegan', 'Vegetarian', 'No Alcohol'],
-   },
+   { question: 'Doing outdoor activities' },
+   { question: 'Being in nature' },
+   { question: 'Wandering around charming villages' },
+   { question: 'Going to places of historical significance' },
+   { question: 'Visiting museums and art galleries' },
+   { question: 'Enjoying tasty local food' },
 ]
 
 export default function Preference() {
+   const questionsPerPage = 3
+   const totalSteps = Math.ceil(preference.length / questionsPerPage)
+
    const [step, setStep] = useState(1)
-   const [preferences, setPreferences] = useState<{
-      [key: number]: number | string[]
-   }>(
+   const [preferences, setPreferences] = useState<{ [key: number]: number }>(
       preference.reduce(
-         (acc, curr, index) => {
-            if (curr.type === 'slider') return { ...acc, [index]: 3 }
-            if (curr.type === 'sliderOne')
-               return { ...acc, [index]: curr.defaultValue }
-            return { ...acc, [index]: [] }
+         (acc, _, index) => {
+            acc[index] = 3 // Initial value of 3 for each question
+            return acc
          },
-         {} as { [key: number]: number | string[] }
+         {} as { [key: number]: number }
       )
    )
 
-   // Calculate steps based on question types
-   const getQuestionGroups = () => {
-      const groups: number[][] = []
-      let currentGroup: number[] = []
-
-      preference.forEach((question, index) => {
-         if (question.type === 'sliderOne') {
-            if (currentGroup.length > 0) {
-               groups.push(currentGroup)
-               currentGroup = []
-            }
-            groups.push([index])
-         } else {
-            if (currentGroup.length === 3) {
-               groups.push(currentGroup)
-               currentGroup = []
-            }
-            currentGroup.push(index)
-         }
-      })
-
-      if (currentGroup.length > 0) {
-         groups.push(currentGroup)
-      }
-
-      return groups
+   const updatePreference = (index: number, value: number) => {
+      setPreferences((prev) => ({ ...prev, [index]: value }))
    }
-
-   const questionGroups = getQuestionGroups()
-   const totalSteps = questionGroups.length
 
    const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps))
    const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
 
    const renderStep = () => {
-      const currentQuestions = questionGroups[step - 1]
+      const startIdx = (step - 1) * questionsPerPage
+      const endIdx = startIdx + questionsPerPage
+      const currentQuestions = preference.slice(startIdx, endIdx)
 
       return (
          <>
@@ -97,99 +57,32 @@ export default function Preference() {
                <CardTitle className="text-2xl">Travel preferences</CardTitle>
                <CardDescription>Rate your interest</CardDescription>
             </CardHeader>
-            <CardContent className="flex min-h-[200px] flex-col justify-center">
+            <CardContent className="flex min-h-[300px] flex-col justify-center">
                <div className="space-y-5">
-                  {currentQuestions.map((questionIndex) => {
-                     const item = preference[questionIndex]
-
-                     if (item.type === 'slider') {
-                        return (
-                           <div key={questionIndex} className="space-y-1">
-                              <Label className="text-lg">{item.question}</Label>
-                              <div className="flex items-center space-x-4">
-                                 <Slider
-                                    value={[
-                                       preferences[questionIndex] as number,
-                                    ]}
-                                    onValueChange={([value]) =>
-                                       updatePreference(questionIndex, value)
-                                    }
-                                    max={5}
-                                    min={1}
-                                    step={1}
-                                    className="flex-grow"
-                                 />
-                                 <span className="w-8 text-center text-lg font-medium">
-                                    {preferences[questionIndex]}
-                                 </span>
-                              </div>
-                              <div className="flex justify-between text-sm text-muted-foreground">
-                                 <span>Not at all</span>
-                                 <span>Love it!</span>
-                              </div>
-                           </div>
-                        )
-                     } else if (item.type === 'sliderOne') {
-                        return (
-                           <div key={questionIndex} className="space-y-1">
-                              <Label className="text-lg">{item.question}</Label>
-                              <div className="flex items-center space-x-4">
-                                 <Slider
-                                    value={[
-                                       preferences[questionIndex] as number,
-                                    ]}
-                                    onValueChange={([value]) =>
-                                       updatePreference(questionIndex, value)
-                                    }
-                                    max={item.max}
-                                    min={item.min}
-                                    step={item.step}
-                                    defaultValue={[item.defaultValue ?? 0]}
-                                    className="flex-grow"
-                                 />
-                                 <span className="w-20 text-center text-lg font-medium">
-                                    ${preferences[questionIndex]}
-                                 </span>
-                              </div>
-                              <div className="flex justify-between text-sm text-muted-foreground">
-                                 <span>${item.min}</span>
-                                 <span>${item.max}</span>
-                              </div>
-                           </div>
-                        )
-                     } else if (item.type === 'checkbox') {
-                        return (
-                           <div key={questionIndex} className="space-y-4">
-                              <Label className="text-lg">{item.question}</Label>
-                              <div className="flex flex-col space-y-2">
-                                 {item.options.map((option, optionIndex) => (
-                                    <label
-                                       key={optionIndex}
-                                       className="flex items-center space-x-2"
-                                    >
-                                       <input
-                                          type="checkbox"
-                                          className="h-5 w-5 rounded border-gray-300"
-                                          checked={(
-                                             preferences[
-                                                questionIndex
-                                             ] as string[]
-                                          )?.includes(option)}
-                                          onChange={() =>
-                                             handleCheckboxChange(
-                                                questionIndex,
-                                                option
-                                             )
-                                          }
-                                       />
-                                       <span className="text-sm">{option}</span>
-                                    </label>
-                                 ))}
-                              </div>
-                           </div>
-                        )
-                     }
-                  })}
+                  {currentQuestions.map((item, index) => (
+                     <div key={startIdx + index} className="space-y-1">
+                        <Label className="text-lg">{item.question}</Label>
+                        <div className="flex items-center space-x-4">
+                           <Slider
+                              value={[preferences[startIdx + index]]}
+                              onValueChange={([value]) =>
+                                 updatePreference(startIdx + index, value)
+                              }
+                              max={5}
+                              min={1}
+                              step={1}
+                              className="flex-grow"
+                           />
+                           <span className="w-8 text-center text-lg font-medium">
+                              {preferences[startIdx + index]}
+                           </span>
+                        </div>
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                           <span>Not at all</span>
+                           <span>Love it!</span>
+                        </div>
+                     </div>
+                  ))}
                </div>
             </CardContent>
          </>
@@ -234,7 +127,6 @@ export default function Preference() {
       </main>
    )
 }
-
 {
    /* 
     
