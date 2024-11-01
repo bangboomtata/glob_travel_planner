@@ -21,23 +21,26 @@ const preference = [
    {
       question:
          'Do you have any dietary restrictions we should know about for foodie experiences?',
-      type: 'dietary_restrictions',
+      type: 'Dietary_Restrictions',
       options: ['None', 'Vegan', 'Vegetarian', 'No Alcohol'],
    },
-   { question: 'Doing outdoor activities', type: 'slider' },
-   { question: 'Being in nature', type: 'slider' },
-   { question: 'Wandering around charming villages', type: 'slider' },
-   { question: 'Visiting popular sites and landmarks', type: 'slider' },
-   { question: 'Going to places of historical significance', type: 'slider' },
-   { question: 'Visiting museums and art galleries', type: 'slider' },
+   { question: 'Doing outdoor activities', type: 'Travel_Taste' },
+   { question: 'Being in nature', type: 'Travel_Taste' },
+   { question: 'Wandering around charming villages', type: 'Travel_Taste' },
+   { question: 'Visiting popular sites and landmarks', type: 'Travel_Taste' },
+   {
+      question: 'Going to places of historical significance',
+      type: 'Travel_Taste',
+   },
+   { question: 'Visiting museums and art galleries', type: 'Travel_Taste' },
    {
       question: 'How long would like to be away for?',
-      type: 'trip_duration',
+      type: 'Trip_Duration',
       options: ['4 days, 3 nights', '5 days, 4 nights', '6 days, 5 nights'],
    },
    {
       question: 'Which of the following UK airports are you able to fly from?',
-      type: 'airport',
+      type: 'Airport',
       options: [
          'London (All)',
          'London Gatwick',
@@ -49,10 +52,17 @@ const preference = [
    },
    {
       question: 'What’s your preferred start date? This question is required.',
-      type: 'start_date',
-      options: ['Flexible by +/- 1 day', 'Flexible by +/- 3 days', 'Not flexible'],
+      type: 'Start_Date',
+      options: [
+         'Flexible by +/- 1 day',
+         'Flexible by +/- 3 days',
+         'Not flexible',
+      ],
    },
-   { question: 'What’s your total budget (in £) for your 4-day trip?', type: 'budget' },
+   {
+      question: 'What’s your total budget (in £) for your 4-day trip?',
+      type: 'Budget',
+   },
 ]
 
 export default function Preference() {
@@ -66,12 +76,18 @@ export default function Preference() {
    const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
 
    // Render a question based on its type
-   const renderQuestion = (question: { question: string; type: string; options?: string[] }) => {
+   const renderQuestion = (question: {
+      question: string
+      type: string
+      options?: string[]
+   }) => {
       switch (question.type) {
-         case 'slider':
+         case 'Travel_Taste':
             return (
                <div>
-                  <Label className="text-lg leading-tight">{question.question}</Label>
+                  <Label className="text-lg leading-tight">
+                     {question.question}
+                  </Label>
                   <div className="flex items-center space-x-4">
                      <Slider
                         value={[preferences[question.question] || 3]}
@@ -92,16 +108,21 @@ export default function Preference() {
                   </div>
                </div>
             )
-         case 'dietary_restrictions':
-         case 'trip_duration':
-         case 'airport':
-         case 'start_date':
+         case 'Dietary_Restrictions':
+         case 'Trip_Duration':
+         case 'Airport':
+         case 'Start_Date':
             return (
-               <div>
-                  <Label className="text-lg leading-tight">{question.question}</Label>
+               <div className="space-y-4">
+                  <Label className="text-lg leading-tight">
+                     {question.question}
+                  </Label>
                   <div className="grid grid-cols-2 gap-y-4">
-                     {question.options.map((option, index) => (
-                        <label key={index} className="flex items-center space-x-2">
+                     {question?.options?.map((option, index) => (
+                        <label
+                           key={index}
+                           className="flex items-center space-x-2"
+                        >
                            <Switch />
                            <span>{option}</span>
                         </label>
@@ -109,22 +130,30 @@ export default function Preference() {
                   </div>
                </div>
             )
-         case 'budget':
+         case 'Budget':
             return (
-               <div>
-                  <Label className="text-lg leading-tight">{question.question}</Label>
-                  <input
-                     type="number"
-                     placeholder="Enter your budget"
-                     className="mt-2 w-full rounded-md border p-2"
-                     onChange={(e) =>
-                        setPreferences((prev) => ({
-                           ...prev,
-                           [question.question]: e.target.value,
-                        }))
-                     }
-                     value={preferences[question.question] || ''}
-                  />
+               <div className='flex flex-col space-y-4'>
+                  <Label className="text-lg leading-tight">
+                     {question.question}
+                  </Label>
+                  <div className="flex flex-row space-x-4">
+                     <Slider
+                        value={[preferences[question.question] || 3]}
+                        onValueChange={([value]) =>
+                           setPreferences((prev) => ({
+                              ...prev,
+                              [question.question]: value,
+                           }))
+                        }
+                        max={5}
+                        min={1}
+                        step={1}
+                        className="flex-grow"
+                     />
+                     <span className="w-8 text-center text-xl font-lighter">
+                        {preferences[question.question] || 3}
+                     </span>
+                  </div>
                </div>
             )
          default:
@@ -134,19 +163,24 @@ export default function Preference() {
 
    const renderStep = () => {
       // Get the current question type for the step
-      const questionType = Array.from(new Set(preference.map((q) => q.type)))[step - 1]
+      const questionType = Array.from(new Set(preference.map((q) => q.type)))[
+         step - 1
+      ]
       const questions = preference.filter((q) => q.type === questionType)
 
       return (
          <>
             <CardHeader>
-               <CardTitle className="text-2xl">{questionType.replace('_', ' ')}</CardTitle>
-               <CardDescription>{questions[0]?.question}</CardDescription>
+               <CardTitle className="text-2xl">
+                  {questionType.replace('_', ' ')}
+               </CardTitle>
             </CardHeader>
-            <CardContent className="flex min-h-[180px] flex-col justify-center">
+            <CardContent className="flex min-h-[150px] flex-col justify-center">
                <div className="space-y-6">
                   {questions.map((question, i) => (
-                     <div key={i}>{renderQuestion(question)}</div>
+                     <div key={i} className="mb-4">
+                        {renderQuestion(question)}
+                     </div>
                   ))}
                </div>
             </CardContent>
@@ -157,17 +191,28 @@ export default function Preference() {
    return (
       <main className="container mx-auto min-h-full max-w-3xl flex-col">
          <BackgroundGradient className="p-2">
-            <Card className="rounded-[23px] px-4 py-4">
+            <Card className="rounded-[23px] px-4 py-2">
                {renderStep()}
-               <CardFooter className="flex justify-center gap-x-6 pt-4">
-                  <Button onClick={prevStep} disabled={step === 1} variant="ghost" size="lg">
+               <CardFooter className="flex justify-center gap-x-6">
+                  <Button
+                     onClick={prevStep}
+                     disabled={step === 1}
+                     variant="ghost"
+                     size="lg"
+                  >
                      <ArrowLeft className="mr-2 h-4 w-4" />
                   </Button>
 
-                  <div className="text-md font-normal">Step {step} of {totalSteps}</div>
+                  <div className="text-md font-normal">
+                     Step {step} of {totalSteps}
+                  </div>
 
                   {step === totalSteps ? (
-                     <Button variant="ghost" onClick={() => console.log(preferences)} size="lg">
+                     <Button
+                        variant="ghost"
+                        onClick={() => console.log(preferences)}
+                        size="lg"
+                     >
                         Finish
                      </Button>
                   ) : (
