@@ -15,6 +15,15 @@ import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Slider } from '@/components/ui/slider'
 import { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
+import { Calendar } from '@/components/ui/calendar'
+import {
+   Popover,
+   PopoverContent,
+   PopoverTrigger,
+} from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
+import { format } from "date-fns"
+
 
 // Questions array with different question types
 const preference = [
@@ -51,8 +60,12 @@ const preference = [
       ],
    },
    {
-      question: 'What’s your preferred start date? This question is required.',
+      question: 'Whats your preferred start date?',
       type: 'Start_Date',
+   },
+   {
+      question: 'Do you have any flexibility with your travel dates?',
+      type: 'Start_Date_Flexibility',
       options: [
          'Flexible by +/- 1 day',
          'Flexible by +/- 3 days',
@@ -111,7 +124,7 @@ export default function Preference() {
          case 'Dietary_Restrictions':
          case 'Trip_Duration':
          case 'Airport':
-         case 'Start_Date':
+         case 'Start_Date_Flexibility':
             return (
                <div className="space-y-4">
                   <Label className="text-lg leading-tight">
@@ -132,7 +145,7 @@ export default function Preference() {
             )
          case 'Budget':
             return (
-               <div className='flex flex-col space-y-4'>
+               <div className="flex flex-col space-y-4">
                   <Label className="text-lg leading-tight">
                      {question.question}
                   </Label>
@@ -150,12 +163,49 @@ export default function Preference() {
                         step={1}
                         className="flex-grow"
                      />
-                     <span className="w-8 text-center text-xl font-lighter">
+                     <span className="font-lighter w-8 text-center text-xl">
                         {preferences[question.question] || 3}
                      </span>
                   </div>
                </div>
             )
+            case 'Start_Date':
+               return (
+                  <div className="flex flex-col space-y-4">
+                     <Label className="text-lg leading-tight">
+                        {question.question}
+                     </Label>
+                     <Popover>
+                        <PopoverTrigger asChild>
+                           <Button
+                              variant="outline"
+                              className={cn(
+                                 'w-[240px] justify-start p-6 text-left text-lg font-normal',
+                                 !preferences.dates?.from && 'text-muted-foreground'
+                              )}
+                           >
+                              {preferences.dates?.from
+                                 ? format(preferences.dates.from, "dd MMM yyyy")
+                                 : 'Select a date'}
+                           </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                           <Calendar
+                              mode="single"
+                              selected={preferences.dates?.from || new Date()}                              onSelect={(date) =>
+                                 setPreferences((prev) => ({
+                                    ...prev,
+                                    dates: { from: date },
+                                 }))
+                              }
+                              initialFocus
+                           />
+                        </PopoverContent>
+                     </Popover>
+                  </div>
+               )
+            
+
          default:
             return null
       }
@@ -189,18 +239,19 @@ export default function Preference() {
    }
 
    return (
-      <main className="container mx-auto min-h-full max-w-3xl flex-col">
+      <main className="container mx-auto min-h-full max-w-2xl flex-col">
          <BackgroundGradient className="p-2">
             <Card className="rounded-[23px] px-4 py-2">
                {renderStep()}
-               <CardFooter className="flex justify-center gap-x-6">
+               <CardFooter className="flex flex-row justify-center gap-x-6">
                   <Button
                      onClick={prevStep}
                      disabled={step === 1}
                      variant="ghost"
                      size="lg"
                   >
-                     <ArrowLeft className="mr-2 h-4 w-4" />
+                     {/* <ArrowLeft className="mr-2 h-4 w-4" /> */}
+                     Previous
                   </Button>
 
                   <div className="text-md font-normal">
@@ -213,11 +264,12 @@ export default function Preference() {
                         onClick={() => console.log(preferences)}
                         size="lg"
                      >
-                        Finish
+                        Generate Itinerary
                      </Button>
                   ) : (
                      <Button variant="ghost" onClick={nextStep} size="lg">
-                        <ArrowRight className="mr-2 h-4 w-4" />
+                        {/* <ArrowRight className="mr-2 h-4 w-4" /> */}
+                        Next
                      </Button>
                   )}
                </CardFooter>
