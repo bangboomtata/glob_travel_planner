@@ -25,6 +25,7 @@ import {
    AccordionItem,
    AccordionTrigger,
 } from '@/components/ui/accordion'
+import { BackgroundGradient } from '@/components/ui/background-gradient'
 
 // Mock data for the itinerary
 const itinerary = [
@@ -152,70 +153,72 @@ const itinerary = [
 export default function AIGeneratedItinerary() {
    return (
       <main className="container mx-auto min-h-full max-w-3xl flex-col">
-         <Card className="w-full max-w-4xl">
-            <CardHeader>
-               <CardTitle>Your Personalized Travel Itinerary</CardTitle>
-               <CardDescription>
-                  Based on your preferences, we&#39;ve created the perfect 3-day
-                  trip for you.
-               </CardDescription>
-            </CardHeader>
-            <CardContent>
-               <ScrollArea className="h-[60vh] pr-4">
-                  {itinerary.map((day, dayIndex) => (
-                     <div key={day.day} className="mb-6">
-                        <h3 className="mb-2 text-lg font-semibold">
-                           Day {day.day}
-                        </h3>
-                        <Card>
-                           <CardContent className="p-4">
-                              {day?.activities?.map((activity, actIndex) => (
-                                 <Accordion
-                                    type="single"
-                                    collapsible
-                                    className="mx-auto w-full max-w-4xl"
-                                    defaultValue={`day${dayIndex}-activity${actIndex}`}
-                                 >
-                                    <AccordionItem
-                                       value={`day${dayIndex}-activity${actIndex}`}
-                                       key={`day${dayIndex}-activity${actIndex}`}
-                                       className="mb-4 rounded-b-sm"
+         <BackgroundGradient className="p-2">
+            <Card className="w-full max-w-4xl">
+               <CardHeader>
+                  <CardTitle>Your Personalized Travel Itinerary</CardTitle>
+                  <CardDescription>
+                     Based on your preferences, we&#39;ve created the perfect
+                     3-day trip for you.
+                  </CardDescription>
+               </CardHeader>
+               <CardContent>
+                  <ScrollArea className="h-[60vh] pr-4">
+                     {itinerary.map((day, dayIndex) => (
+                        <div key={day.day} className="mb-6">
+                           <h3 className="mb-2 text-lg font-semibold">
+                              Day {day.day}
+                           </h3>
+                           <Card>
+                              <CardContent key={dayIndex} className="p-4">
+                                 {day?.activities?.map((activity, actIndex) => (
+                                    <Accordion
+                                       type="single"
+                                       collapsible
+                                       className="mx-auto w-full max-w-4xl"
+                                       defaultValue={`day${dayIndex}-activity${actIndex}`}
                                     >
-                                       <AccordionTrigger className="flex h-[40px] items-center justify-start rounded-t-sm bg-gray-100 px-5 text-lg font-semibold text-gray-900">
-                                          <div className="w-16  text-base">
-                                             {activity.time}
-                                          </div>
-                                          <div className="mr-3 flex-shrink-0">
-                                             {activity.icon}
-                                          </div>
-                                          <p className="text-base">
-                                             {activity.description}
-                                          </p>
-                                       </AccordionTrigger>
-                                       <AccordionContent>
-                                          <p className="py-4 px-8 text-sm font-medium">
-                                             {activity.details}
-                                          </p>
-                                       </AccordionContent>
-                                    </AccordionItem>
-                                 </Accordion>
-                              ))}
-                           </CardContent>
-                        </Card>
-                        {dayIndex < itinerary.length - 1 && (
-                           <Separator className="my-6" />
-                        )}
-                     </div>
-                  ))}
-               </ScrollArea>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-               <Button variant="outline">Modify Preferences</Button>
-               <Button>
-                  <Plane className="mr-2 h-4 w-4" /> Book Flights & Hotels
-               </Button>
-            </CardFooter>
-         </Card>
+                                       <AccordionItem
+                                          value={`day${dayIndex}-activity${actIndex}`}
+                                          key={`day${dayIndex}-activity${actIndex}`}
+                                          className="mb-4 rounded-b-sm"
+                                       >
+                                          <AccordionTrigger className="flex h-[40px] items-center justify-start rounded-t-sm bg-gray-100 px-5 text-lg font-semibold text-gray-900">
+                                             <div className="w-16 text-base">
+                                                {activity.time}
+                                             </div>
+                                             <div className="mr-3 flex-shrink-0">
+                                                {activity.icon}
+                                             </div>
+                                             <p className="text-base">
+                                                {activity.description}
+                                             </p>
+                                          </AccordionTrigger>
+                                          <AccordionContent>
+                                             <p className="px-8 py-4 text-sm font-medium">
+                                                {activity.details}
+                                             </p>
+                                          </AccordionContent>
+                                       </AccordionItem>
+                                    </Accordion>
+                                 ))}
+                              </CardContent>
+                           </Card>
+                           {dayIndex < itinerary.length - 1 && (
+                              <Separator className="my-6" />
+                           )}
+                        </div>
+                     ))}
+                  </ScrollArea>
+               </CardContent>
+               <CardFooter className="flex justify-between">
+                  <Button variant="outline">Modify Preferences</Button>
+                  <Button>
+                     <Plane className="mr-2 h-4 w-4" /> Book Flights & Hotels
+                  </Button>
+               </CardFooter>
+            </Card>
+         </BackgroundGradient>
       </main>
    )
 }

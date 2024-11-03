@@ -27,12 +27,7 @@ import { format } from "date-fns"
 
 // Questions array with different question types
 const preference = [
-   {
-      question:
-         'Do you have any dietary restrictions we should know about for foodie experiences?',
-      type: 'Dietary_Restrictions',
-      options: ['None', 'Vegan', 'Vegetarian', 'No Alcohol'],
-   },
+   
    { question: 'Doing outdoor activities', type: 'Travel_Taste' },
    { question: 'Being in nature', type: 'Travel_Taste' },
    { question: 'Wandering around charming villages', type: 'Travel_Taste' },
@@ -42,6 +37,12 @@ const preference = [
       type: 'Travel_Taste',
    },
    { question: 'Visiting museums and art galleries', type: 'Travel_Taste' },
+   {
+      question:
+         'Do you have any dietary restrictions we should know about for foodie experiences?',
+      type: 'Dietary_Restrictions',
+      options: ['None', 'Vegan', 'Vegetarian', 'No Alcohol'],
+   },
    {
       question: 'How long would like to be away for?',
       type: 'Trip_Duration',

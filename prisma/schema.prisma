@@ -23,15 +23,6 @@ model Post {
   User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model Hoyeah {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  content   String?
-  published Boolean  @default(false)
-  authorId  Int
-}
-
 model Profile {
   id     Int     @id @default(autoincrement())
   bio    String?
@@ -45,4 +36,5 @@ model User {
   email   String   @unique @db.VarChar(255)
   Post    Post[]
   Profile Profile?
+  preference Preference[]
 }
