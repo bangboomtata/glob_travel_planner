@@ -1,40 +1,45 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-generator client {
-  provider = "prisma-client-js"
+model Question {
+  id        Int         @id @default(autoincrement())
+  text      String      // The question text
+  type      QuestionType
+  options   String[]?   // Array of options for questions with checkboxes
+  answers   Answer[]    // Relationship to possible answers
+  createdAt DateTime    @default(now())
+  preferences Preference[]
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+model Answer {
+  id         Int        @id @default(autoincrement())
+  questionId Int
+  question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text       String     // Answer text, e.g., 'Vegan', 'Flexible by +/- 1 day'
+  value      Json?      // For slider or other types that may store ranges or additional data
+  preferences Preference[]
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  content   String?
-  published Boolean  @default(false)
-  authorId  Int
-  User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  userId Int     @unique
-  User   User    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model Preference {
+  id         Int        @id @default(autoincrement())
+  userId     Int
+  questionId Int
+  answerIds  Int[]      // Array of selected answer IDs for questions with multiple choices
+  User       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime   @default(now())
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  name    String?  @db.VarChar(255)
-  email   String   @unique @db.VarChar(255)
-  Post    Post[]
-  Profile Profile?
-  preference Preference[]
+  id         Int          @id @default(autoincrement())
+  name       String?      @db.VarChar(255)
+  email      String       @unique @db.VarChar(255)
+  preferences Preference[]
+}
+
+enum QuestionType {
+  TRAVEL_TASTE
+  DIETARY_RESTRICTIONS
+  TRIP_DURATION
+  AIRPORT
+  START_DATE
+  START_DATE_FLEXIBILITY
+  BUDGET
 }

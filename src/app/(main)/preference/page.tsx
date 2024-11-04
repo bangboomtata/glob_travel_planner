@@ -32,10 +32,7 @@ const preference = [
    { question: 'Being in nature', type: 'Travel_Taste' },
    { question: 'Wandering around charming villages', type: 'Travel_Taste' },
    { question: 'Visiting popular sites and landmarks', type: 'Travel_Taste' },
-   {
-      question: 'Going to places of historical significance',
-      type: 'Travel_Taste',
-   },
+   { question: 'Going to places of historical significance', type: 'Travel_Taste' },
    { question: 'Visiting museums and art galleries', type: 'Travel_Taste' },
    {
       question:
