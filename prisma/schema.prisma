@@ -1,36 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Uses connection pooling
+  url       = env("POSTGRES_PRISMA_URL")
+  // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+  // or you'll have dangling databases from migrations
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
 model Question {
-  id        Int         @id @default(autoincrement())
-  text      String      // The question text
-  type      QuestionType
-  options   String[]?   // Array of options for questions with checkboxes
-  answers   Answer[]    // Relationship to possible answers
-  createdAt DateTime    @default(now())
-  preferences Preference[]
+  id          Int          @id @default(autoincrement())
+  text        String
+  type        QuestionType
+  options     String[] // Array of options for checkbox-type questions
+  answers     Answer[] // Relationship to possible answers
+  preferences Preference[] // One-to-many relationship to Preference
+  createdAt   DateTime     @default(now())
+
+  @@map("questions")
 }
 
 model Answer {
-  id         Int        @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   questionId Int
-  question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  text       String     // Answer text, e.g., 'Vegan', 'Flexible by +/- 1 day'
-  value      Json?      // For slider or other types that may store ranges or additional data
-  preferences Preference[]
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text       String // e.g., 'Dietary Restrictions'
+  value      Json? // Stores selected options, e.g., ["Vegan", "No Alcohol"]
 }
 
 model Preference {
-  id         Int        @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   userId     Int
   questionId Int
-  answerIds  Int[]      // Array of selected answer IDs for questions with multiple choices
-  User       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  createdAt  DateTime   @default(now())
+  optionIds  Int[] // Array of selected option IDs for questions with multiple choices
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  name       String?      @db.VarChar(255)
-  email      String       @unique @db.VarChar(255)
+  id          Int          @id @default(autoincrement())
+  name        String?      @db.VarChar(255)
+  email       String       @unique @db.VarChar(255)
   preferences Preference[]
 }
 
