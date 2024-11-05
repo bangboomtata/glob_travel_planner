@@ -133,16 +133,16 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                   </Label>
                   <div className="flex flex-row space-x-4">
                      <Slider
-                        value={[preferences[question.text] || 3]}
+                        value={[preferences[question.text] || 750]}
                         onValueChange={([value]) =>
                            setPreferences((prev) => ({
                               ...prev,
                               [question.text]: value,
                            }))
                         }
-                        max={5}
-                        min={1}
-                        step={1}
+                        max={1000}
+                        min={500}
+                        step={50}
                         className="flex-grow"
                      />
                      <span className="font-lighter w-8 text-center text-xl">

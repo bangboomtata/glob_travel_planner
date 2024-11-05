@@ -15,40 +15,36 @@ model Question {
   id          Int          @id @default(autoincrement())
   text        String
   type        QuestionType
-  options     String[] // Array of options for checkbox-type questions
-  answers     Answer[] // Relationship to possible answers
-  preferences Preference[] // One-to-many relationship to Preference
+  options     String[]   
   createdAt   DateTime     @default(now())
+  answers     Answer[]     
 
   @@map("questions")
 }
 
 model Answer {
-  id         Int      @id @default(autoincrement())
-  questionId Int
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  text       String // e.g., 'Dietary Restrictions'
-  value      Json? // Stores selected options, e.g., ["Vegan", "No Alcohol"]
+  id           Int        @id @default(autoincrement()) @map("answerId")
+  questionId   Int
+  answer       Json
+  question     Question   @relation(fields: [questionId], references: [id])
+  preferenceId Int?
+  preference   Preference? @relation("PreferenceAnswers", fields: [preferenceId], references: [id])
 
   @@map("answers")
 }
 
 model Preference {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   userId     Int
-  questionId Int
-  answers    Json? // Stores selected answers, e.g., ["Vegan", "No Alcohol"]
-  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
+  answers    Answer[]  @relation("PreferenceAnswers")
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("preferences")
 }
 
 model User {
-  id          Int          @id @default(autoincrement())
-  name        String?      @db.VarChar(255)
-  email       String       @unique @db.VarChar(255)
+  id         Int          @id @default(autoincrement())
   preferences Preference[]
 }
 
@@ -61,3 +57,4 @@ enum QuestionType {
   START_DATE_FLEXIBILITY
   BUDGET
 }
+
