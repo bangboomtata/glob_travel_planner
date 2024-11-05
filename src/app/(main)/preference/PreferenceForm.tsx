@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
-import { QuestionType } from '@prisma/client'
+import { QuestionType } from './question-types'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
 import { handleGenerateItinerary } from './action'
 
