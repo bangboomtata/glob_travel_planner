@@ -12,40 +12,41 @@ datasource db {
 }
 
 model Question {
-  id          Int          @id @default(autoincrement())
-  text        String
-  type        QuestionType
-  options     String[]   
-  createdAt   DateTime     @default(now())
-  answers     Answer[]     
+  id        Int          @id @default(autoincrement())
+  text      String
+  type      QuestionType
+  options   String[]
+  createdAt DateTime     @default(now())
+  // answers     Answer[]     
 
   @@map("questions")
 }
 
-model Answer {
-  id           Int        @id @default(autoincrement()) @map("answerId")
-  questionId   Int
-  answer       Json
-  question     Question   @relation(fields: [questionId], references: [id])
-  preferenceId Int?
-  preference   Preference? @relation("PreferenceAnswers", fields: [preferenceId], references: [id])
+// model Answer {
+//   id           Int        @id @default(autoincrement()) @map("answerId")
+//   questionId   Int
+//   answer       Json
+//   question     Question   @relation(fields: [questionId], references: [id])
+//   preferenceId Int?
+//   preference   Preference? @relation("PreferenceAnswers", fields: [preferenceId], references: [id])
 
-  @@map("answers")
-}
+//   @@map("answers")
+// }
 
 model Preference {
-  id         Int       @id @default(autoincrement())
-  userId     Int
-  answers    Answer[]  @relation("PreferenceAnswers")
-  createdAt  DateTime  @default(now())
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  answers   Json
+  // answers    Answer[]  @relation("PreferenceAnswers")
+  createdAt DateTime @default(now())
+  // user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("preferences")
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  preferences Preference[]
+  id          Int          @id @default(autoincrement())
+  // preferences Preference[]
 }
 
 enum QuestionType {
@@ -57,4 +58,3 @@ enum QuestionType {
   START_DATE_FLEXIBILITY
   BUDGET
 }
-

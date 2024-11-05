@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { QuestionType } from '@prisma/client'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
+import { handleGenerateItinerary } from './action'
 
 interface PreferenceFormProps {
    questions: {
@@ -30,9 +31,12 @@ interface PreferenceFormProps {
       type: QuestionType
       options: string[]
    }[]
+   userId: number // Add userId prop
 }
 
-export default function PreferenceForm({ questions }: PreferenceFormProps) {
+export default function PreferenceForm(
+   { questions, userId }: PreferenceFormProps,
+) {
    const [step, setStep] = useState(1)
    const [preferences, setPreferences] = useState<{ [key: string]: any }>({})
 
@@ -74,11 +78,11 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                   </Label>
                   <div className="flex items-center space-x-4">
                      <Slider
-                        value={[preferences[question.text] || 3]}
+                        value={[preferences[question.id] || 3]}
                         onValueChange={([value]) =>
                            setPreferences((prev) => ({
                               ...prev,
-                              [question.text]: value,
+                              [question.id]: value,
                            }))
                         }
                         max={5}
@@ -87,7 +91,7 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                         className="flex-grow"
                      />
                      <span className="w-8 text-center text-xl font-medium">
-                        {preferences[question.text] || 3}
+                        {preferences[question.id] || 3}
                      </span>
                   </div>
                </div>
@@ -109,13 +113,13 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                         >
                            <Switch
                               checked={
-                                 preferences[`${question.text}_${option}`] ||
+                                 preferences[`${question.id}_${option}`] ||
                                  false
                               }
                               onCheckedChange={(checked) =>
                                  setPreferences((prev) => ({
                                     ...prev,
-                                    [`${question.text}_${option}`]: checked,
+                                    [`${question.id}_${option}`]: checked,
                                  }))
                               }
                            />
@@ -133,11 +137,11 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                   </Label>
                   <div className="flex flex-row space-x-4">
                      <Slider
-                        value={[preferences[question.text] || 750]}
+                        value={[preferences[question.id] || 750]}
                         onValueChange={([value]) =>
                            setPreferences((prev) => ({
                               ...prev,
-                              [question.text]: value,
+                              [question.id]: value,
                            }))
                         }
                         max={1000}
@@ -146,7 +150,7 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                         className="flex-grow"
                      />
                      <span className="font-lighter w-8 text-center text-xl">
-                        {preferences[question.text] || 3}
+                        {preferences[question.id] || 3}
                      </span>
                   </div>
                </div>
@@ -163,23 +167,29 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                            variant="outline"
                            className={cn(
                               'w-[240px] justify-start p-6 text-left text-lg font-normal',
-                              !preferences.dates?.from &&
-                                 'text-muted-foreground'
+                              !preferences[question.id] &&
+                                 'text-muted-foreground' // Update here
                            )}
                         >
-                           {preferences.dates?.from
-                              ? format(preferences.dates.from, 'dd MMM yyyy')
+                           {preferences[question.id] &&
+                           preferences[question.id][0]
+                              ? format(
+                                   preferences[question.id][0],
+                                   'dd MMM yyyy'
+                                ) // Update here
                               : 'Select a date'}
                         </Button>
                      </PopoverTrigger>
                      <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                            mode="single"
-                           selected={preferences[question.text] || new Date()} // Default to current date if no selection
+                           selected={
+                              preferences[question.id]?.[0] || new Date()
+                           } // Use preferences[question.id][0]
                            onSelect={(date) =>
                               setPreferences((prev) => ({
                                  ...prev,
-                                 [question.text]: [date], // Store the date in an array
+                                 [question.id]: [date], // Store the date in an array
                               }))
                            }
                            initialFocus
@@ -188,6 +198,7 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                   </Popover>
                </div>
             )
+
          default:
             return null
       }
@@ -230,7 +241,7 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
    return (
       <>
          {/* Display Preferences */}
-         <div className="mb-4 text-white p-4 border rounded-lg">
+         <div className="mb-4 rounded-lg border p-4 text-white">
             <h2 className="text-lg font-semibold">Current Preferences:</h2>
             <pre className="whitespace-pre-wrap">
                {JSON.stringify(preferences, null, 2)}
@@ -254,7 +265,12 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                   {step === totalSteps ? (
                      <Button
                         variant="ghost"
-                        onClick={() => console.log(preferences)}
+                        onClick={async () =>
+                           await handleGenerateItinerary({
+                              userId: userId,
+                              answers: preferences,
+                           })
+                        }
                         size="lg"
                      >
                         Generate Itinerary
