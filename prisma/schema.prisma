@@ -29,16 +29,20 @@ model Answer {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   text       String // e.g., 'Dietary Restrictions'
   value      Json? // Stores selected options, e.g., ["Vegan", "No Alcohol"]
+
+  @@map("answers")
 }
 
 model Preference {
   id         Int      @id @default(autoincrement())
   userId     Int
   questionId Int
-  optionIds  Int[] // Array of selected option IDs for questions with multiple choices
+  answers    Json? // Stores selected answers, e.g., ["Vegan", "No Alcohol"]
   User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
+
+  @@map("preferences")
 }
 
 model User {

@@ -51,7 +51,7 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
 
    // Add debugging log
    console.log('Question types:', questionTypes)
-   console.log('Total steps:', totalSteps)
+   // console.log('Total steps:', totalSteps)
 
    const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps))
    const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
@@ -175,11 +175,11 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                      <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                            mode="single"
-                           selected={preferences.dates?.from || new Date()}
+                           selected={preferences[question.text] || new Date()} // Default to current date if no selection
                            onSelect={(date) =>
                               setPreferences((prev) => ({
                                  ...prev,
-                                 dates: { from: date },
+                                 [question.text]: [date], // Store the date in an array
                               }))
                            }
                            initialFocus
@@ -228,7 +228,14 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
    }
 
    return (
-      <div>
+      <>
+         {/* Display Preferences */}
+         <div className="mb-4 text-white p-4 border rounded-lg">
+            <h2 className="text-lg font-semibold">Current Preferences:</h2>
+            <pre className="whitespace-pre-wrap">
+               {JSON.stringify(preferences, null, 2)}
+            </pre>
+         </div>
          <BackgroundGradient className="p-2">
             <Card className="rounded-3xl px-2">
                {renderStep()}
@@ -260,6 +267,6 @@ export default function PreferenceForm({ questions }: PreferenceFormProps) {
                </CardFooter>
             </Card>
          </BackgroundGradient>
-      </div>
+      </>
    )
 }
