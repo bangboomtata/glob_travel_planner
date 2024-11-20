@@ -48,3 +48,64 @@
 //       type: 'Budget',
 //    },
 // ]
+
+Example of preference JSON:
+Current Preferences:
+{
+  "1": {
+    "question": "Doing outdoor activities",
+    "value": 5
+  },
+  "2": {
+    "question": "Being in nature",
+    "value": 4
+  },
+  "3": {
+    "question": "Wandering around charming villages",
+    "value": 4
+  },
+  "4": {
+    "question": "Visiting popular sites and landmarks",
+    "value": 2
+  },
+  "5": {
+    "question": "Going to places of historical significance",
+    "value": 4
+  },
+  "6": {
+    "question": "Visiting museums and art galleries",
+    "value": 2
+  },
+  "7": {
+    "question": "Do you have any dietary restrictions we should know about for foodie experiences?",
+    "options": [
+      "None"
+    ]
+  },
+  "8": {
+    "question": "How long would like to be away for?",
+    "options": [
+      "4 days, 3 nights"
+    ]
+  },
+  "9": {
+    "question": "Which of the following UK airports are you able to fly from?",
+    "options": [
+      "London (All)"
+    ]
+  },
+  "10": {
+    "question": "Whats your preferred start date?",
+    "date": "2024-11-20T00:00:00.000Z"
+  },
+  "11": {
+    "question": "Do you have any flexibility with your travel dates?",
+    "options": [
+      "Not flexible"
+    ]
+  },
+  "12": {
+    "question": "What’s your total budget (in £) for your trip?",
+    "value": 850
+  }
+}

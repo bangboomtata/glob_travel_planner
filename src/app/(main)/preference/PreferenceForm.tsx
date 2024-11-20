@@ -34,9 +34,10 @@ interface PreferenceFormProps {
    userId: number // Add userId prop
 }
 
-export default function PreferenceForm(
-   { questions, userId }: PreferenceFormProps,
-) {
+export default function PreferenceForm({
+   questions,
+   userId,
+}: PreferenceFormProps) {
    const [step, setStep] = useState(1)
    const [preferences, setPreferences] = useState<{ [key: string]: any }>({})
 
@@ -66,7 +67,6 @@ export default function PreferenceForm(
       type: QuestionType
       options: string[]
    }) => {
-      // Add debugging log
       console.log('Rendering question:', question)
 
       switch (question.type) {
@@ -78,11 +78,14 @@ export default function PreferenceForm(
                   </Label>
                   <div className="flex items-center space-x-4">
                      <Slider
-                        value={[preferences[question.id] || 3]}
+                        value={[preferences[question.id]?.value || 3]}
                         onValueChange={([value]) =>
                            setPreferences((prev) => ({
                               ...prev,
-                              [question.id]: value,
+                              [question.id]: {
+                                 question: question.text,
+                                 value,
+                              },
                            }))
                         }
                         max={5}
@@ -91,7 +94,7 @@ export default function PreferenceForm(
                         className="flex-grow"
                      />
                      <span className="w-8 text-center text-xl font-medium">
-                        {preferences[question.id] || 3}
+                        {preferences[question.id]?.value || 3}
                      </span>
                   </div>
                </div>
@@ -113,14 +116,28 @@ export default function PreferenceForm(
                         >
                            <Switch
                               checked={
-                                 preferences[`${question.id}_${option}`] ||
-                                 false
+                                 preferences[question.id]?.options?.includes(
+                                    option
+                                 ) || false
                               }
                               onCheckedChange={(checked) =>
-                                 setPreferences((prev) => ({
-                                    ...prev,
-                                    [`${question.id}_${option}`]: checked,
-                                 }))
+                                 setPreferences((prev) => {
+                                    const currentOptions =
+                                       prev[question.id]?.options || []
+                                    const updatedOptions: string[] = checked
+                                       ? [...currentOptions, option] // Add option
+                                       : currentOptions.filter(
+                                            (opt: string) => opt !== option
+                                         ) // Remove option
+
+                                    return {
+                                       ...prev,
+                                       [question.id]: {
+                                          question: question.text,
+                                          options: updatedOptions,
+                                       },
+                                    }
+                                 })
                               }
                            />
                            <span>{option}</span>
@@ -137,11 +154,14 @@ export default function PreferenceForm(
                   </Label>
                   <div className="flex flex-row space-x-4">
                      <Slider
-                        value={[preferences[question.id] || 750]}
+                        value={[preferences[question.id]?.value ?? 750]} // Use nullish coalescing to handle 0
                         onValueChange={([value]) =>
                            setPreferences((prev) => ({
                               ...prev,
-                              [question.id]: value,
+                              [question.id]: {
+                                 question: question.text,
+                                 value,
+                              },
                            }))
                         }
                         max={1000}
@@ -149,55 +169,57 @@ export default function PreferenceForm(
                         step={50}
                         className="flex-grow"
                      />
-                     <span className="font-lighter w-8 text-center text-xl">
-                        {preferences[question.id] || 3}
+                     <span className="w-8 text-center text-xl font-medium">
+                        {preferences[question.id]?.value ?? 750}{' '}
+                        {/* Display the slider value correctly */}
                      </span>
                   </div>
                </div>
             )
-         case 'START_DATE':
-            return (
-               <div className="flex flex-col space-y-4">
-                  <Label className="text-base font-medium leading-tight">
-                     {question.text}
-                  </Label>
-                  <Popover>
-                     <PopoverTrigger asChild>
-                        <Button
-                           variant="outline"
-                           className={cn(
-                              'w-[240px] justify-start p-6 text-left text-lg font-normal',
-                              !preferences[question.id] &&
-                                 'text-muted-foreground' // Update here
-                           )}
-                        >
-                           {preferences[question.id] &&
-                           preferences[question.id][0]
-                              ? format(
-                                   preferences[question.id][0],
-                                   'dd MMM yyyy'
-                                ) // Update here
-                              : 'Select a date'}
-                        </Button>
-                     </PopoverTrigger>
-                     <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                           mode="single"
-                           selected={
-                              preferences[question.id]?.[0] || new Date()
-                           } // Use preferences[question.id][0]
-                           onSelect={(date) =>
-                              setPreferences((prev) => ({
-                                 ...prev,
-                                 [question.id]: [date], // Store the date in an array
-                              }))
-                           }
-                           initialFocus
-                        />
-                     </PopoverContent>
-                  </Popover>
-               </div>
-            )
+            case 'START_DATE':
+               return (
+                  <div className="flex flex-col space-y-4">
+                     <Label className="text-base font-medium leading-tight">
+                        {question.text}
+                     </Label>
+                     <Popover>
+                        <PopoverTrigger asChild>
+                           <Button
+                              variant="outline"
+                              className={cn(
+                                 'w-[240px] justify-start p-6 text-left text-lg font-normal',
+                                 !preferences[question.id]?.date && 'text-muted-foreground'
+                              )}
+                           >
+                              {preferences[question.id]?.date
+                                 ? format(new Date(preferences[question.id].date), 'dd MMM yyyy')
+                                 : 'Select a date'}
+                           </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                           <Calendar
+                              mode="single"
+                              selected={
+                                 preferences[question.id]?.date
+                                    ? new Date(preferences[question.id].date)
+                                    : new Date()
+                              }
+                              onSelect={(date) =>
+                                 setPreferences((prev) => ({
+                                    ...prev,
+                                    [question.id]: {
+                                       question: question.text,
+                                       date: date ? date.toISOString() : null,
+                                    },
+                                 }))
+                              }
+                              initialFocus
+                           />
+                        </PopoverContent>
+                     </Popover>
+                  </div>
+               );
+            
 
          default:
             return null
