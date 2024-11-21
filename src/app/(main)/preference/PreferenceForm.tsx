@@ -40,6 +40,8 @@ export default function PreferenceForm({
 }: PreferenceFormProps) {
    const [step, setStep] = useState(1)
    const [preferences, setPreferences] = useState<{ [key: string]: any }>({})
+   const [loading, setLoading] = useState(false)
+   const [itinerary, setItinerary] = useState<string | null>(null)
 
    // Add debugging useEffect
    useEffect(() => {
@@ -60,6 +62,21 @@ export default function PreferenceForm({
 
    const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps))
    const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
+
+   const handleFinish = async () => {
+      setLoading(true)
+      try {
+         const response = await handleGenerateItinerary({
+            userId,
+            answers: preferences,
+         })
+         setItinerary(response)
+      } catch (error) {
+         console.error('Error generating itinerary:', error)
+      } finally {
+         setLoading(false)
+      }
+   }
 
    const renderQuestion = (question: {
       id: number
@@ -262,49 +279,57 @@ export default function PreferenceForm({
 
    return (
       <>
-         {/* Display Preferences */}
-         <div className="mb-4 rounded-lg border p-4 text-white">
-            <h2 className="text-lg font-semibold">Current Preferences:</h2>
-            <pre className="whitespace-pre-wrap">
-               {JSON.stringify(preferences, null, 2)}
-            </pre>
-         </div>
-         <BackgroundGradient className="p-2">
-            <Card className="rounded-3xl px-2">
-               {renderStep()}
-               <CardFooter className="flex flex-row justify-center gap-x-6">
-                  <Button
-                     onClick={prevStep}
-                     disabled={step === 1}
-                     variant="ghost"
-                     size="lg"
-                  >
-                     Previous
-                  </Button>
-                  <div className="text-md font-normal">
-                     Step {step} of {totalSteps}
-                  </div>
-                  {step === totalSteps ? (
-                     <Button
-                        variant="ghost"
-                        onClick={async () =>
-                           await handleGenerateItinerary({
-                              userId: userId,
-                              answers: preferences,
-                           })
-                        }
-                        size="lg"
-                     >
-                        Generate Itinerary
-                     </Button>
-                  ) : (
-                     <Button variant="ghost" onClick={nextStep} size="lg">
-                        Next
-                     </Button>
-                  )}
-               </CardFooter>
-            </Card>
-         </BackgroundGradient>
+         {itinerary ? (
+            <div className="p-4 rounded-lg border text-white">
+               <h2 className="text-lg font-semibold">Generated Itinerary:</h2>
+               <pre className="whitespace-pre-wrap">{itinerary}</pre>
+            </div>
+         ) : (
+            <>
+               <div className="mb-4 rounded-lg border p-4 text-white">
+                  <h2 className="text-lg font-semibold">Current Preferences:</h2>
+                  <pre className="whitespace-pre-wrap">
+                     {JSON.stringify(preferences, null, 2)}
+                  </pre>
+               </div>
+               <BackgroundGradient className="p-2">
+                  <Card className="rounded-3xl px-2">
+                     {renderStep()}
+                     <CardFooter className="flex flex-row justify-center gap-x-6">
+                        <Button
+                           onClick={prevStep}
+                           disabled={step === 1}
+                           variant="ghost"
+                           size="lg"
+                        >
+                           Previous
+                        </Button>
+                        <div className="text-md font-normal">
+                           Step {step} of {totalSteps}
+                        </div>
+                        {step === totalSteps ? (
+                           <Button
+                              variant="ghost"
+                              onClick={handleFinish}
+                              size="lg"
+                              disabled={loading}
+                           >
+                              {loading ? 'Generating...' : 'Generate Itinerary'}
+                           </Button>
+                        ) : (
+                           <Button
+                              variant="ghost"
+                              onClick={nextStep}
+                              size="lg"
+                           >
+                              Next
+                           </Button>
+                        )}
+                     </CardFooter>
+                  </Card>
+               </BackgroundGradient>
+            </>
+         )}
       </>
    )
 }
