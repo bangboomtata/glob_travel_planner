@@ -40,7 +40,7 @@
 //       options: [
 //          'Flexible by +/- 1 day',
 //          'Flexible by +/- 3 days',
-//          'Not flexible',
+//          'Not Flexible',
 //       ],
 //    },
 //    {

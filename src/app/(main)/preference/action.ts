@@ -58,19 +58,33 @@ export async function handleGenerateItinerary({
       },
    })
 
-   // // Generate ChatGPT prompt
-   // const prompt = `
-   //    Based on the following preferences, generate a detailed travel itinerary, including activities, restaurants, time and duration spent at each location, and any other relevant information about the places:
-   //    ${JSON.stringify(answers, null, 2)}
-   // `
+   // Generate ChatGPT prompt
+   const prompt = `
+      Based on the following preferences, generate a destination country and a detailed 
+      travel itinerary, including activities, restaurants, time and duration spent at each location, 
+      and any other relevant information about the places. Prioritize destinations that align with 
+      the preferences while allowing for an enjoyable experience regardless of budget constraints. 
+      If the budget is high, suggest options that balance affordability and value, enabling the 
+      traveler to save unspent money without compromising the quality of the trip. Consider countries 
+      outside the UK if the budget and preferences allow.
+      ${JSON.stringify(answers, null, 2)}
+   `
 
-   // // Call OpenAI API
-   // const completion = await openai.chat.completions.create({
-   //    model: 'gpt-4-turbo',
-   //    messages: [{ role: 'user', content: prompt }],
-   // })
+   // Call OpenAI API
+   const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: prompt }],
+   })
 
-   // // Extract and return the response
-   // const responseText = completion.choices[0].message.content
-   // return responseText
+   // Extract and return the response
+   const responseText = completion.choices[0].message.content ?? ''
+
+   // Save itinerary to the database
+   const itinerary = await prisma.itinerary.create({
+      data: {
+         generatedItinerary: responseText,
+         userId,
+      },
+   })
+   return responseText
 }
