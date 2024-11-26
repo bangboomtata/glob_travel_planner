@@ -9,16 +9,7 @@ import {
 } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import {
-   Plane,
-   Hotel,
-   MapPin,
-   Coffee,
-   Utensils,
-   Camera,
-   Sunrise,
-   Moon,
-} from 'lucide-react'
+import { MapPin, Plane } from 'lucide-react'
 import {
    Accordion,
    AccordionContent,
@@ -26,6 +17,7 @@ import {
    AccordionTrigger,
 } from '@/components/ui/accordion'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
+import { getItinerary } from './action'
 
 // Mock data for the itinerary
 const itinerary = [
@@ -37,35 +29,30 @@ const itinerary = [
             description: 'Arrival and hotel check-in',
             details:
                'Settle into your accommodation and prepare for the day ahead.',
-            icon: <Hotel className="h-4 w-4" />,
          },
          {
             time: '11:00',
             description: 'City orientation walk',
             details:
                'Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.',
-            icon: <MapPin className="h-4 w-4" />,
          },
          {
             time: '13:00',
             description: 'Lunch at Rasoterra',
             details:
                'Enjoy vegan Catalonian tapas and dishes at this popular local restaurant.',
-            icon: <Utensils className="h-4 w-4" />,
          },
          {
             time: '15:00',
             description: 'Visit La Sagrada Familia',
             details:
                'Marvel at Antoni Gaudís iconic basilica. Entry fee ~£26, pre-booking recommended.',
-            icon: <Camera className="h-4 w-4" />,
          },
          {
             time: '19:00',
             description: 'Dinner at Teresa Carles and evening stroll',
             details:
                'Savor vegan Catalonian cuisine and relax along Las Ramblas.',
-            icon: <Moon className="h-4 w-4" />,
          },
       ],
    },
@@ -76,35 +63,30 @@ const itinerary = [
             time: '08:00',
             description: 'Breakfast at hotel',
             details: 'Fuel up for the day with a hearty vegan breakfast.',
-            icon: <Coffee className="h-4 w-4" />,
          },
          {
             time: '10:00',
             description: 'Guided tour of old town',
             details:
                'Visit Casa Batlló and Casa Milà, two of Gaudís masterpieces on Passeig de Gràcia.',
-            icon: <MapPin className="h-4 w-4" />,
          },
          {
             time: '13:00',
             description: 'Picnic in central park',
             details:
                'Enjoy a vegan lunch at Parc de la Ciutadella, surrounded by sculptures and fountains.',
-            icon: <Utensils className="h-4 w-4" />,
          },
          {
             time: '15:00',
             description: 'Visit the Picasso Museum',
             details:
                'View an extensive collection of Pablo Picassos early works in the El Born neighborhood. Entry fee ~£12.',
-            icon: <Camera className="h-4 w-4" />,
          },
          {
             time: '19:00',
             description: 'Traditional dance show',
             details:
                'Experience Catalonian culture with a local dance performance.',
-            icon: <Moon className="h-4 w-4" />,
          },
       ],
    },
@@ -116,43 +98,46 @@ const itinerary = [
             description: 'Sunrise hike to Bunkers del Carmel',
             details:
                'Enjoy panoramic views of the city from this scenic viewpoint.',
-            icon: <Sunrise className="h-4 w-4" />,
          },
          {
             time: '10:00',
             description: 'Local market visit',
             details:
                'Wander through La Boqueria Market, famous for fresh produce and vegan-friendly snacks.',
-            icon: <MapPin className="h-4 w-4" />,
          },
          {
             time: '13:00',
             description: 'Cooking class',
             details:
                'Learn to prepare vegan Catalonian dishes at a local culinary school.',
-            icon: <Utensils className="h-4 w-4" />,
          },
          {
             time: '16:00',
             description: 'Beach relaxation at Barceloneta',
             details:
                'Relax and take in the ocean views from Barcelonas popular beach.',
-            icon: <Camera className="h-4 w-4" />,
          },
          {
             time: '20:00',
             description: 'Farewell dinner at Bohl',
             details:
                'Enjoy a selection of vegan tapas and local cuisine to wrap up your trip.',
-            icon: <Moon className="h-4 w-4" />,
          },
       ],
    },
 ]
 
+const generatedItinerary = await getItinerary()
+
 export default function AIGeneratedItinerary() {
    return (
       <main className="container mx-auto min-h-full max-w-3xl flex-col">
+         <div className="mb-4 rounded-lg border p-4 text-white">
+                  <h2 className="text-lg font-semibold">Trip:</h2>
+                  <pre className="whitespace-pre-wrap">
+                     {JSON.stringify(generatedItinerary, null, 2)}
+                  </pre>
+               </div>
          <BackgroundGradient className="p-2">
             <Card className="w-full max-w-4xl">
                <CardHeader>
@@ -188,7 +173,7 @@ export default function AIGeneratedItinerary() {
                                                 {activity.time}
                                              </div>
                                              <div className="mr-3 flex-shrink-0">
-                                                {activity.icon}
+                                                <MapPin className="h-4 w-4" />
                                              </div>
                                              <p className="text-base">
                                                 {activity.description}

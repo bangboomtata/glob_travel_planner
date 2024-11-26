@@ -33,7 +33,7 @@ model Preference {
 
 model Itinerary {
   id                 Int      @id @default(autoincrement())
-  generatedItinerary String   @db.Text
+  generatedItinerary Json
   userId             Int
   createdAt          DateTime @default(now())
 
