@@ -7,9 +7,29 @@
 //    { question: 'Visiting popular sites and landmarks', type: 'Travel_Taste' },
 //    { question: 'Going to places of historical significance', type: 'Travel_Taste' },
 //    { question: 'Visiting museums and art galleries', type: 'Travel_Taste' },
+//    { question: 'Enjoying local food', type: 'Travel_Taste' },
 //    {
 //       question:
-//          'Do you have any dietary restrictions we should know about for foodie experiences?',
+//          'Are there any activities you do not want to do?',
+//       type: 'DISLIKE_ACTIVITIES',
+//       options: ['Hiking', 'Swimming', 'Scuba Diving', 'Brewery/Distillery Tour',
+//        'Nature Walk', 'Boat Trips', 'None'],
+//    },
+//    {
+//       question:
+//          'What would you like yo have in your travel itinerary?',
+//       type: 'TRAVEL_TASTE_2',
+//       options: ['Beaches', 'Greeneries', 'Mountainaous', 'Striking Architecture',
+//       'Bustling Cities', 'Inexpensive'
+//     ],
+//    },
+//    {
+//       question:'What kind of weather do you prefer? (Warm = more than 15 degrees celsius)',
+//       type: 'WEATHER',
+//       options: ['I'm flexible', 'It would be great, not essential', 'I want warm weather'],
+//    },
+//    {
+//       question:'Do you have any dietary restrictions we should know about for foodie experiences?',
 //       type: 'Dietary_Restrictions',
 //       options: ['None', 'Vegan', 'Vegetarian', 'No Alcohol'],
 //    },

@@ -120,6 +120,9 @@ export default function PreferenceForm({
          case 'TRIP_DURATION':
          case 'AIRPORT':
          case 'START_DATE_FLEXIBILITY':
+         case 'DISLIKE_ACTIVITIES':
+         case 'TRAVEL_TASTE_2':
+         case 'WEATHER':
             return (
                <div className="space-y-4">
                   <Label className="text-base font-medium leading-tight">

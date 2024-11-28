@@ -58,63 +58,11 @@ export async function handleGenerateItinerary({
       },
    })
 
-   // Generate ChatGPT prompt
-//    const prompt = `
-// Based on the following preferences, generate a destination country and a detailed travel itinerary for a travel planning app. The itinerary should include:
-// 1. Activities (time, description, details).
-// 2. Restaurants (recommended dishes, time for meals).
-// 3. Duration spent at each location.
-// 4. Additional relevant details about the destination.
-
-// **Guidelines:**
-// - Suggest destinations that align with the preferences provided while ensuring the experience is enjoyable within the specified budget.
-// - If the budget allows, prioritize destinations outside the UK while balancing affordability and value.
-// - For higher budgets, recommend cost-effective options that maintain quality and allow for potential savings without compromising the trip.
-// - Structure the response in JSON format without including other things that includes day-wise itineraries from morning to night.
-
-// **Preferences Provided:**
-// ${JSON.stringify(answers, null, 2)}
-
-// **Example JSON Format for Response:**
-// [
-//   {
-//     "day": 1,
-//     "activities": [
-//       {
-//         "time": "09:00",
-//         "description": "Arrival and hotel check-in",
-//         "details": "Settle into your accommodation and prepare for the day ahead.",
-//       },
-//       {
-//         "time": "11:00",
-//         "description": "City orientation walk",
-//         "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
-//       }
-//     ]
-//   },
-//   {
-//     "day": 2,
-//     "activities": [
-//       {
-//         "time": "08:00",
-//         "description": "Breakfast at hotel",
-//         "details": "Fuel up for the day with a hearty vegan breakfast.",
-//       },
-//       {
-//         "time": "10:00",
-//         "description": "Guided tour of old town",
-//         "details": "Visit Casa Batlló and Casa Milà, two of Gaudí's masterpieces on Passeig de Gràcia.",
-//       }
-//     ]
-//   }
-// ]
-// `
-
 const prompt = `
 You are a travel planning assistant. Based on the preferences provided, generate a recommended travel destination and a detailed day-by-day travel itinerary in JSON format. 
 
 ### Requirements:
-1. Suggest a **destination country** and create an **itinerary** that includes:
+1. Suggest a **destination country** prerably in Europe and create an **itinerary** that includes:
    - Activities: Specify time, description, and detailed information for each activity.
    - Restaurants: Recommend meals with timings and notable dishes.
    - Duration: Mention how much time is spent at each location or activity.
@@ -180,17 +128,17 @@ ${JSON.stringify(answers, null, 2)}
 
    // Call OpenAI API
    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4-turbo',
       messages: [{ role: 'user', content: prompt }],
    })
 
-   // Extract and return the response
    const responseText = completion.choices[0].message.content ?? ''
+   const JSONparsedItinerary = JSON.parse(responseText)
 
    // Save itinerary to the database
    const itinerary = await prisma.itinerary.create({
       data: {
-         generatedItinerary: responseText,
+         generatedItinerary: JSONparsedItinerary,
          userId,
       },
    })
