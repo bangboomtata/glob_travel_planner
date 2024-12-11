@@ -128,12 +128,17 @@ ${JSON.stringify(answers, null, 2)}
    const JSONparsedItinerary = JSON.parse(responseText)
 
    // Save itinerary to the database
-   const itinerary = await prisma.itinerary.create({
-      data: {
-         generatedItinerary: JSONparsedItinerary,
-         userId,
-      },
+   try {
+      const itinerary = await prisma.itinerary.create({
+         data: {
+            generatedItinerary: JSONparsedItinerary,
+            userId,
+         },
+      })
+   } catch (error) {
+      console.error('Error in handleGenerateItinerary function:', error)
+      throw error
    }
-)
+
    return responseText
 }
