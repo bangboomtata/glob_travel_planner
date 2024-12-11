@@ -1,6 +1,8 @@
 import PreferenceForm from './PreferenceForm'
 import { getPreferenceQuestions } from './action'
 
+export const maxDuration = 60;
+
 // Mock currentUser object for demonstration purposes
 const currentUser = { id: 1 }
 

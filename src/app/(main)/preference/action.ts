@@ -3,7 +3,6 @@
 import { PrismaClient, QuestionType } from '@prisma/client'
 import { OpenAI } from 'openai'
 
-export const maxDuration = 60;
 const prisma = new PrismaClient()
 const openai = new OpenAI()
 

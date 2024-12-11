@@ -1,6 +1,6 @@
 {
     "functions": {
-      "app/preference/**/*.ts": {
+      "app/preference/**/*": {
         "maxDuration": 60
       }
     }
