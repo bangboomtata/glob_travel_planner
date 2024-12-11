@@ -289,12 +289,12 @@ export default function PreferenceForm({
             </div>
          ) : (
             <>
-               <div className="mb-4 rounded-lg border p-4 text-white">
+               {/* <div className="mb-4 rounded-lg border p-4 text-white">
                   <h2 className="text-lg font-semibold">Current Preferences:</h2>
                   <pre className="whitespace-pre-wrap">
                      {JSON.stringify(preferences, null, 2)}
                   </pre>
-               </div>
+               </div> */}
                <BackgroundGradient className="p-2">
                   <Card className="rounded-3xl px-2">
                      {renderStep()}
