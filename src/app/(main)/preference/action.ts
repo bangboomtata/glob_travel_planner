@@ -48,42 +48,69 @@ export async function handleGenerateItinerary({
    userId: number
    answers: any
 }) {
-   // Save preferences to the database
-   const preference = await prisma.preference.create({
-      data: {
-         answers,
-         userId,
-      },
-   })
-
-const prompt = `
-just say hi
-`
-
-   // Call OpenAI API
-   const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
-   })
-
-   const responseText = completion.choices[0].message.content ?? ''
-   const JSONparsedItinerary = JSON.parse(responseText)
-
-   // Save itinerary to the database
    try {
-      const itinerary = await prisma.itinerary.create({
-         data: {
-            generatedItinerary: JSONparsedItinerary,
-            userId,
-         },
-      })
-   } catch (error) {
-      console.error('Error in handleGenerateItinerary function:', error)
-      throw error
-   }
+      const prompt = 'just say hi'
 
-   return responseText
+      // Call OpenAI API
+      const completion = await openai.chat.completions.create({
+         model: 'gpt-3.5-turbo',
+         messages: [{ role: 'user', content: prompt }],
+      })
+
+      const responseText = completion.choices[0].message.content ?? ''
+      console.log('OpenAI response:', responseText)
+
+      return responseText
+   } catch (error) {
+      console.error('Error generating itinerary:', error)
+      throw new Error('Failed to generate itinerary.')
+   }
 }
+
+
+// export async function handleGenerateItinerary({
+//    userId,
+//    answers,
+// }: {
+//    userId: number
+//    answers: any
+// }) {
+//    // Save preferences to the database
+//    const preference = await prisma.preference.create({
+//       data: {
+//          answers,
+//          userId,
+//       },
+//    })
+
+// const prompt = `
+// just say hi
+// `
+
+//    // Call OpenAI API
+//    const completion = await openai.chat.completions.create({
+//       model: 'gpt-3.5-turbo',
+//       messages: [{ role: 'user', content: prompt }],
+//    })
+
+//    const responseText = completion.choices[0].message.content ?? ''
+//    const JSONparsedItinerary = JSON.parse(responseText)
+
+//    // Save itinerary to the database
+//    try {
+//       const itinerary = await prisma.itinerary.create({
+//          data: {
+//             generatedItinerary: JSONparsedItinerary,
+//             userId,
+//          },
+//       })
+//    } catch (error) {
+//       console.error('Error in handleGenerateItinerary function:', error)
+//       throw error
+//    }
+
+//    return responseText
+// }
 
 /* 
 Based on the user preferences, generate a recommended travel destination and a detailed day-by-day travel itinerary in JSON format.
