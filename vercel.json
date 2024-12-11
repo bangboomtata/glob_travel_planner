@@ -1,6 +1,6 @@
 {
     "functions": {
-      "app/preference/**/*.ts": {
+      "app/preference/*.ts": {
         "timeout": 60
       }
     }
