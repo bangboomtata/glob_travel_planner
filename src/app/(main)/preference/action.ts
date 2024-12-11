@@ -41,8 +41,6 @@ export async function getUserbyUserId(userId: number) {
    return data
 }
 
-export async function AIPrompt(preferenceAnswers: Record<string, any>) {}
-
 export async function handleGenerateItinerary({
    userId,
    answers,
@@ -135,6 +133,7 @@ ${JSON.stringify(answers, null, 2)}
          generatedItinerary: JSONparsedItinerary,
          userId,
       },
-   })
+   }
+)
    return responseText
 }
