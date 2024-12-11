@@ -1,0 +1,8 @@
+{
+    "functions": {
+      "app/preference/**/*.ts": {
+        "timeout": 60
+      }
+    }
+  }
+  
