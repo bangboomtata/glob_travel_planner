@@ -1,7 +1,7 @@
 {
     "functions": {
       "app/preference/*.ts": {
-        "timeout": 60
+        "maxDuration": 60
       }
     }
   }
