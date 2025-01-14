@@ -56,75 +56,144 @@ export async function handleGenerateItinerary({
       },
    })
 
-   const prompt = `
-Based on the user preferences, generate a recommended travel destination and a detailed day-by-day travel itinerary in JSON format.
-Avoid repetitive recommendations unless the inputs are identical. Prioritize diverse countries and unique activities.
-
-### Requirements:
-1. Suggest a **destination country** preferably in Europe and create an **itinerary** that includes:
-   - Activities: Specify time, description, and detailed information for each activity or location.
-   - Restaurants: Recommend meals with timings and notable dishes.
-   - Duration: Mention how much time is spent at each location or activity.
-   - Detailed Information: Add cultural, historical, or practical details to enhance the experience such as what is famous
-   about that place that makes it a must visit place and what is there to do.
-
-2. **Customization**: Ensure the destination and itinerary align with the provided preferences, including budget, duration, and interest areas (e.g., historical sites, nature, food).
-
-3. **Formatting**: Respond only in JSON format without explanations or additional text. Structure the JSON as:
-   - "destination_country": Name of the country.
-   - "itinerary": An array of days, each containing activities with clear time, description, and details.
-
-4. **Guidelines**:
-   - Balance affordability and quality, recommending destinations outside the UK where budgets permit.
-   - Include day-by-day itineraries starting from morning to evening.
-   - Ensure variety in activities and include mealtime details.
-   - For higher budgets, prioritize luxury or unique experiences, and for lower budgets, suggest cost-effective options.
-
-### Preferences Provided:
-${JSON.stringify(answers, null, 2)}
-
-**Example JSON Format for Response:**
-[
-  {
-    "day": 1,
-    "activities": [
+   // Step 1: Initial instructions call
+   const initialMessage: { role: 'system' | 'user'; content: string }[] = [
       {
-        "time": "09:00",
-        "description": "Arrival and hotel check-in",
-        "details": "Settle into your accommodation and prepare for the day ahead.",
+         role: 'system',
+         content: `
+         You are a travel itinerary generator. Your job is to create personalized travel itineraries based on user preferences.
+         Follow the strict formatting and JSON structure I will provide in later messages.`,
       },
       {
-        "time": "11:00",
-        "description": "City orientation walk",
-        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
-      }
-    ]
-  },
-  {
-    "day": 2,
-    "activities": [
-      {
-        "time": "08:00",
-        "description": "Breakfast at hotel",
-        "details": "Fuel up for the day with a hearty vegan breakfast.",
+         role: 'user',
+         content: `
+         Based on the user preferences, generate a recommended travel destination and a detailed day-by-day travel itinerary in JSON format.
+         Avoid repetitive recommendations unless the inputs are identical. Prioritize diverse countries and unique activities.
+         
+         ### Requirements:
+         1. Suggest a **destination country** preferably in Europe and create an **itinerary** that includes:
+            - Activities: Specify time, description, and detailed information for each activity or location.
+            - Restaurants: Recommend meals with timings and notable dishes.
+            - Duration: Mention how much time is spent at each location or activity.
+            - Detailed Information: Add cultural, historical, or practical details to enhance the experience such as what is famous
+            about that place that makes it a must visit place and what is there to do.
+ 
+         2. **Customization**: Ensure the destination and itinerary align with the provided preferences, including budget, duration, and interest areas (e.g., historical sites, nature, food).
+ 
+         3. **Formatting**: Respond only in JSON format without explanations or additional text. Structure the JSON as:
+            - "destination_country": Name of the country.
+            - "itinerary": An array of days, each containing activities with clear time, description, and details.
+ 
+         4. **Guidelines**:
+            - Balance affordability and quality, recommending destinations outside the UK where budgets permit.
+            - Include day-by-day itineraries starting from morning to evening.
+            - Ensure variety in activities and include mealtime details.
+            - For higher budgets, prioritize luxury or unique experiences, and for lower budgets, suggest cost-effective options.
+         
+         **Example JSON Format for Response:**
+         [
+            {
+               "day": 1,
+               "activities": [
+                  {
+                  "time": "09:00",
+                  "description": "Arrival and hotel check-in",
+                  "details": "Settle into your accommodation, rest, and freshen up before heading out."
+                  },
+                  {
+                  "time": "11:00",
+                  "description": "City orientation walk",
+                  "details": "Explore the historic Gothic Quarter, including notable sites like Plaça Reial and Santa Maria del Pi church."
+                  },
+                  {
+                  "time": "13:00",
+                  "description": "Lunch at a local restaurant",
+                  "details": "Enjoy authentic Spanish tapas at La Boqueria market or a nearby eatery."
+                  },
+                  {
+                  "time": "15:00",
+                  "description": "Visit La Sagrada Família",
+                  "details": "Tour Gaudí’s iconic basilica and learn about its unique architectural style."
+                  },
+                  {
+                  "time": "18:00",
+                  "description": "Relax at Parc de la Ciutadella",
+                  "details": "Take a stroll or enjoy a boat ride in this picturesque park."
+                  },
+                  {
+                  "time": "20:00",
+                  "description": "Dinner at a seaside restaurant",
+                  "details": "Dine on fresh seafood at a restaurant overlooking Barceloneta Beach."
+                  }
+               ]
+            },
+            {
+               "day": 2,
+               "activities": [
+                  {
+                  "time": "09:00",
+                  "description": "Breakfast at the hotel",
+                  "details": "Start your day with a hearty breakfast."
+                  },
+                  {
+                  "time": "10:00",
+                  "description": "Day trip to Montserrat",
+                  "details": "Visit Montserrat Mountain, famous for its stunning views and Benedictine monastery."
+                  },
+                  {
+                  "time": "13:00",
+                  "description": "Lunch at Montserrat",
+                  "details": "Enjoy a traditional Catalan meal at a local restaurant near the monastery."
+                  },
+                  {
+                  "time": "15:00",
+                  "description": "Cable car ride",
+                  "details": "Take a cable car ride for panoramic views of the surrounding countryside."
+                  },
+                  {
+                  "time": "18:00",
+                  "description": "Return to Barcelona",
+                  "details": "Relax on your return journey and prepare for your evening plans."
+                  },
+                  {
+                  "time": "20:00",
+                  "description": "Flamenco show and dinner",
+                  "details": "Experience a vibrant flamenco performance accompanied by a traditional Spanish dinner."
+                  }
+               ]
+            }
+            
+         ]
+         `,
       },
-      {
-        "time": "10:00",
-        "description": "Guided tour of old town",
-        "details": "Visit Casa Batlló and Casa Milà, two of Gaudí's masterpieces on Passeig de Gràcia.",
-      }
-    ]
-  }
-]
-`
+   ]
 
-   // Call OpenAI API
-   const completion = await openai.chat.completions.create({
+   const initialCompletion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
+      messages: initialMessage,
    })
 
-   const responseText = completion.choices[0].message.content ?? ''
+   // Add the initial response to the context
+   const initialResponse = initialCompletion.choices[0].message.content ?? ''
+
+   // Step 2: User preferences call
+   const userPreferencesMessage = [
+      {
+         role: 'assistant',
+         content: initialResponse, // Use the response from the first call as context
+      },
+      {
+         role: 'user',
+         content: `### Preferences Provided:\n${JSON.stringify(answers, null, 2)}`,
+      },
+   ]
+
+   const finalCompletion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [...initialMessage, ...userPreferencesMessage] as any,
+   })
+
+   const responseText = finalCompletion.choices[0].message.content ?? ''
    const JSONparsedItinerary = JSON.parse(responseText)
 
    // Save itinerary to the database
@@ -143,33 +212,7 @@ ${JSON.stringify(answers, null, 2)}
    return responseText
 }
 
-/* 
-Based on the user preferences, generate a recommended travel destination and a detailed day-by-day travel itinerary in JSON format.
-Avoid repetitive recommendations unless the inputs are identical. Prioritize diverse countries and unique activities.
-
-### Requirements:
-1. Suggest a **destination country** preferably in Europe and create an **itinerary** that includes:
-   - Activities: Specify time, description, and detailed information for each activity or location.
-   - Restaurants: Recommend meals with timings and notable dishes.
-   - Duration: Mention how much time is spent at each location or activity.
-   - Detailed Information: Add cultural, historical, or practical details to enhance the experience such as what is famous
-   about that place that makes it a must visit place and what is there to do.
-
-2. **Customization**: Ensure the destination and itinerary align with the provided preferences, including budget, duration, and interest areas (e.g., historical sites, nature, food).
-
-3. **Formatting**: Respond only in JSON format without explanations or additional text. Structure the JSON as:
-   - "destination_country": Name of the country.
-   - "itinerary": An array of days, each containing activities with clear time, description, and details.
-
-4. **Guidelines**:
-   - Balance affordability and quality, recommending destinations outside the UK where budgets permit.
-   - Include day-by-day itineraries starting from morning to evening.
-   - Ensure variety in activities and include mealtime details.
-   - For higher budgets, prioritize luxury or unique experiences, and for lower budgets, suggest cost-effective options.
-
-### Preferences Provided:
-${JSON.stringify(answers, null, 2)}
-
+/*
 **Example JSON Format for Response:**
 [
   {
@@ -184,21 +227,61 @@ ${JSON.stringify(answers, null, 2)}
         "time": "11:00",
         "description": "City orientation walk",
         "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
+      },
+      {
+        "time": "13:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
+      },
+      {
+        "time": "16:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
+      },
+      {
+        "time": "18:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
+      },
+      {
+        "time": "22:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
       }
     ]
   },
   {
     "day": 2,
     "activities": [
-      {
-        "time": "08:00",
-        "description": "Breakfast at hotel",
-        "details": "Fuel up for the day with a hearty vegan breakfast.",
+       {
+        "time": "09:00",
+        "description": "Arrival and hotel check-in",
+        "details": "Settle into your accommodation and prepare for the day ahead.",
       },
       {
-        "time": "10:00",
-        "description": "Guided tour of old town",
-        "details": "Visit Casa Batlló and Casa Milà, two of Gaudí's masterpieces on Passeig de Gràcia.",
+        "time": "11:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
+      },
+      {
+        "time": "13:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
+      },
+      {
+        "time": "16:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
+      },
+      {
+        "time": "18:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
+      },
+      {
+        "time": "22:00",
+        "description": "City orientation walk",
+        "details": "Explore the Gothic Quarter, including historic sites like Plaça Reial and medieval buildings.",
       }
     ]
   }

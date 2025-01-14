@@ -3,12 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  // Uses connection pooling
-  url       = env("POSTGRES_PRISMA_URL")
-  // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
-  // or you'll have dangling databases from migrations
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 model Question {
@@ -17,7 +13,6 @@ model Question {
   type      QuestionType
   options   String[]
   createdAt DateTime     @default(now())
-  // answers     Answer[]     
 
   @@map("questions")
 }
@@ -49,12 +44,12 @@ model User {
 enum QuestionType {
   TRAVEL_TASTE
   DIETARY_RESTRICTIONS
-  DISLIKE_ACTIVITIES
-  TRAVEL_TASTE_2
-  WEATHER
   TRIP_DURATION
   AIRPORT
   START_DATE
   START_DATE_FLEXIBILITY
   BUDGET
+  DISLIKE_ACTIVITIES
+  TRAVEL_TASTE_2
+  WEATHER
 }
