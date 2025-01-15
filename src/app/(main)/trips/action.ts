@@ -7,8 +7,17 @@ const prisma = new PrismaClient()
 export async function getItinerary () {
   const data = await prisma.itinerary.findMany({
     orderBy: {
-      id: 'desc' // Replace 'id' with the field you want to sort by
+      id: 'desc'
     }
   })
   return data
+}
+
+export async function getItineraryById(id: number) {
+  const data = await prisma.itinerary.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  return data;
 }

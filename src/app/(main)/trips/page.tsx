@@ -8,8 +8,6 @@ import {
    CardTitle,
 } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
-import { MapPin, Plane } from 'lucide-react'
 import {
    Accordion,
    AccordionContent,
@@ -20,64 +18,45 @@ import { BackgroundGradient } from '@/components/ui/background-gradient'
 import { getItinerary } from './action'
 
 interface Itinerary {
-   id: number;
-   generatedItinerary: any;
-   userId: number;
-   createdAt: Date;
+   id: number
+   generatedItinerary: any
+   userId: number
+   createdAt: Date
 }
 
-const generatedItinerary: Itinerary[] = await getItinerary()
+const allItinerary: Itinerary[] = await getItinerary()
 
 export default function AIGeneratedItinerary() {
-   const displayItinerary = generatedItinerary?.[0]?.generatedItinerary?.itinerary;
-
    return (
       <main className="container mx-auto min-h-full max-w-3xl flex-col">
-         {/* Display Raw JSON (Debugging/Visualization) */}
-         {/* <div className="mb-4 rounded-lg border p-4 text-white bg-gray-800">
-            <h2 className="text-lg font-semibold">Raw Itinerary Data:</h2>
-            <pre className="whitespace-pre-wrap text-sm">
-               {JSON.stringify(generatedItinerary, null, 2)}
-            </pre>
-         </div> */}
-
-         
          <BackgroundGradient className="p-2">
             <Card className="w-full max-w-4xl">
                <CardHeader>
-                  <CardTitle>Your Personalized Travel Itinerary</CardTitle>
-                  <CardDescription>
-                     Based on your preferences, here&#39;s your custom trip.
-                  </CardDescription>
+                  <CardTitle>Your Trips</CardTitle>
                </CardHeader>
                <CardContent>
-                  <ScrollArea className="h-[60vh] pr-4">
-                     {displayItinerary.map((day:any, dayIndex:any) => (
-                        <div key={dayIndex} className="mb-6">
-                           <h3 className="mb-2 text-lg font-semibold">
-                              Day {day.day}
-                           </h3>
-                           {day?.activities?.map((activity:any, actIndex:any) => (
-                              <Accordion
-                                 type="single"
-                                 collapsible
-                                 key={actIndex}
-                                 defaultValue={`activity-${actIndex}`}
-                                 className="mx-auto w-full max-w-4xl"
-                              >
-                                 <AccordionItem value={`activity-${actIndex}`}>
-                                    <AccordionTrigger className="font-medium text-gray-800">
-                                       {activity.time} - {activity.description}
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                       <p>{activity.details}</p>
-                                    </AccordionContent>
-                                 </AccordionItem>
-                              </Accordion>
-                           ))}
-                        </div>
-                     ))}
-                  </ScrollArea>
+                  {allItinerary.length > 0 ? (
+                     <div className="space-y-2">
+                        {allItinerary.map((itinerary) => (
+                           <div key={itinerary.id} className='flex flex-row pb-2 border-b justify-between gap-4'>
+                              <div>
+                                 <p className="text-lg font-semibold">
+                                    Destination:{' '}{itinerary.generatedItinerary.destination_country}
+                                 </p>
+                                 <p className="text-sm text-gray-600">
+                                    Date Created:{new Date(itinerary.createdAt).toLocaleDateString()}
+                                 </p>
+                              </div>
+                              <div className="flex flex-row gap-x-2 pt-4 pr-4">
+                                 <Button className="w-[60px] h-[30px]">View</Button>
+                                 <Button variant="destructive" className="w-[60px] h-[30px]">Delete</Button>
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  ) : (
+                     <p className="text-gray-600">No itineraries available.</p>
+                  )}
                </CardContent>
                <CardFooter>
                   <p className="text-sm text-gray-600">
@@ -87,5 +66,5 @@ export default function AIGeneratedItinerary() {
             </Card>
          </BackgroundGradient>
       </main>
-   );
+   )
 }
