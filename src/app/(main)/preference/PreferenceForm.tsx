@@ -23,6 +23,7 @@ import { format } from 'date-fns'
 import { QuestionType } from '@prisma/client'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
 import { handleGenerateItinerary } from './action'
+import { getItinerary } from '../trips/action'
 
 interface PreferenceFormProps {
    questions: {
@@ -34,6 +35,13 @@ interface PreferenceFormProps {
    userId: number // Add userId prop
 }
 
+interface Itinerary {
+   id: number
+   generatedItinerary: any
+   userId: number
+   createdAt: Date
+}
+
 export default function PreferenceForm({
    questions,
    userId,
@@ -41,7 +49,7 @@ export default function PreferenceForm({
    const [step, setStep] = useState(1)
    const [preferences, setPreferences] = useState<{ [key: string]: any }>({})
    const [loading, setLoading] = useState(false)
-   const [itinerary, setItinerary] = useState<string | null>(null)
+   const [itinerary, setItinerary] = useState<Itinerary | null>(null)
 
    // Add debugging useEffect
    useEffect(() => {
@@ -65,12 +73,14 @@ export default function PreferenceForm({
 
    const handleFinish = async () => {
       setLoading(true)
+      const generatedItinerary: Itinerary[] = await getItinerary()
+      const displayItinerary = generatedItinerary?.[0]?.generatedItinerary?.itinerary
       try {
          const response = await handleGenerateItinerary({
             userId,
             answers: preferences,
          })
-         setItinerary(response)
+         setItinerary(displayItinerary)
       } catch (error) {
          console.error('Error generating itinerary:', error)
       } finally {
@@ -196,50 +206,53 @@ export default function PreferenceForm({
                   </div>
                </div>
             )
-            case 'START_DATE':
-               return (
-                  <div className="flex flex-col space-y-4">
-                     <Label className="text-base font-medium leading-tight">
-                        {question.text}
-                     </Label>
-                     <Popover>
-                        <PopoverTrigger asChild>
-                           <Button
-                              variant="outline"
-                              className={cn(
-                                 'w-[240px] justify-start p-6 text-left text-lg font-normal',
-                                 !preferences[question.id]?.date && 'text-muted-foreground'
-                              )}
-                           >
-                              {preferences[question.id]?.date
-                                 ? format(new Date(preferences[question.id].date), 'dd MMM yyyy')
-                                 : 'Select a date'}
-                           </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                           <Calendar
-                              mode="single"
-                              selected={
-                                 preferences[question.id]?.date
-                                    ? new Date(preferences[question.id].date)
-                                    : new Date()
-                              }
-                              onSelect={(date) =>
-                                 setPreferences((prev) => ({
-                                    ...prev,
-                                    [question.id]: {
-                                       question: question.text,
-                                       date: date ? date.toISOString() : null,
-                                    },
-                                 }))
-                              }
-                              initialFocus
-                           />
-                        </PopoverContent>
-                     </Popover>
-                  </div>
-               );
-            
+         case 'START_DATE':
+            return (
+               <div className="flex flex-col space-y-4">
+                  <Label className="text-base font-medium leading-tight">
+                     {question.text}
+                  </Label>
+                  <Popover>
+                     <PopoverTrigger asChild>
+                        <Button
+                           variant="outline"
+                           className={cn(
+                              'w-[240px] justify-start p-6 text-left text-lg font-normal',
+                              !preferences[question.id]?.date &&
+                                 'text-muted-foreground'
+                           )}
+                        >
+                           {preferences[question.id]?.date
+                              ? format(
+                                   new Date(preferences[question.id].date),
+                                   'dd MMM yyyy'
+                                )
+                              : 'Select a date'}
+                        </Button>
+                     </PopoverTrigger>
+                     <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                           mode="single"
+                           selected={
+                              preferences[question.id]?.date
+                                 ? new Date(preferences[question.id].date)
+                                 : new Date()
+                           }
+                           onSelect={(date) =>
+                              setPreferences((prev) => ({
+                                 ...prev,
+                                 [question.id]: {
+                                    question: question.text,
+                                    date: date ? date.toISOString() : null,
+                                 },
+                              }))
+                           }
+                           initialFocus
+                        />
+                     </PopoverContent>
+                  </Popover>
+               </div>
+            )
 
          default:
             return null
@@ -283,10 +296,18 @@ export default function PreferenceForm({
    return (
       <>
          {itinerary ? (
-            <div className="p-4 rounded-lg border text-white">
-               <h2 className="text-lg font-semibold">Generated Itinerary:</h2>
-               <pre className="whitespace-pre-wrap">{itinerary}</pre>
-            </div>
+            <BackgroundGradient className="p-2">
+               <Card className="rounded-3xl px-2">
+                  <CardHeader>
+                     <CardTitle className="text-xl font-medium"></CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                     <div className="text-center text-lg font-semibold">
+                        {`Congratulations! You are going to ${itinerary?.generatedItinerary?.destination_country}`}
+                     </div>
+                  </CardContent>
+               </Card>
+            </BackgroundGradient>
          ) : (
             <>
                {/* <div className="mb-4 rounded-lg border p-4 text-white">
@@ -320,11 +341,7 @@ export default function PreferenceForm({
                               {loading ? 'Generating...' : 'Generate Itinerary'}
                            </Button>
                         ) : (
-                           <Button
-                              variant="ghost"
-                              onClick={nextStep}
-                              size="lg"
-                           >
+                           <Button variant="ghost" onClick={nextStep} size="lg">
                               Next
                            </Button>
                         )}

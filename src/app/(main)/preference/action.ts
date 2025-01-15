@@ -169,7 +169,7 @@ export async function handleGenerateItinerary({
    ]
 
    const initialCompletion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o',
       messages: initialMessage,
    })
 
@@ -205,7 +205,7 @@ export async function handleGenerateItinerary({
          },
       })
    } catch (error) {
-      console.error('Error in handleGenerateItinerary function:', error)
+      console.error('Error in handle GenerateItinerary function:', error)
       throw error
    }
 
