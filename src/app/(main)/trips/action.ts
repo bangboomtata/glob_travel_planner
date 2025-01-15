@@ -13,10 +13,10 @@ export async function getItinerary () {
   return data
 }
 
-export async function getItineraryById(id: number) {
+export async function getItineraryById(tripId: number) {
   const data = await prisma.itinerary.findUnique({
     where: {
-      id: id,
+      id: tripId,
     },
   });
   return data;

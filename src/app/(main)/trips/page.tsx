@@ -2,20 +2,13 @@ import { Button } from '@/components/ui/button'
 import {
    Card,
    CardContent,
-   CardDescription,
    CardFooter,
    CardHeader,
    CardTitle,
 } from '@/components/ui/card'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-   Accordion,
-   AccordionContent,
-   AccordionItem,
-   AccordionTrigger,
-} from '@/components/ui/accordion'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
 import { getItinerary } from './action'
+import Link from 'next/link'
 
 interface Itinerary {
    id: number
@@ -48,7 +41,9 @@ export default function AIGeneratedItinerary() {
                                  </p>
                               </div>
                               <div className="flex flex-row gap-x-2 pt-4 pr-4">
-                                 <Button className="w-[60px] h-[30px]">View</Button>
+                                 <Link href={`/trips/${itinerary.id}`} passHref>
+                                    <Button className="w-[60px] h-[30px]">View</Button>
+                                 </Link>
                                  <Button variant="destructive" className="w-[60px] h-[30px]">Delete</Button>
                               </div>
                            </div>
