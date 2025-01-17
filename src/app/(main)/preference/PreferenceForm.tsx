@@ -35,13 +35,6 @@ interface PreferenceFormProps {
    userId: number // Add userId prop
 }
 
-interface Itinerary {
-   id: number
-   generatedItinerary: any
-   userId: number
-   createdAt: Date
-}
-
 export default function PreferenceForm({
    questions,
    userId,
@@ -49,7 +42,7 @@ export default function PreferenceForm({
    const [step, setStep] = useState(1)
    const [preferences, setPreferences] = useState<{ [key: string]: any }>({})
    const [loading, setLoading] = useState(false)
-   const [itinerary, setItinerary] = useState<Itinerary | null>(null)
+   const [itinerary, setItinerary] = useState<string | null>(null)
 
    // Add debugging useEffect
    useEffect(() => {
@@ -73,14 +66,12 @@ export default function PreferenceForm({
 
    const handleFinish = async () => {
       setLoading(true)
-      const generatedItinerary: Itinerary[] = await getItinerary()
-      const displayItinerary = generatedItinerary?.[0]?.generatedItinerary?.itinerary
       try {
          const response = await handleGenerateItinerary({
             userId,
             answers: preferences,
          })
-         setItinerary(displayItinerary)
+         setItinerary(response)
       } catch (error) {
          console.error('Error generating itinerary:', error)
       } finally {
@@ -264,9 +255,9 @@ export default function PreferenceForm({
       const questionsByType = questions.filter((q) => q.type === questionType)
 
       // Add debugging log
-      console.log('Current step:', step)
-      console.log('Current question type:', questionType)
-      console.log('Questions for current type:', questionsByType)
+      // console.log('Current step:', step)
+      // console.log('Current question type:', questionType)
+      // console.log('Questions for current type:', questionsByType)
 
       return (
          <>
@@ -302,8 +293,11 @@ export default function PreferenceForm({
                      <CardTitle className="text-xl font-medium"></CardTitle>
                   </CardHeader>
                   <CardContent>
-                     <div className="text-center text-lg font-semibold">
-                        {`Congratulations! You are going to ${itinerary?.generatedItinerary?.destination_country}`}
+                     <div className="rounded-lg border p-4 text-white">
+                        <h2 className="text-lg font-semibold">
+                           Generated Itinerary:
+                        </h2>
+                        <pre className="whitespace-pre-wrap">{itinerary}</pre>
                      </div>
                   </CardContent>
                </Card>
