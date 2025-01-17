@@ -17,8 +17,8 @@ export default function WelcomeOnboarding() {
    return (
       <main className="container mx-auto max-w-3xl flex-col">
          {/* Background Gradient need use client, make it a individual component*/}
-         <BackgroundGradient className="p-2">
-            <Card className="rounded-[23px] px-4 py-4">
+         <BackgroundGradient className="p-3">
+            <Card className="w-full rounded-2xl max-w-4xl pb-4">
                <CardHeader>
                   <CardTitle>
                      Let&#39;s Get Started on Your Next Adventure!

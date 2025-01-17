@@ -27,35 +27,36 @@ export default async function TripByIdPage({
 }: {
    params: Promise<{ tripId: string }>
 }) {
-   const { tripId: tripIdString } = await asyncParams; // Await `params`
-   const tripId = Number(tripIdString); // Convert string to number
+   const { tripId: tripIdString } = await asyncParams // Await `params`
+   const tripId = Number(tripIdString) // Convert string to number
 
    if (isNaN(tripId)) {
       return (
          <main className="container mx-auto min-h-full max-w-3xl flex-col">
             <p className="text-gray-600">Invalid trip ID.</p>
          </main>
-      );
+      )
    }
 
-   const itinerary: Itinerary | null = await getItineraryById(tripId);
+   const itinerary: Itinerary | null = await getItineraryById(tripId)
 
    if (!itinerary) {
       return (
          <main className="container mx-auto min-h-full max-w-3xl flex-col">
             <p className="text-gray-600">No itinerary found for this trip.</p>
          </main>
-      );
+      )
    }
 
-   const displayItinerary = itinerary?.generatedItinerary?.itinerary;
+   const displayItinerary = itinerary?.generatedItinerary?.itinerary
+   const destinationCountry = itinerary?.generatedItinerary?.destination_country
 
    return (
       <main className="container mx-auto min-h-full max-w-3xl flex-col">
-         <BackgroundGradient className="p-2">
-            <Card className="w-full max-w-4xl">
+         <BackgroundGradient className="p-3">
+            <Card className="w-full max-w-4xl rounded-2xl pb-6">
                <CardHeader>
-                  <CardTitle>Your Personalized Travel Itinerary</CardTitle>
+                  <CardTitle>{`${destinationCountry} Travel Itinerary`}</CardTitle>
                   <p className="text-sm text-gray-600">
                      Created on:{' '}
                      {new Date(itinerary.createdAt).toLocaleDateString()}
@@ -103,5 +104,5 @@ export default async function TripByIdPage({
             </Card>
          </BackgroundGradient>
       </main>
-   );
+   )
 }
