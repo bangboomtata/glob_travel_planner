@@ -21,3 +21,17 @@ export async function getItineraryById(tripId: number) {
   });
   return data;
 }
+
+export async function deleteItineraryById(tripId: number) {
+  try {
+    const deletedItinerary = await prisma.itinerary.delete({
+      where: {
+        id: tripId,
+      },
+    });
+    return deletedItinerary;
+  } catch (error) {
+    console.error("Error deleting itinerary:", error);
+    throw new Error("Failed to delete itinerary");
+  }
+}

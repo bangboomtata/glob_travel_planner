@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import {
    Card,
@@ -7,8 +9,10 @@ import {
    CardTitle,
 } from '@/components/ui/card'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
-import { getItinerary } from './action'
+import { getItinerary, deleteItineraryById } from './action'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface Itinerary {
    id: number
@@ -16,43 +20,92 @@ interface Itinerary {
    userId: number
    createdAt: Date
 }
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-const allItinerary: Itinerary[] = await getItinerary()
 
 export default function AIGeneratedItinerary() {
+   const [allItinerary, setAllItinerary] = useState<Itinerary[]>([])
+
+   useEffect(() => {
+      // Fetch itineraries when the component mounts
+      const fetchItineraries = async () => {
+         const itineraries = await getItinerary()
+         setAllItinerary(itineraries)
+      }
+      fetchItineraries()
+   }, [])
+
+   const handleDelete = async (id: number) => {
+      try {
+         await deleteItineraryById(id)
+         setAllItinerary((prev) =>
+            prev.filter((itinerary) => itinerary.id !== id)
+         )
+      } catch (error) {
+         console.error('Error deleting itinerary:', error)
+         alert('Failed to delete itinerary. Please try again.')
+      }
+   }
+
    return (
       <main className="container mx-auto min-h-full max-w-3xl flex-col">
          <BackgroundGradient className="p-3">
-            <Card className="w-full rounded-2xl max-w-4xl pb-6">
+            <Card className="w-full max-w-4xl rounded-2xl pb-6">
                <CardHeader>
                   <CardTitle>Your Trips</CardTitle>
                </CardHeader>
-               <ScrollArea className="h-[60vh] mr-4">
+               <ScrollArea className="mr-4 h-[60vh]">
                   <CardContent>
                      {allItinerary.length > 0 ? (
                         <div className="space-y-2">
                            {allItinerary.map((itinerary) => (
-                              <div key={itinerary.id} className='flex flex-row pb-2 border-b justify-between gap-4'>
-                                 <div>
+                              <div
+                                 key={itinerary.id}
+                                 className="flex flex-row justify-between gap-4 border-b pb-2 transition-all duration-300 hover:border-b-black hover:text-lg"
+                              >
+                                 <Link
+                                    className="w-full"
+                                    href={`/trips/${itinerary.id}`}
+                                    passHref
+                                 >
                                     <p className="text-lg font-semibold">
-                                       Destination:{' '}{itinerary.generatedItinerary.destination_country}
+                                       Destination:{' '}
+                                       {
+                                          itinerary.generatedItinerary
+                                             .destination_country
+                                       }
                                     </p>
                                     <p className="text-sm text-gray-600">
-                                       Date Created:{new Date(itinerary.createdAt).toLocaleDateString()}
+                                       Date Created:
+                                       {new Date(
+                                          itinerary.createdAt
+                                       ).toLocaleDateString()}
                                     </p>
-                                 </div>
-                                 <div className="flex flex-row gap-x-2 pt-4 pr-4">
-                                    <Link href={`/trips/${itinerary.id}`} passHref>
-                                       <Button className="w-[60px] h-[30px]">View</Button>
+                                 </Link>
+                                 <div className="flex flex-row gap-x-2 pr-4 pt-2">
+                                    <Link
+                                       className="w-full"
+                                       href={`/trips/${itinerary.id}`}
+                                    >                                   
+                                       <Button className="h-[30px] w-[60px] bg-green-500 hover:bg-green-400 hover:text-black">
+                                          Book
+                                       </Button>
                                     </Link>
-                                    <Button variant="destructive" className="w-[60px] h-[30px]">Delete</Button>
+                                    <Button
+                                       variant="destructive"
+                                       className="h-[30px] w-[60px] hover:bg-red-400 hover:text-black"
+                                       onClick={() =>
+                                          handleDelete(itinerary.id)
+                                       }
+                                    >
+                                       Delete
+                                    </Button>
                                  </div>
                               </div>
                            ))}
                         </div>
                      ) : (
-                        <p className="text-gray-600">No itineraries available.</p>
+                        <p className="text-gray-600">
+                           No itineraries available.
+                        </p>
                      )}
                   </CardContent>
                </ScrollArea>
