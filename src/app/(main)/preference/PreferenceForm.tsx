@@ -293,7 +293,7 @@ export default function PreferenceForm({
                      <CardTitle className="text-xl font-medium"></CardTitle>
                   </CardHeader>
                   <CardContent>
-                     <div className="rounded-lg border p-4 text-white">
+                     <div className="rounded-lg border p-4 text-black">
                         <h2 className="text-lg font-semibold">
                            Generated Itinerary:
                         </h2>

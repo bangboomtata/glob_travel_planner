@@ -27,12 +27,31 @@ model Preference {
 }
 
 model Itinerary {
-  id                 Int      @id @default(autoincrement())
+  id                 Int             @id @default(autoincrement())
   generatedItinerary Json
   userId             Int
-  createdAt          DateTime @default(now())
+  status             ItineraryStatus @default(UNBOOKED)
+  createdAt          DateTime        @default(now())
+
+  flights            Flight[]        @relation("ItineraryFlights") // Relation to Flight model
 
   @@map("itineraries")
+}
+
+model Flight {
+  id                 Int      @id @default(autoincrement())
+  flightDetails      Json?    // Optional field to store flight details
+  itineraryId        Int
+  createdAt          DateTime @default(now())
+
+  itinerary          Itinerary @relation("ItineraryFlights", fields: [itineraryId], references: [id]) // Relation to Itinerary
+
+  @@map("flights")
+}
+
+enum ItineraryStatus {
+  UNBOOKED
+  BOOKED
 }
 
 model User {

@@ -43,11 +43,11 @@
 //       type: 'Airport',
 //       options: [
 //          'London (All)',
-//          'London Gatwick',
-//          'London Stansted',
-//          'London Heathrow',
-//          'Manchester',
-//          'Birmingham',
+//          'London Gatwick (LGW)',
+//          'London Stansted (STN)',
+//          'London Heathrow (LHR)',
+//          'Manchester (MAN)',
+//          'Birmingham (BHX)',
 //       ],
 //    },
 //    {
