@@ -83,12 +83,14 @@ export default function AIGeneratedItinerary() {
                                  <div className="flex flex-row gap-x-2 pr-4 pt-2">
                                     <Link
                                        className="w-full"
-                                       href={`/trips/${itinerary.id}`}
-                                    >                                   
+                                       href={`/flight?tripId=${itinerary.id}`}
+                                       passHref
+                                    >
                                        <Button className="h-[30px] w-[60px] bg-green-500 hover:bg-green-400 hover:text-black">
                                           Book
                                        </Button>
                                     </Link>
+
                                     <Button
                                        variant="destructive"
                                        className="h-[30px] w-[60px] hover:bg-red-400 hover:text-black"
