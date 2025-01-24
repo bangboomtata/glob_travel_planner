@@ -71,9 +71,9 @@ export async function handleGenerateItinerary({
          Avoid repetitive recommendations unless the inputs are identical. Prioritize diverse countries and unique activities.
          
          ### Requirements:
-         1. Suggest a **destination country** preferably in Europe and create an **itinerary** that includes:
+         1. Suggest a **destination country** in Europe, outside of UK and create an **itinerary** that includes:
             - Activities: Specify time, description, and detailed information for each activity or location.
-            - Restaurants: Recommend meals with timings and notable dishes.
+            Remember to include meal times, you do not have to specify eating where but you can recommend famous local dishes.
             - Duration: Mention how much time is spent at each location or activity.
             - Detailed Information: Add cultural, historical, or practical details to enhance the experience such as what is famous
             about that place that makes it a must visit place and what is there to do.
@@ -83,12 +83,16 @@ export async function handleGenerateItinerary({
          3. **Formatting**: Respond only in JSON format without explanations or additional text. Structure the JSON as:
             - "destination_country": Name of the country.
             - "itinerary": An array of days, each containing activities with clear time, description, and details.
+            - "landingCity": Name of the city where the user will land.
+            - "returnCity": Name of the city where the user will return back from.
  
          4. **Guidelines**:
-            - Balance affordability and quality, recommending destinations outside the UK where budgets permit.
+            - Balance affordability and quality
             - Include day-by-day itineraries starting from morning to evening.
-            - Ensure variety in activities and include mealtime details.
-            - For higher budgets, prioritize luxury or unique experiences, and for lower budgets, suggest cost-effective options.
+            - Ensure variety in activities, leave time for meals and transportation.
+            - Transportation: Long commutes between cities can be done occassionally but not most of the trip.
+            Reduce travel time between activities to maximize time spent at each location. Maximum 2 cities to visit.
+            - For higher budgets, prioritize higher spending countries, and for lower budgets, suggest cost-effective countries.
          
          **Example JSON Format for Response:**
          [
