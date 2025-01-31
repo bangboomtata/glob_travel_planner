@@ -23,15 +23,25 @@ interface Itinerary {
 
 export default function AIGeneratedItinerary() {
    const [allItinerary, setAllItinerary] = useState<Itinerary[]>([])
+   const [loading, setLoading] = useState(true)
 
    useEffect(() => {
-      // Fetch itineraries when the component mounts
-      const fetchItineraries = async () => {
-         const itineraries = await getItinerary()
-         setAllItinerary(itineraries)
+      async function fetchItinerary() {
+         try {
+            const data = await getItinerary()
+            setAllItinerary(data)
+         } catch (error) {
+            console.error('Error fetching itinerary:', error)
+         } finally {
+            setLoading(false)
+         }
       }
-      fetchItineraries()
+      fetchItinerary()
    }, [])
+
+   if (loading) {
+      return <div className="text-white">Loading...</div>
+   }
 
    const handleDelete = async (id: number) => {
       try {

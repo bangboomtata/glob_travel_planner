@@ -1,0 +1,201 @@
+{
+   "United Kingdom": {
+    "London": [
+      {
+        "airport": "Heathrow Airport",
+        "iata_code": "LHR"
+      },
+      {
+        "airport": "Gatwick Airport",
+        "iata_code": "LGW"
+      },
+      {
+        "airport": "Stansted Airport",
+        "iata_code": "STN"
+      }
+    ],
+    "Birmingham": [
+      {
+        "airport": "Birmingham Airport",
+        "iata_code": "BHX"
+      }
+    ],
+    "Manchester": [
+      {
+        "airport": "Manchester Airport",
+        "iata_code": "MAN"
+      }
+    ]
+  },
+   "Austria": {
+     "city": "Vienna",
+     "airport": "Vienna International Airport",
+     "iata_code": "VIE"
+   },
+   "Belgium": {
+     "city": "Brussels",
+     "airport": "Brussels Airport",
+     "iata_code": "BRU"
+   },
+   "Bulgaria": {
+     "city": "Sofia",
+     "airport": "Sofia Airport",
+     "iata_code": "SOF"
+   },
+   "Croatia": {
+     "city": "Zagreb",
+     "airport": "Zagreb Airport",
+     "iata_code": "ZAG"
+   },
+   "Cyprus": {
+     "city": "Larnaca",
+     "airport": "Larnaca International Airport",
+     "iata_code": "LCA"
+   },
+   "Czech Republic": {
+     "city": "Prague",
+     "airport": "Václav Havel Airport Prague",
+     "iata_code": "PRG"
+   },
+   "Denmark": {
+     "city": "Copenhagen",
+     "airport": "Copenhagen Airport",
+     "iata_code": "CPH"
+   },
+   "Estonia": {
+     "city": "Tallinn",
+     "airport": "Tallinn Airport",
+     "iata_code": "TLL"
+   },
+   "Finland": {
+     "city": "Helsinki",
+     "airport": "Helsinki-Vantaa Airport",
+     "iata_code": "HEL"
+   },
+   "France": {
+     "city": "Paris",
+     "airport": "Charles de Gaulle Airport",
+     "iata_code": "CDG"
+   },
+   "Germany": {
+     "city": "Frankfurt",
+     "airport": "Frankfurt Airport",
+     "iata_code": "FRA"
+   },
+   "Greece": {
+     "city": "Athens",
+     "airport": "Athens International Airport",
+     "iata_code": "ATH"
+   },
+   "Hungary": {
+     "city": "Budapest",
+     "airport": "Budapest Ferenc Liszt International Airport",
+     "iata_code": "BUD"
+   },
+   "Ireland": {
+     "city": "Dublin",
+     "airport": "Dublin Airport",
+     "iata_code": "DUB"
+   },
+   "Italy": {
+     "city": "Rome",
+     "airport": "Leonardo da Vinci–Fiumicino Airport",
+     "iata_code": "FCO"
+   },
+   "Latvia": {
+     "city": "Riga",
+     "airport": "Riga International Airport",
+     "iata_code": "RIX"
+   },
+   "Lithuania": {
+     "city": "Vilnius",
+     "airport": "Vilnius Airport",
+     "iata_code": "VNO"
+   },
+   "Luxembourg": {
+     "city": "Luxembourg City",
+     "airport": "Luxembourg Airport",
+     "iata_code": "LUX"
+   },
+   "Malta": {
+     "city": "Luqa",
+     "airport": "Malta International Airport",
+     "iata_code": "MLA"
+   },
+   "Netherlands": {
+     "city": "Amsterdam",
+     "airport": "Amsterdam Airport Schiphol",
+     "iata_code": "AMS"
+   },
+   "Poland": {
+     "city": "Warsaw",
+     "airport": "Warsaw Chopin Airport",
+     "iata_code": "WAW"
+   },
+   "Portugal": {
+     "city": "Lisbon",
+     "airport": "Humberto Delgado Airport",
+     "iata_code": "LIS"
+   },
+   "Romania": {
+     "city": "Bucharest",
+     "airport": "Henri Coandă International Airport",
+     "iata_code": "OTP"
+   },
+   "Slovakia": {
+     "city": "Bratislava",
+     "airport": "M. R. Štefánik Airport",
+     "iata_code": "BTS"
+   },
+   "Slovenia": {
+     "city": "Ljubljana",
+     "airport": "Ljubljana Jože Pučnik Airport",
+     "iata_code": "LJU"
+   },
+   "Spain": {
+     "city": "Madrid",
+     "airport": "Adolfo Suárez Madrid–Barajas Airport",
+     "iata_code": "MAD"
+   },
+   "Sweden": {
+     "city": "Stockholm",
+     "airport": "Stockholm Arlanda Airport",
+     "iata_code": "ARN"
+   },
+   "Albania": {
+     "city": "Tirana",
+     "airport": "Tirana International Airport",
+     "iata_code": "TIA"
+   },
+   "Andorra": {
+     "city": "Andorra la Vella",
+     "airport": "Andorra–La Seu d'Urgell Airport",
+     "iata_code": "LEU"
+   },
+   "Bosnia and Herzegovina": {
+     "city": "Sarajevo",
+     "airport": "Sarajevo International Airport",
+     "iata_code": "SJJ"
+   },
+   "Iceland": {
+     "city": "Reykjavík",
+     "airport": "Keflavík International Airport",
+     "iata_code": "KEF"
+   },
+   "Liechtenstein": {
+     "city": "Zurich",
+     "airport": "Zurich Airport",
+     "iata_code": "ZRH"
+   },
+   "Norway": {
+     "city": "Oslo",
+     "airport": "Oslo Airport, Gardermoen",
+     "iata_code": "OSL"
+   },
+   "Switzerland": {
+     "city": "Zurich",
+     "airport": "Zurich Airport",
+     "iata_code": "ZRH"
+   }
+ }
+ 

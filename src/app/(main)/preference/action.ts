@@ -72,9 +72,8 @@ export async function handleGenerateItinerary({
          
          ### Requirements:
          1. Suggest a **destination country** in Europe, outside of UK and create an **itinerary** that includes:
-            - Activities: Specify time, description, and detailed information for each activity or location.
+            - Activities: Specify time, description, and detailed information for each activity or location. Include must go typical tourist spots.
             Remember to include meal times, you do not have to specify eating where but you can recommend famous local dishes.
-            - Duration: Mention how much time is spent at each location or activity.
             - Detailed Information: Add cultural, historical, or practical details to enhance the experience such as what is famous
             about that place that makes it a must visit place and what is there to do.
  
@@ -83,11 +82,12 @@ export async function handleGenerateItinerary({
          3. **Formatting**: Respond only in JSON format without explanations or additional text. Structure the JSON as:
             - "destination_country": Name of the country.
             - "itinerary": An array of days, each containing activities with clear time, description, and details.
-            - "landingCity": Name of the city where the user will land.
-            - "returnCity": Name of the city where the user will return back from.
+            - "landingCity": Name of the city where the user will land. Ideally, select a major city with a main airport in the country.
+            - "returnCity": Name of the city where the user will return back from. Ideally, select a major city with a main airport in the country.
+            - "landingAirport": IATA 3 letter airport code
+            - "returnAirport": IATA 3 letter airport code
  
          4. **Guidelines**:
-            - Balance affordability and quality
             - Include day-by-day itineraries starting from morning to evening.
             - Ensure variety in activities, leave time for meals and transportation.
             - Transportation: Long commutes between cities can be done occassionally but not most of the trip.
@@ -131,42 +131,6 @@ export async function handleGenerateItinerary({
                   }
                ]
             },
-            {
-               "day": 2,
-               "activities": [
-                  {
-                  "time": "09:00",
-                  "description": "Breakfast at the hotel",
-                  "details": "Start your day with a hearty breakfast."
-                  },
-                  {
-                  "time": "10:00",
-                  "description": "Day trip to Montserrat",
-                  "details": "Visit Montserrat Mountain, famous for its stunning views and Benedictine monastery."
-                  },
-                  {
-                  "time": "13:00",
-                  "description": "Lunch at Montserrat",
-                  "details": "Enjoy a traditional Catalan meal at a local restaurant near the monastery."
-                  },
-                  {
-                  "time": "15:00",
-                  "description": "Cable car ride",
-                  "details": "Take a cable car ride for panoramic views of the surrounding countryside."
-                  },
-                  {
-                  "time": "18:00",
-                  "description": "Return to Barcelona",
-                  "details": "Relax on your return journey and prepare for your evening plans."
-                  },
-                  {
-                  "time": "20:00",
-                  "description": "Flamenco show and dinner",
-                  "details": "Experience a vibrant flamenco performance accompanied by a traditional Spanish dinner."
-                  }
-               ]
-            }
-            
          ]
          `,
       },
