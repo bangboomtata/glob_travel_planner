@@ -1,13 +1,13 @@
 import PreferenceForm from './PreferenceForm'
-import { getPreferenceQuestions } from './action'
+import { loadAndSaveQuestions, getPreferenceQuestions } from './action'
 
 export const maxDuration = 60;
 
-// Mock currentUser object for demonstration purposes
+// Mock currentUser
 const currentUser = { id: 1 }
 
 export default async function PreferencePage() {
-   // Fetch questions from the database
+   await loadAndSaveQuestions()
    const questions = await getPreferenceQuestions()
 
    return (

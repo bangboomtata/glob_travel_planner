@@ -2,6 +2,8 @@
 
 import { PrismaClient, QuestionType } from '@prisma/client'
 import { OpenAI } from 'openai'
+import fs from 'fs/promises'
+import path from 'path'
 
 const prisma = new PrismaClient()
 const openai = new OpenAI()
@@ -39,6 +41,50 @@ export async function getUserbyUserId(userId: number) {
       },
    })
    return data
+}
+
+export async function loadAndSaveQuestions() {
+   try {
+      const filePath = path.join(process.cwd(), 'src/app/(main)/preference/questions.json')
+      const fileContent = await fs.readFile(filePath, 'utf-8')
+      const questions = JSON.parse(fileContent)
+
+      for (const question of questions) {
+         const existingQuestion = await prisma.question.findFirst({
+            where: { text: question.question }
+         })
+
+         if (existingQuestion) {
+            // Check if updates are needed
+            const hasChanges =
+               existingQuestion.type !== (question.type as QuestionType) ||
+               JSON.stringify(existingQuestion.options) !== JSON.stringify(question.options)
+
+            if (hasChanges) {
+               await prisma.question.update({
+                  where: { id: existingQuestion.id },
+                  data: {
+                     type: question.type as QuestionType,
+                     options: question.options || []
+                  }
+               })
+               console.log(`Updated: ${question.question}`)
+            }
+         } else {
+            // Create new question if not found
+            await prisma.question.create({
+               data: {
+                  text: question.question,
+                  type: question.type as QuestionType,
+                  options: question.options || []
+               }
+            })
+            console.log(`Added: ${question.question}`)
+         }
+      }
+   } catch (error) {
+      console.error('Error loading or saving questions:', error)
+   }
 }
 
 export async function handleGenerateItinerary({

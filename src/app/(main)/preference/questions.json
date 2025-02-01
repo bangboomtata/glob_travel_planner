@@ -1,0 +1,74 @@
+[
+    {
+      "question": "Doing outdoor ",
+      "type": "TRAVEL_TASTE"
+    },
+    {
+      "question": "Being in nature",
+      "type": "TRAVEL_TASTE"
+    },
+    {
+      "question": "Wandering around charming villages",
+      "type": "TRAVEL_TASTE"
+    },
+    {
+      "question": "Visiting popular sites and landmarks",
+      "type": "TRAVEL_TASTE"
+    },
+    {
+      "question": "Going to places of historical significance",
+      "type": "TRAVEL_TASTE"
+    },
+    {
+      "question": "Visiting museums and art galleries",
+      "type": "TRAVEL_TASTE"
+    },
+    {
+      "question": "Enjoying local food",
+      "type": "TRAVEL_TASTE"
+    },
+    {
+      "question": "Are there any activities you do not want to do?",
+      "type": "DISLIKE_ACTIVITIES",
+      "options": ["Hiking", "Swimming", "Scuba Diving", "Brewery/Distillery Tour", "Nature Walk", "Boat Trips", "None"]
+    },
+    {
+      "question": "What would you like to have in your travel itinerary?",
+      "type": "TRAVEL_TASTE_2",
+      "options": ["Beaches", "Greeneries", "Mountainous", "Striking Architecture", "Bustling Cities", "Inexpensive"]
+    },
+    {
+      "question": "What kind of weather do you prefer? (Warm = more than 15 degrees Celsius)",
+      "type": "WEATHER",
+      "options": ["I'm flexible", "It would be great, not essential", "I want warm weather"]
+    },
+    {
+      "question": "Do you have any dietary restrictions we should know about for foodie experiences?",
+      "type": "DIETARY_RESTRICTIONS",
+      "options": ["None", "Vegan", "Vegetarian", "No Alcohol"]
+    },
+    {
+      "question": "How long would you like to be away for?",
+      "type": "TRIP_DURATION",
+      "options": ["4 days, 3 nights", "5 days, 4 nights", "6 days, 5 nights"]
+    },
+    {
+      "question": "Which of the following UK airports are you able to fly from?",
+      "type": "AIRPORT",
+      "options": ["London (All)", "London Gatwick (LGW)", "London Stansted (STN)", "London Heathrow (LHR)", "Manchester (MAN)", "Birmingham (BHX)"]
+    },
+    {
+      "question": "What's your preferred start date?",
+      "type": "START_DATE"
+    },
+    {
+      "question": "Do you have any flexibility with your travel dates?",
+      "type": "START_DATE_FLEXIBILITY",
+      "options": ["Flexible by +/- 1 day", "Flexible by +/- 3 days", "Not Flexible"]
+    },
+    {
+      "question": "What’s your total budget (in £) for your 4-day trip?",
+      "type": "BUDGET"
+    }
+  ]
+  

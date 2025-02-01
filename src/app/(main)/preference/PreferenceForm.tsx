@@ -32,7 +32,7 @@ interface PreferenceFormProps {
       type: QuestionType
       options: string[]
    }[]
-   userId: number // Add userId prop
+   userId: number
 }
 
 export default function PreferenceForm({
@@ -49,7 +49,6 @@ export default function PreferenceForm({
       console.log('Questions prop:', questions)
    }, [questions])
 
-   // Early return if no questions
    if (!questions || questions.length === 0) {
       return <div>Loading questions...</div>
    }
@@ -57,7 +56,6 @@ export default function PreferenceForm({
    const questionTypes = Array.from(new Set(questions.map((q) => q.type)))
    const totalSteps = questionTypes.length
 
-   // Add debugging log
    console.log('Question types:', questionTypes)
    // console.log('Total steps:', totalSteps)
 
