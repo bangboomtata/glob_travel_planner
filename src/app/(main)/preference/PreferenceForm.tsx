@@ -23,7 +23,18 @@ import { format } from 'date-fns'
 import { QuestionType } from '@prisma/client'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
 import { handleGenerateItinerary } from './action'
-import { getItinerary } from '../trips/action'
+import { MinusIcon, PlusIcon } from 'lucide-react'
+import {
+   AlertDialog,
+   AlertDialogAction,
+   AlertDialogCancel,
+   AlertDialogContent,
+   AlertDialogDescription,
+   AlertDialogFooter,
+   AlertDialogHeader,
+   AlertDialogTitle,
+   AlertDialogTrigger,
+ } from "@/components/ui/alert-dialog"
 
 interface PreferenceFormProps {
    questions: {
@@ -43,11 +54,13 @@ export default function PreferenceForm({
    const [preferences, setPreferences] = useState<{ [key: string]: any }>({})
    const [loading, setLoading] = useState(false)
    const [itinerary, setItinerary] = useState<string | null>(null)
+   const [adults, setAdults] = useState(1)
+   const [children, setChildren] = useState(0)
+   const [showDialog, setShowDialog] = useState(false)
 
-   // Add debugging useEffect
-   useEffect(() => {
-      console.log('Questions prop:', questions)
-   }, [questions])
+   // useEffect(() => {
+   //    console.log('Questions prop:', questions)
+   // }, [questions])
 
    if (!questions || questions.length === 0) {
       return <div>Loading questions...</div>
@@ -56,13 +69,55 @@ export default function PreferenceForm({
    const questionTypes = Array.from(new Set(questions.map((q) => q.type)))
    const totalSteps = questionTypes.length
 
-   console.log('Question types:', questionTypes)
+   // console.log('Question types:', questionTypes)
    // console.log('Total steps:', totalSteps)
 
-   const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps))
+   // Next & Previous Page Button
+   const nextStep = () => {
+      const questionType = questionTypes[step - 1]
+      const questionsForStep = questions.filter((q) => q.type === questionType)
+
+      const allAnswered = questionsForStep.every((question) => {
+         if (question.type === 'START_DATE') {
+            return preferences[question.id]?.date
+         } else if (question.type === 'BUDGET') {
+            return preferences[question.id]?.value != null
+         } else {
+            return preferences[question.id]?.options?.length > 0
+         }
+      })
+
+      if (allAnswered) {
+         setStep((prev) => Math.min(prev + 1, totalSteps))
+      } else {
+         alert('Please answer all questions before proceeding.')
+      }
+   }
    const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
 
+   // Number of Passengers
+   const incrementPassengers = (type: 'adults' | 'children') => {
+      if (type === 'adults') {
+         setAdults((prev) => Math.min(prev + 1, 9)) // Max 9 adults
+      } else {
+         setChildren((prev) => Math.min(prev + 1, 9)) // Max 9 children
+      }
+   }
+
+   const decrementPassengers = (type: 'adults' | 'children') => {
+      if (type === 'adults') {
+         setAdults((prev) => Math.max(prev - 1, 1)) // Min 1 adult
+      } else {
+         setChildren((prev) => Math.max(prev - 1, 0)) // Min 0 children
+      }
+   }
+
    const handleFinish = async () => {
+      setShowDialog(true)
+   }
+
+   const handleConfirmedGeneration = async () => {
+      setShowDialog(false)
       setLoading(true)
       try {
          const response = await handleGenerateItinerary({
@@ -83,10 +138,10 @@ export default function PreferenceForm({
       type: QuestionType
       options: string[]
    }) => {
-      console.log('Rendering question:', question)
+      // console.log('Rendering question:', question)
 
       switch (question.type) {
-         case 'TRAVEL_TASTE':
+         case 'TRAVEL_TASTE_2':
             return (
                <div>
                   <Label className="text-base font-medium leading-tight">
@@ -120,8 +175,11 @@ export default function PreferenceForm({
          case 'AIRPORT':
          case 'START_DATE_FLEXIBILITY':
          case 'DISLIKE_ACTIVITIES':
-         case 'TRAVEL_TASTE_2':
+         case 'TRAVEL_TASTE':
          case 'WEATHER':
+         case 'OUTDOOR_ACTIVITIES':
+         case 'ATMOSPHERE':
+         case 'CULTURE':
             return (
                <div className="space-y-4">
                   <Label className="text-base font-medium leading-tight">
@@ -162,6 +220,63 @@ export default function PreferenceForm({
                            <span>{option}</span>
                         </label>
                      ))}
+                  </div>
+               </div>
+            )
+         case 'NUMBER_OF_TRAVELLERS':
+            return (
+               <div className="flex flex-wrap gap-4">
+                  <div className="min-w-[200px] flex-1">
+                     <Label>Adults</Label>
+                     <div className="mt-2 flex items-center">
+                        <Button
+                           type="button"
+                           variant="outline"
+                           size="icon"
+                           onClick={() => decrementPassengers('adults')}
+                           disabled={adults <= 1}
+                        >
+                           <MinusIcon className="h-4 w-4" />
+                        </Button>
+                        <span className="mx-4 min-w-[2ch] text-center">
+                           {adults}
+                        </span>
+                        <Button
+                           type="button"
+                           variant="outline"
+                           size="icon"
+                           onClick={() => incrementPassengers('adults')}
+                           disabled={adults >= 9}
+                        >
+                           <PlusIcon className="h-4 w-4" />
+                        </Button>
+                     </div>
+                  </div>
+                  <div className="min-w-[200px] flex-1">
+                     <Label>Children</Label>
+                     <div className="mt-2 flex items-center">
+                        <Button
+                           type="button"
+                           variant="outline"
+                           size="icon"
+                           onClick={() => decrementPassengers('children')}
+                           disabled={children <= 0}
+                        >
+                           <MinusIcon className="h-4 w-4" />
+                        </Button>
+                        <span className="mx-4 min-w-[2ch] text-center">
+                           {children}
+                        </span>
+                        <Button
+                           type="button"
+                           variant="outline"
+                           size="icon"
+                           onClick={() => incrementPassengers('children')}
+                           disabled={children >= 9}
+                        >
+                           <PlusIcon className="h-4 w-4" />
+                        </Button>
+                     </div>
                   </div>
                </div>
             )
@@ -302,12 +417,14 @@ export default function PreferenceForm({
             </BackgroundGradient>
          ) : (
             <>
-               {/* <div className="mb-4 rounded-lg border p-4 text-white">
-                  <h2 className="text-lg font-semibold">Current Preferences:</h2>
+               <div className="mb-4 rounded-lg border p-4 text-white">
+                  <h2 className="text-lg font-semibold">
+                     Current Preferences:
+                  </h2>
                   <pre className="whitespace-pre-wrap">
                      {JSON.stringify(preferences, null, 2)}
                   </pre>
-               </div> */}
+               </div>
                <BackgroundGradient className="p-2">
                   <Card className="rounded-3xl px-2">
                      {renderStep()}
@@ -324,14 +441,34 @@ export default function PreferenceForm({
                            Step {step} of {totalSteps}
                         </div>
                         {step === totalSteps ? (
-                           <Button
-                              variant="ghost"
-                              onClick={handleFinish}
-                              size="lg"
-                              disabled={loading}
-                           >
-                              {loading ? 'Generating...' : 'Generate Itinerary'}
-                           </Button>
+                           <>
+                              <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+                                 <AlertDialogTrigger asChild>
+                                    <Button
+                                       variant="ghost"
+                                       onClick={handleFinish}
+                                       size="lg"
+                                       disabled={loading}
+                                    >
+                                       {loading ? 'Generating...' : 'Generate Itinerary'}
+                                    </Button>
+                                 </AlertDialogTrigger>
+                                 <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                       <AlertDialogTitle>Generate Itinerary</AlertDialogTitle>
+                                       <AlertDialogDescription>
+                                          Are you sure you want to generate your itinerary with the current preferences? This will create a personalized travel plan based on your selections.
+                                       </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                       <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                       <AlertDialogAction onClick={handleConfirmedGeneration}>
+                                          Continue
+                                       </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                 </AlertDialogContent>
+                              </AlertDialog>
+                           </>
                         ) : (
                            <Button variant="ghost" onClick={nextStep} size="lg">
                               Next
