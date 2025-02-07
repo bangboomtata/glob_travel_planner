@@ -116,7 +116,7 @@ export async function handleGenerateItinerary({
    try {
       let responseText = completion.choices[0].message.content ?? '';
    
-      responseText = responseText.replace(/\`\`\`json|\`\`\`/g, '').trim();
+      responseText = responseText.replace(/```json|```/g, '').trim();
    
       // Ensure valid JSON parsing
       const JSONparsedItinerary = JSON.parse(responseText);
