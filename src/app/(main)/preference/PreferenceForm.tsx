@@ -34,7 +34,7 @@ import {
    AlertDialogHeader,
    AlertDialogTitle,
    AlertDialogTrigger,
- } from "@/components/ui/alert-dialog"
+} from '@/components/ui/alert-dialog'
 
 interface PreferenceFormProps {
    questions: {
@@ -82,6 +82,8 @@ export default function PreferenceForm({
             return preferences[question.id]?.date
          } else if (question.type === 'BUDGET') {
             return preferences[question.id]?.value != null
+         } else if (question.type === 'NUMBER_OF_TRAVELLERS') {
+            return preferences[question.id]?.value.adults >= 1
          } else {
             return preferences[question.id]?.options?.length > 0
          }
@@ -233,7 +235,17 @@ export default function PreferenceForm({
                            type="button"
                            variant="outline"
                            size="icon"
-                           onClick={() => decrementPassengers('adults')}
+                           onClick={() => {
+                              const newAdults = Math.max(adults - 1, 1)
+                              setAdults(newAdults)
+                              setPreferences((prev) => ({
+                                 ...prev,
+                                 [question.id]: {
+                                    question: question.text,
+                                    value: { adults: newAdults, children },
+                                 },
+                              }))
+                           }}
                            disabled={adults <= 1}
                         >
                            <MinusIcon className="h-4 w-4" />
@@ -245,13 +257,24 @@ export default function PreferenceForm({
                            type="button"
                            variant="outline"
                            size="icon"
-                           onClick={() => incrementPassengers('adults')}
-                           disabled={adults >= 9}
+                           onClick={() => {
+                              const newAdults = Math.min(adults + 1, 10)
+                              setAdults(newAdults)
+                              setPreferences((prev) => ({
+                                 ...prev,
+                                 [question.id]: {
+                                    question: question.text,
+                                    value: { adults: newAdults, children },
+                                 },
+                              }))
+                           }}
+                           disabled={adults >= 10}
                         >
                            <PlusIcon className="h-4 w-4" />
                         </Button>
                      </div>
                   </div>
+
                   <div className="min-w-[200px] flex-1">
                      <Label>Children</Label>
                      <div className="mt-2 flex items-center">
@@ -259,7 +282,17 @@ export default function PreferenceForm({
                            type="button"
                            variant="outline"
                            size="icon"
-                           onClick={() => decrementPassengers('children')}
+                           onClick={() => {
+                              const newChildren = Math.max(children - 1, 0)
+                              setChildren(newChildren)
+                              setPreferences((prev) => ({
+                                 ...prev,
+                                 [question.id]: {
+                                    question: question.text,
+                                    value: { adults, children: newChildren },
+                                 },
+                              }))
+                           }}
                            disabled={children <= 0}
                         >
                            <MinusIcon className="h-4 w-4" />
@@ -271,8 +304,18 @@ export default function PreferenceForm({
                            type="button"
                            variant="outline"
                            size="icon"
-                           onClick={() => incrementPassengers('children')}
-                           disabled={children >= 9}
+                           onClick={() => {
+                              const newChildren = Math.min(children + 1, 5)
+                              setChildren(newChildren)
+                              setPreferences((prev) => ({
+                                 ...prev,
+                                 [question.id]: {
+                                    question: question.text,
+                                    value: { adults, children: newChildren },
+                                 },
+                              }))
+                           }}
+                           disabled={children >= 5}
                         >
                            <PlusIcon className="h-4 w-4" />
                         </Button>
@@ -442,7 +485,10 @@ export default function PreferenceForm({
                         </div>
                         {step === totalSteps ? (
                            <>
-                              <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+                              <AlertDialog
+                                 open={showDialog}
+                                 onOpenChange={setShowDialog}
+                              >
                                  <AlertDialogTrigger asChild>
                                     <Button
                                        variant="ghost"
@@ -450,19 +496,31 @@ export default function PreferenceForm({
                                        size="lg"
                                        disabled={loading}
                                     >
-                                       {loading ? 'Generating...' : 'Generate Itinerary'}
+                                       {loading
+                                          ? 'Generating...'
+                                          : 'Generate Itinerary'}
                                     </Button>
                                  </AlertDialogTrigger>
                                  <AlertDialogContent>
                                     <AlertDialogHeader>
-                                       <AlertDialogTitle>Generate Itinerary</AlertDialogTitle>
+                                       <AlertDialogTitle>
+                                          Generate Itinerary
+                                       </AlertDialogTitle>
                                        <AlertDialogDescription>
-                                          Are you sure you want to generate your itinerary with the current preferences? This will create a personalized travel plan based on your selections.
+                                          Are you sure you want to generate your
+                                          itinerary with the current
+                                          preferences? This will create a
+                                          personalized travel plan based on your
+                                          selections.
                                        </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                       <AlertDialogAction onClick={handleConfirmedGeneration}>
+                                       <AlertDialogCancel>
+                                          Cancel
+                                       </AlertDialogCancel>
+                                       <AlertDialogAction
+                                          onClick={handleConfirmedGeneration}
+                                       >
                                           Continue
                                        </AlertDialogAction>
                                     </AlertDialogFooter>
