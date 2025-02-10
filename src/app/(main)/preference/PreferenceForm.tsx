@@ -157,6 +157,7 @@ export default function PreferenceForm({
                               ...prev,
                               [question.id]: {
                                  question: question.text,
+                                 questionType: question.type,
                                  value,
                               },
                            }))
@@ -213,6 +214,7 @@ export default function PreferenceForm({
                                        ...prev,
                                        [question.id]: {
                                           question: question.text,
+                                          questionType: question.type,
                                           options: updatedOptions,
                                        },
                                     }
@@ -264,6 +266,7 @@ export default function PreferenceForm({
                                  ...prev,
                                  [question.id]: {
                                     question: question.text,
+                                    questionType: question.type,
                                     value: { adults: newAdults, children },
                                  },
                               }))
@@ -289,6 +292,7 @@ export default function PreferenceForm({
                                  ...prev,
                                  [question.id]: {
                                     question: question.text,
+                                    questionType: question.type,
                                     value: { adults, children: newChildren },
                                  },
                               }))
@@ -311,6 +315,7 @@ export default function PreferenceForm({
                                  ...prev,
                                  [question.id]: {
                                     question: question.text,
+                                    questionType: question.type,
                                     value: { adults, children: newChildren },
                                  },
                               }))
@@ -337,6 +342,7 @@ export default function PreferenceForm({
                               ...prev,
                               [question.id]: {
                                  question: question.text,
+                                 questionType: question.type,
                                  value,
                               },
                            }))
@@ -390,6 +396,7 @@ export default function PreferenceForm({
                                  ...prev,
                                  [question.id]: {
                                     question: question.text,
+                                    questionType: question.type,
                                     date: date ? date.toISOString() : null,
                                  },
                               }))

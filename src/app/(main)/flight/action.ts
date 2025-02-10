@@ -17,7 +17,7 @@ export async function fetchFlightOffers(origin: string, destination: string, dep
       departureDate: departureDate,
       adults: "1",
       currencyCode: "GBP",
-      max: "10", // Limit the number of results
+      max: "20", // Max num of results
     });
 
     const response = await fetch(`${endpoint}?${params.toString()}`, {
