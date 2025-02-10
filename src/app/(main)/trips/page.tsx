@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import {
    Card,
    CardContent,
-   CardFooter,
    CardHeader,
    CardTitle,
 } from '@/components/ui/card'
@@ -13,6 +12,7 @@ import { getItinerary, deleteItineraryById } from './action'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { bookTrip } from './action'
 
 interface Itinerary {
    id: number
@@ -40,7 +40,7 @@ export default function AIGeneratedItinerary() {
    }, [])
 
    if (loading) {
-      return <div className="text-white">Loading...</div>
+      return <div className="text-white text-center">Loading...</div>
    }
 
    const handleDelete = async (id: number) => {
@@ -96,7 +96,7 @@ export default function AIGeneratedItinerary() {
                                        href={`/flight?tripId=${itinerary.id}`}
                                        passHref
                                     >
-                                       <Button className="h-[30px] w-[60px] bg-green-500 hover:bg-green-400 hover:text-black">
+                                       <Button onClick={() => bookTrip(itinerary.id)} className="h-[30px] w-[60px] bg-green-500 hover:bg-green-400 hover:text-black">
                                           Book
                                        </Button>
                                     </Link>

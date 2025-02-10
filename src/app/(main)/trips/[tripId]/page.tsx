@@ -13,7 +13,7 @@ import {
    AccordionItem,
    AccordionTrigger,
 } from '@/components/ui/accordion'
-import { getItineraryById } from '../action' // Update to fetch by ID
+import { getItineraryById } from '../action' 
 
 interface Itinerary {
    id: number
@@ -27,8 +27,8 @@ export default async function TripByIdPage({
 }: {
    params: Promise<{ tripId: string }>
 }) {
-   const { tripId: tripIdString } = await asyncParams // Await `params`
-   const tripId = Number(tripIdString) // Convert string to number
+   const { tripId: tripIdString } = await asyncParams
+   const tripId = Number(tripIdString)
 
    if (isNaN(tripId)) {
       return (
