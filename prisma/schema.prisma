@@ -35,8 +35,8 @@ model Itinerary {
   status             ItineraryStatus @default(UNBOOKED)
   createdAt          DateTime        @default(now())
   
-  preferenceId       Int?            
-  preference         Preference?     @relation(fields: [preferenceId], references: [id])
+  preferenceId       Int            
+  preference         Preference     @relation(fields: [preferenceId], references: [id])
 
   flights            Flight[]        @relation("ItineraryFlights")
 

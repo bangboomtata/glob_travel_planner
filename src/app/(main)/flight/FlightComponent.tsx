@@ -3,212 +3,158 @@
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { getItineraryById } from '../trips/action'
+import { Prisma } from '@prisma/client'
 
-interface Itinerary {
-   id: number
-   Itinerary: {
-      landingCity?: string
-      [key: string]: any
-   }
-   preference: {
-      answers: Record<
-         string,
-         {
-            questionType: string
-            options?: string[]
-            date?: string
-            value?: string | number | { adults: number; children: number }
-         }
-      >
-   }
+enum ItineraryStatus {
+   UNBOOKED = 'UNBOOKED',
+   BOOKED = 'BOOKED',
 }
 
-interface FlightOffer {
-   id: string
-   price: { total: string }
-   itineraries: {
-      segments: {
-         departure: { iataCode: string; at: string }
-         arrival: { iataCode: string; at: string }
-      }[]
-   }[]
-}
-
-// Transform function to convert API response to component type
-function transformItineraryResponse(
-   response: ItineraryResponse | null
-): Itinerary | null {
-   if (!response || !response.preference) return null
-
-   const answers = response.preference.answers as Record<
-      string,
-      {
-         questionType: string
-         options?: string[]
-         date?: string
-         value?: string
-      }
-   >
-
-   return {
-      id: response.id,
-      Itinerary: response.generatedItinerary as { [key: string]: any; landingCity?: string } || {},
-      preference: {
-         answers: answers || {},
-      },
-   }
-}
-
-export default function FlightBooking() {
-   const searchParams = useSearchParams()
-   const [itinerary, setItinerary] = useState<Itinerary | null>(null)
-   const [flightOffers, setFlightOffers] = useState<FlightOffer[] | null>(null)
-   const [loading, setLoading] = useState(true)
-
-   useEffect(() => {
-      async function fetchItineraryAndFlights() {
-         try {
-            const tripId = searchParams.get('tripId')
-            if (!tripId) return
-
-            const response = await getItineraryById(Number(tripId))
-            const transformedItinerary = transformItineraryResponse(response)
-            setItinerary(transformedItinerary)
-            if ((transformedItinerary?.Itinerary as any)?.landingCity) {
-               let destination
-
-               if (transformedItinerary?.Itinerary?.landingCity) {
-                  destination = transformedItinerary.Itinerary.landingCity
-                  console.log('Found destination:', destination)
-               } else {
-                  console.error('No destination found in itinerary')
-               }
-
-               if (transformedItinerary?.preference?.answers) {
-                  const preferences = transformedItinerary.preference.answers
-                  console.log('Processing preferences:', preferences)
-
-                  let origin, departureDate
-
-                  for (const key in preferences) {
-                     const pref = preferences[key]
-
-                     if (pref.questionType === 'AIRPORT' && pref.options) {
-                        if (pref.options.includes('London')) {
-                           origin = 'LON'
-                           console.log('Found origin:', origin)
-                        } else if (pref.options.includes('Birmingham')) {
-                           origin = 'BHX'
-                           console.log('Found origin:', origin)
-                        } else if (pref.options.includes('Birmingham')) {
-                           origin = 'MAN'
-                           console.log('Found origin:', origin)
-                        }
-                     }
-
-                     if (pref.questionType === 'START_DATE' && pref.date) {
-                        departureDate = new Date(pref.date)
-                           .toISOString()
-                           .split('T')[0]
-                        console.log('Found departure date:', departureDate)
-                     }
-                  }
-
-                  if (!origin) {
-                     console.error('No origin airport found in preferences')
-                  }
-                  if (!destination) {
-                     console.error('No destination found in preferences')
-                  }
-                  if (!departureDate) {
-                     console.error('No departure date found in preferences')
-                  }
-
-                  if (origin && destination && departureDate) {
-                     console.log('Fetching flights with params:', {
-                        origin,
-                        destination,
-                        departureDate,
-                     })
-                     const res = await fetch(
-                        `/api/flights?origin=${origin}&destination=${destination}&departureDate=${departureDate}`
-                     )
-                     const data = await res.json()
-                     setFlightOffers(data.data || [])
-                  } else {
-                     console.log('Missing required flight search parameters')
-                     setFlightOffers([])
-                  }
-               }
-            }
-         } catch (error) {
-            console.error('Error fetching itinerary or flights:', error)
-         } finally {
-            setLoading(false)
-         }
-      }
-
-      fetchItineraryAndFlights()
-   }, [searchParams])
-
-   if (loading) {
-      return <div className="text-center text-white">Loading...</div>
-   }
-
-   if (!itinerary) {
-      return <div className="text-white">Itinerary not found</div>
-   }
-
+interface Activity {
+   time: string;
+   details: string;
+   description: string;
+ }
+ 
+ interface DayItinerary {
+   day: number;
+   activities: Activity[];
+ }
+ 
+ interface GeneratedItinerary {
+   itinerary: DayItinerary[];
+   returnCity: string;
+   landingCity: string;
+   returnAirport: string;
+   landingAirport: string;
+   destination_country: string;
+ }
+ 
+ interface Answer {
+   options?: string[];
+   question: string;
+   questionType: string;
+   date?: string;
+   value?: {
+     adults?: number;
+     children?: number;
+   } | number;
+ }
+ 
+ interface Preference {
+   id: number;
+   userId: number;
+   answers: {
+     [key: string]: Answer;
+   };
+   createdAt: Date;
+ }
+ 
+ interface Flight {
+   id: number;
+   flightDetails: Prisma.JsonValue;
+   itineraryId: number;
+ }
+ 
+ interface Itinerary {
+   id: number;
+   generatedItinerary: GeneratedItinerary;
+   userId: number;
+   status: ItineraryStatus;
+   createdAt: Date;
+   preferenceId: number;
+   preference: Preference;
+   flight?: Flight;
+ }
+ 
+ // Type guard to check if a value matches GeneratedItinerary interface
+ function isGeneratedItinerary(value: unknown): value is GeneratedItinerary {
+   if (typeof value !== 'object' || value === null) return false;
+   
+   const v = value as GeneratedItinerary;
    return (
-      <div className="p-4">
-         <h1 className="mb-4 text-2xl font-bold text-white">Flight Booking</h1>
+     Array.isArray(v.itinerary) &&
+     typeof v.returnCity === 'string' &&
+     typeof v.landingCity === 'string' &&
+     typeof v.returnAirport === 'string' &&
+     typeof v.landingAirport === 'string' &&
+     typeof v.destination_country === 'string'
+   );
+ }
+ 
+ // Function to safely convert Prisma data to your Itinerary type
+ function convertToItinerary(data: any): Itinerary | null {
+   if (!data) return null;
+   
+   // Ensure generatedItinerary is of the correct type
+   if (!isGeneratedItinerary(data.generatedItinerary)) {
+     throw new Error('Invalid generatedItinerary format');
+   }
+ 
+   return {
+     id: data.id,
+     generatedItinerary: data.generatedItinerary,
+     userId: data.userId,
+     status: data.status,
+     createdAt: new Date(data.createdAt),
+     preferenceId: data.preferenceId,
+     preference: {
+       ...data.preference,
+       createdAt: new Date(data.preference.createdAt)
+     },
+     flight: data.flight
+   };
+ }
+ 
+ // Usage in component:
+ export default function FlightBooking() {
+   const searchParams = useSearchParams();
+   const [itineraryPreference, setItineraryPreference] = useState<Itinerary | null>(null);
+   const [loading, setLoading] = useState(true);
+ 
+   useEffect(() => {
+     async function fetchItineraryAndFlights() {
+       try {
+         const tripId = searchParams.get('tripId');
+         if (!tripId) {
+           console.error('No tripId found in search params');
+           return;
+         }
+ 
+         const itineraryPreferenceData = await getItineraryById(Number(tripId));
+         const convertedData = convertToItinerary(itineraryPreferenceData);
+         setItineraryPreference(convertedData);
+         
+         const landingCity = convertedData?.generatedItinerary.landingCity;
+         const firstDayActivities = convertedData?.generatedItinerary.itinerary[0]?.activities;
+       } catch (error) {
+         console.error('Error fetching itinerary or flights:', error);
+       } finally {
+         setLoading(false);
+       }
+     }
+ 
+     fetchItineraryAndFlights();
+   }, [searchParams]);
 
-         <h2 className="mb-2 text-xl font-semibold text-white">
-            Itinerary Details
-         </h2>
-         <pre className="overflow-auto rounded-lg bg-gray-800 p-4 text-white">
-            {JSON.stringify(itinerary, null, 2)}
-         </pre>
+  if (loading) {
+    return <div className="text-center text-white">Loading...</div>
+  }
 
-         <h2 className="mb-2 mt-6 text-xl font-semibold text-white">
-            Available Flights
-         </h2>
-         {flightOffers ? (
-            flightOffers.length > 0 ? (
-               <div className="space-y-4">
-                  {flightOffers.map((flight) => (
-                     <div
-                        key={flight.id}
-                        className="rounded-lg bg-gray-900 p-4 text-white"
-                     >
-                        <p>
-                           <strong>Price:</strong> £{flight.price.total}
-                        </p>
-                        {flight.itineraries[0]?.segments.map(
-                           (segment, index) => (
-                              <div key={index} className="mt-2">
-                                 <p>
-                                    <strong>Departure:</strong>{' '}
-                                    {segment.departure.iataCode} at{' '}
-                                    {segment.departure.at}
-                                 </p>
-                                 <p>
-                                    <strong>Arrival:</strong>{' '}
-                                    {segment.arrival.iataCode} at{' '}
-                                    {segment.arrival.at}
-                                 </p>
-                              </div>
-                           )
-                        )}
-                     </div>
-                  ))}
-               </div>
-            ) : (
-               <p className="text-white">No available flights.</p>
-            )
-         ) : (
-            <p className="text-white">Fetching flights...</p>
-         )}
-      </div>
-   )
+  if (!itineraryPreference) {
+    return <div className="text-white">Itinerary not found</div>
+  }
+
+  return (
+    <div className="p-4">
+      <h1 className="mb-4 text-2xl font-bold text-white">Flight Booking</h1>
+
+      <h2 className="mb-2 text-xl font-semibold text-white">
+        Itinerary Details
+      </h2>
+      <pre className="overflow-auto rounded-lg bg-gray-800 p-4 text-white">
+        {JSON.stringify(itineraryPreference, null, 2)}
+      </pre>
+    </div>
+  )
 }
