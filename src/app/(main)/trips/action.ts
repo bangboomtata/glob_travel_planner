@@ -22,6 +22,14 @@ export async function getItineraryById(tripId: number) {
    return data
 }
 
+export async function getItineraryPreferenceById(tripId: number) {
+   const data = await prisma.itinerary.findUnique({
+    where: { id: tripId },
+    include: { preference: true },
+ })
+   return data
+}
+
 export async function deleteItineraryById(tripId: number) {
    try {
       const deletedItinerary = await prisma.itinerary.delete({

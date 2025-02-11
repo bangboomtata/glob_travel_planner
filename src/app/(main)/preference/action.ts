@@ -126,11 +126,11 @@ export async function handleGenerateItinerary({
          data: {
             generatedItinerary: JSONparsedItinerary,
             userId,
+            preferenceId: preference.id,
          },
       });
    
       return responseText;
-      // return JSONparsedItinerary;
    } catch (error) {
       console.error('Error in handleGenerateItinerary function:', error);
       throw error;

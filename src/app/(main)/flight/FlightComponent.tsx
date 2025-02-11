@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { getItineraryById } from '../trips/action'
+import { getItineraryPreferenceById } from '../trips/action'
 import { Prisma } from '@prisma/client'
 
 enum ItineraryStatus {
@@ -121,7 +121,7 @@ interface Activity {
            return;
          }
  
-         const itineraryPreferenceData = await getItineraryById(Number(tripId));
+         const itineraryPreferenceData = await getItineraryPreferenceById(Number(tripId));
          const convertedData = convertToItinerary(itineraryPreferenceData);
          setItineraryPreference(convertedData);
          
