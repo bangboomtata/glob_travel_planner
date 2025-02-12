@@ -296,8 +296,8 @@ export default function FlightBooking() {
          <h2 className="mb-2 mt-4 text-xl font-semibold text-white">
             Flight Offers
          </h2>
-         <pre className="overflow-auto rounded-lg bg-gray-800 p-4 text-white">
-            {JSON.stringify(flightOffers, null, 2)}
+         <pre className="overflow-auto whitespace-pre-wrap rounded-lg bg-gray-800 p-4 text-white">
+            {flightOffers}
          </pre>
       </div>
    )
