@@ -114,7 +114,12 @@ export default function FlightBooking() {
    const [itineraryPreference, setItineraryPreference] =
       useState<Itinerary | null>(null)
    const [loading, setLoading] = useState(true)
-   const [flightOffers, setFlightOffers] = useState(null)
+
+   // for real API response
+   // const [flightOffers, setFlightOffers] = useState(null)
+
+   // for dummy data in json file (not real API response)
+   const [flightOffers, setFlightOffers] = useState<string | null>(null)
 
    useEffect(() => {
       async function fetchItineraryAndFlights() {
@@ -246,7 +251,11 @@ export default function FlightBooking() {
                   numberOfChildren,
                   false
                )
-               setFlightOffers(offers)
+               // for real API response
+               // setFlightOffers(offers)
+
+               // for dummy data in json file (not real API response)
+               setFlightOffers(JSON.stringify(offers, null, 2))
             } else {
                console.error('Missing required flight information:', {
                   origin,
