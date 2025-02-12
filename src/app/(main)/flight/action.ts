@@ -1,8 +1,16 @@
 'use server'
 
 import { getAmadeusToken } from '@/lib/utils'
-
 import flightData from './flightOfferDataExample.json'
+
+
+let flightOffersCache: {
+  key: string
+  data: any
+  timestamp: number
+} | null = null
+
+const CACHE_DURATION = 5 * 60 * 1000 
 
 export async function fetchFlightOffers(
    origin: string,
@@ -27,6 +35,26 @@ export async function fetchFlightOffers(
 //    nonStop: boolean = false
 // ) {
 //    try {
+//       // Create a cache key from the request parameters
+//       const cacheKey = JSON.stringify({
+//          origin,
+//          destination,
+//          departureDate,
+//          returnDate,
+//          adults,
+//          children,
+//          nonStop
+//       })
+
+//       // Check cache
+//       if (flightOffersCache && 
+//           flightOffersCache.key === cacheKey && 
+//           Date.now() - flightOffersCache.timestamp < CACHE_DURATION) {
+//          console.log('Using cached flight offers')
+//          return flightOffersCache.data
+//       }
+
+//       console.log('Fetching fresh flight offers')
 //       const token = await getAmadeusToken()
 //       const endpoint = 'https://test.api.amadeus.com/v2/shopping/flight-offers'
 
@@ -63,6 +91,14 @@ export async function fetchFlightOffers(
 //       }
 
 //       const data = await response.json()
+      
+//       // Update cache
+//       flightOffersCache = {
+//          key: cacheKey,
+//          data: data,
+//          timestamp: Date.now()
+//       }
+
 //       return data
 //    } catch (error) {
 //       console.error('Error fetching flight offers:', error)

@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { getItineraryPreferenceById } from '../trips/action'
 import { Prisma } from '@prisma/client'
 import { fetchFlightOffers } from './action'
@@ -70,6 +70,10 @@ interface Itinerary {
    flight?: Flight
 }
 
+interface FlightOffer {
+   // Define the structure of a FlightOffer
+}
+
 // Type guard to check if a value matches GeneratedItinerary interface
 function isGeneratedItinerary(value: unknown): value is GeneratedItinerary {
    if (typeof value !== 'object' || value === null) return false
@@ -115,13 +119,17 @@ export default function FlightBooking() {
       useState<Itinerary | null>(null)
    const [loading, setLoading] = useState(true)
 
-   // for real API response
-   // const [flightOffers, setFlightOffers] = useState(null)
+   // api response
+   // const [flightOffers, setFlightOffers] = useState<FlightOffer[] | null>(null)
 
-   // for dummy data in json file (not real API response)
-   const [flightOffers, setFlightOffers] = useState<string | null>(null)
+   // json data response
+   const [flightOffers, setFlightOffers] = useState<any>(null)
+
+   const initialFetchMade = useRef(false)
 
    useEffect(() => {
+      if (initialFetchMade.current) return
+
       async function fetchItineraryAndFlights() {
          try {
             const tripId = searchParams.get('tripId')
@@ -143,19 +151,15 @@ export default function FlightBooking() {
                   (answer) => answer.questionType === 'START_DATE'
                )?.date || ''
 
-            // Debug the date format
             console.log('Raw departure date:', departureDate)
 
             let formattedDepartureDate = ''
             try {
-               // First check if the date is valid
                if (departureDate) {
-                  // If date is in dd/mm/yyyy format
                   if (departureDate.includes('/')) {
                      const [day, month, year] = departureDate.split('/')
                      formattedDepartureDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
                   } else {
-                     // Try direct ISO conversion
                      formattedDepartureDate = new Date(departureDate)
                         .toISOString()
                         .split('T')[0]
@@ -251,11 +255,11 @@ export default function FlightBooking() {
                   numberOfChildren,
                   false
                )
-               // for real API response
+               // api response
                // setFlightOffers(offers)
 
-               // for dummy data in json file (not real API response)
-               setFlightOffers(JSON.stringify(offers, null, 2))
+               // json data response
+               setFlightOffers(offers)
             } else {
                console.error('Missing required flight information:', {
                   origin,
@@ -268,6 +272,8 @@ export default function FlightBooking() {
             console.error('Error fetching itinerary or flights:', error)
          } finally {
             setLoading(false)
+            // Mark that we've made the initial fetch
+            initialFetchMade.current = true
          }
       }
 
@@ -286,18 +292,64 @@ export default function FlightBooking() {
       <div className="p-4">
          <h1 className="mb-4 text-2xl font-bold text-white">Flight Booking</h1>
 
-         <h2 className="mb-2 text-xl font-semibold text-white">
+         {/* <h2 className="mb-2 text-xl font-semibold text-white">
             Itinerary Details
          </h2>
          <pre className="overflow-auto rounded-lg bg-gray-800 p-4 text-white">
             {JSON.stringify(itineraryPreference, null, 2)}
-         </pre>
+         </pre> */}
+
+         {/* Displaying flight offers */}
+         {flightOffers.data.map((offer: any) => (
+            <div 
+               key={offer.id} 
+               className="mb-4 rounded-lg bg-gray-800 p-4 text-white"
+            >
+               <div className="flex justify-between items-center mb-3">
+                  <div>
+                     <h3 className="text-xl font-bold">{offer.validatingAirlineCodes.join(', ')}</h3>
+                     <p className="text-gray-300">Flight ID: {offer.id}</p>
+                  </div>
+                  <div className="text-right">
+                     <p className="text-2xl font-bold">{offer.price.total} {offer.price.currency}</p>
+                     <p className="text-sm text-gray-300">per person</p>
+                  </div>
+               </div>
+
+               {offer.itineraries.map((itinerary: any, index: number) => (
+                  <div key={index} className="mb-2 border-t border-gray-700 pt-2">
+                     <p className="font-semibold mb-1">
+                        {index === 0 ? 'Outbound' : 'Return'} Flight
+                     </p>
+                     {itinerary.segments.map((segment: any, segIdx: number) => (
+                        <div key={segIdx} className="flex justify-between items-center mb-2">
+                           <div>
+                              <p className="font-medium">
+                                 {segment.departure.iataCode} → {segment.arrival.iataCode}
+                              </p>
+                              <p className="text-sm text-gray-300">
+                                 {new Date(segment.departure.at).toLocaleString()} - 
+                                 {new Date(segment.arrival.at).toLocaleString()}
+                              </p>
+                           </div>
+                           <div className="text-right">
+                              <p>{segment.carrierCode} {segment.number}</p>
+                              <p className="text-sm text-gray-300">
+                                 Duration: {segment.duration}
+                              </p>
+                           </div>
+                        </div>
+                     ))}
+                  </div>
+               ))}
+            </div>
+         ))}
 
          <h2 className="mb-2 mt-4 text-xl font-semibold text-white">
             Flight Offers
          </h2>
          <pre className="overflow-auto whitespace-pre-wrap rounded-lg bg-gray-800 p-4 text-white">
-            {flightOffers}
+            {JSON.stringify(flightOffers, null, 2)}
          </pre>
       </div>
    )

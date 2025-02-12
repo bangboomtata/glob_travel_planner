@@ -18,32 +18,55 @@ const AMADEUS_API_BASE_URL = process.env.NEXT_PUBLIC_AMADEUS_API_BASE_URL!;
 const CLIENT_ID = process.env.NEXT_PUBLIC_AMADEUS_CLIENT_ID!;
 const CLIENT_SECRET = process.env.NEXT_PUBLIC_AMADEUS_CLIENT_SECRET!;
 
-export const getAmadeusToken: () => Promise<string> = async () => {
-  const url = `${AMADEUS_API_BASE_URL}/v1/security/oauth2/token`;
+interface TokenCache {
+  token: string
+  expiresAt: number // Unix timestamp
+}
+
+let cachedToken: TokenCache | null = null
+
+export async function getAmadeusToken(): Promise<string> {
+  if (cachedToken && Date.now() < cachedToken.expiresAt) {
+    console.log('Using cached token, expires in:', 
+      Math.round((cachedToken.expiresAt - Date.now()) / 1000), 'seconds')
+    return cachedToken.token
+  }
+
+  console.log('Fetching new token...')
+
+  const url = `${AMADEUS_API_BASE_URL}/v1/security/oauth2/token`
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
-  };
+  }
   const body = new URLSearchParams({
     grant_type: "client_credentials",
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
-  });
+  })
 
   try {
     const response = await fetch(url, {
       method: "POST",
       headers,
       body: body.toString(),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch token: ${response.statusText}`);
+      throw new Error(`Failed to fetch token: ${response.statusText}`)
     }
 
-    const data = await response.json();
-    return data.access_token; // The token you can use for subsequent API calls
+    const data = await response.json()
+    
+    // Cache the new token with expiration
+    cachedToken = {
+      token: data.access_token,
+      // Set expiration slightly before actual expiry to be safe
+      expiresAt: Date.now() + (data.expires_in - 60) * 1000,
+    }
+
+    return cachedToken.token
   } catch (error) {
-    console.error("Error fetching Amadeus token:", error);
-    throw error;
+    console.error("Error fetching Amadeus token:", error)
+    throw error
   }
-};
+}
