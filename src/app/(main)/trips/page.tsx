@@ -12,7 +12,7 @@ import { getItinerary, deleteItineraryById } from './action'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { bookTrip } from './action'
+// import { bookTrip } from './action'
 
 interface Itinerary {
    id: number
@@ -96,7 +96,7 @@ export default function AIGeneratedItinerary() {
                                        href={`/flight?tripId=${itinerary.id}`}
                                        passHref
                                     >
-                                       <Button onClick={() => bookTrip(itinerary.id)} className="h-[30px] w-[60px] bg-green-500 hover:bg-green-400 hover:text-black">
+                                       <Button className="h-[30px] w-[60px] bg-green-500 hover:bg-green-400 hover:text-black">
                                           Book
                                        </Button>
                                     </Link>

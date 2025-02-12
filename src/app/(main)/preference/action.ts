@@ -64,6 +64,7 @@ export async function handleGenerateItinerary({
    
       ### Rules:
       - Suggest a destination in Europe (excluding the UK).
+      - landingAirport and returnAirport must be same.
       - Include cultural/historical details in activity descriptions.
       - Ensure variety in activities (morning to evening).
       - Recommend local dishes during meal times.
