@@ -270,10 +270,6 @@ export default function FlightBooking() {
                   numberOfChildren,
                   false
                )
-               // api response
-               // setFlightOffers(offers)
-
-               // json data response
                setFlightOffers(offers)
             } else {
                console.error('Missing required flight information:', {
@@ -294,6 +290,23 @@ export default function FlightBooking() {
 
       fetchItineraryAndFlights()
    }, [searchParams])
+
+   useEffect(() => {
+      // Clear old flight data when loading new search results
+      if (typeof window !== 'undefined' && flightOffers?.data) {
+         const keys = Object.keys(sessionStorage)
+         keys.forEach(key => {
+            if (key.startsWith('flight-')) {
+               sessionStorage.removeItem(key)
+            }
+         })
+         
+         // Store new flight data
+         flightOffers.data.forEach((flight: any) => {
+            sessionStorage.setItem(`flight-${flight.id}`, JSON.stringify(flight))
+         })
+      }
+   }, [flightOffers?.data])
 
    if (loading) {
       return <div className="text-center text-white">Loading...</div>
@@ -317,127 +330,145 @@ export default function FlightBooking() {
 
          {/* Displaying flight offers */}
          <div className="space-y-4">
-         {flightOffers.data.map((flight:any) => (
-          <Link key={flight.id} href={`/flights/${flight.id}`} className="block">
-            <Card className="overflow-hidden hover:shadow-md transition-shadow">
-              <div className="p-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Plane className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      {/* <p className="font-medium">{getAirlineName(flight.itineraries[0].segments[0].carrierCode)}</p> */}
-                      <p className="text-sm text-muted-foreground">
-                        {flight.itineraries[0].segments.length > 1 ? (
-                          <span className="text-yellow-600 dark:text-yellow-500">
-                            {flight.itineraries[0].segments.length - 1} stop
-                          </span>
-                        ) : (
-                          "Direct"
-                        )}
-                      </p>
-                    </div>
-                  </div>
+            {flightOffers?.data ? (
+               flightOffers.data.map((flight: any) => {
+                  if (typeof window !== 'undefined') {
+                     sessionStorage.setItem(`flight-${flight.id}`, JSON.stringify({
+                        ...flight,
+                        tripId: searchParams.get('tripId')
+                     }))
+                  }
+                  
+                  return (
+                     <Link 
+                        key={flight.id} 
+                        href={`/flight/${flight.id}?tripId=${searchParams.get('tripId')}`} 
+                        className="block"
+                     >
+                        <Card className="overflow-hidden hover:shadow-md transition-shadow">
+                           <div className="p-4">
+                              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                 <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                       <Plane className="h-6 w-6 text-primary" />
+                                    </div>
+                                    <div>
+                                       {/* <p className="font-medium">{getAirlineName(flight.itineraries[0].segments[0].carrierCode)}</p> */}
+                                       <p className="text-sm text-muted-foreground">
+                                          {flight.itineraries[0].segments.length > 1 ? (
+                                             <span className="text-yellow-600 dark:text-yellow-500">
+                                                {flight.itineraries[0].segments.length - 1} stop
+                                             </span>
+                                          ) : (
+                                             "Direct"
+                                          )}
+                                       </p>
+                                    </div>
+                                 </div>
 
-                  <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
-                    {/* Outbound */}
-                    <div className="flex items-center gap-2">
-                      <div className="text-right">
-                        <p className="font-medium">
-                          {format(parseISO(flight.itineraries[0].segments[0].departure.at), "HH:mm")}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {flight.itineraries[0].segments[0].departure.iataCode}
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-center mx-2">
-                        <div className="text-xs text-muted-foreground">
-                          {formatDuration(flight.itineraries[0].duration)}
-                        </div>
-                        <div className="w-16 h-px bg-muted-foreground/30 my-1"></div>
-                        <div className="text-xs text-muted-foreground">
-                          {flight.itineraries[0].segments.length > 1
-                            ? `via ${flight.itineraries[0].segments[0].arrival.iataCode}`
-                            : "Direct"}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="font-medium">
-                          {format(
-                            parseISO(
-                              flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1].arrival.at,
-                            ),
-                            "HH:mm",
-                          )}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1].arrival.iataCode}
-                        </p>
-                      </div>
-                    </div>
+                                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
+                                    {/* Outbound */}
+                                    <div className="flex items-center gap-2">
+                                       <div className="text-right">
+                                          <p className="font-medium">
+                                             {format(parseISO(flight.itineraries[0].segments[0].departure.at), "HH:mm")}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                             {flight.itineraries[0].segments[0].departure.iataCode}
+                                          </p>
+                                       </div>
+                                       <div className="flex flex-col items-center mx-2">
+                                          <div className="text-xs text-muted-foreground">
+                                             {formatDuration(flight.itineraries[0].duration)}
+                                          </div>
+                                          <div className="w-16 h-px bg-muted-foreground/30 my-1"></div>
+                                          <div className="text-xs text-muted-foreground">
+                                             {flight.itineraries[0].segments.length > 1
+                                                ? `via ${flight.itineraries[0].segments[0].arrival.iataCode}`
+                                                : "Direct"}
+                                          </div>
+                                       </div>
+                                       <div>
+                                          <p className="font-medium">
+                                             {format(
+                                                parseISO(
+                                                   flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1].arrival.at,
+                                                ),
+                                                "HH:mm",
+                                             )}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                             {flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1].arrival.iataCode}
+                                          </p>
+                                       </div>
+                                    </div>
 
-                    {/* Return */}
-                    <div className="flex items-center gap-2">
-                      <div className="text-right">
-                        <p className="font-medium">
-                          {format(parseISO(flight.itineraries[1].segments[0].departure.at), "HH:mm")}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {flight.itineraries[1].segments[0].departure.iataCode}
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-center mx-2">
-                        <div className="text-xs text-muted-foreground">
-                          {formatDuration(flight.itineraries[1].duration)}
-                        </div>
-                        <div className="w-16 h-px bg-muted-foreground/30 my-1"></div>
-                        <div className="text-xs text-muted-foreground">
-                          {flight.itineraries[1].segments.length > 1
-                            ? `via ${flight.itineraries[1].segments[0].arrival.iataCode}`
-                            : "Direct"}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="font-medium">
-                          {format(
-                            parseISO(
-                              flight.itineraries[1].segments[flight.itineraries[1].segments.length - 1].arrival.at,
-                            ),
-                            "HH:mm",
-                          )}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {flight.itineraries[1].segments[flight.itineraries[1].segments.length - 1].arrival.iataCode}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                                    {/* Return */}
+                                    <div className="flex items-center gap-2">
+                                       <div className="text-right">
+                                          <p className="font-medium">
+                                             {format(parseISO(flight.itineraries[1].segments[0].departure.at), "HH:mm")}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                             {flight.itineraries[1].segments[0].departure.iataCode}
+                                          </p>
+                                       </div>
+                                       <div className="flex flex-col items-center mx-2">
+                                          <div className="text-xs text-muted-foreground">
+                                             {formatDuration(flight.itineraries[1].duration)}
+                                          </div>
+                                          <div className="w-16 h-px bg-muted-foreground/30 my-1"></div>
+                                          <div className="text-xs text-muted-foreground">
+                                             {flight.itineraries[1].segments.length > 1
+                                                ? `via ${flight.itineraries[1].segments[0].arrival.iataCode}`
+                                                : "Direct"}
+                                          </div>
+                                       </div>
+                                       <div>
+                                          <p className="font-medium">
+                                             {format(
+                                                parseISO(
+                                                   flight.itineraries[1].segments[flight.itineraries[1].segments.length - 1].arrival.at,
+                                                ),
+                                                "HH:mm",
+                                             )}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                             {flight.itineraries[1].segments[flight.itineraries[1].segments.length - 1].arrival.iataCode}
+                                          </p>
+                                       </div>
+                                    </div>
+                                 </div>
 
-                  <div className="flex items-center justify-between md:flex-col md:items-end">
-                    <div className="text-right">
-                      <p className="text-xl font-bold">
-                        {flight.price.currency} {flight.price.total}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{flight.numberOfBookableSeats} seats left</p>
-                    </div>
-                    <Button variant="secondary" size="sm">
-                      View Details
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Link>
-        ))}
-      </div>
+                                 <div className="flex items-center justify-between md:flex-col md:items-end">
+                                    <div className="text-right">
+                                       <p className="text-xl font-bold">
+                                          {flight.price.currency} {flight.price.total}
+                                       </p>
+                                       <p className="text-xs text-muted-foreground">{flight.numberOfBookableSeats} seats left</p>
+                                    </div>
+                                    <Button variant="secondary" size="sm">
+                                       View Details
+                                    </Button>
+                                 </div>
+                              </div>
+                           </div>
+                        </Card>
+                     </Link>
+                  )
+               })
+            ) : (
+               <div className="text-white">Loading flights...</div>
+            )}
+         </div>
 
-         <h2 className="mb-2 mt-4 text-xl font-semibold text-white">
+         {/* API Response Log */}
+         {/* <h2 className="mb-2 mt-4 text-xl font-semibold text-white">
             Flight Offers
          </h2>
          <pre className="overflow-auto whitespace-pre-wrap rounded-lg bg-gray-800 p-4 text-white">
             {JSON.stringify(flightOffers, null, 2)}
-         </pre>
+         </pre> */}
       </div>
    )
 }
