@@ -294,19 +294,22 @@ export default function FlightBooking() {
    useEffect(() => {
       // Clear old flight data when loading new search results
       if (typeof window !== 'undefined' && flightOffers?.data) {
-         const keys = Object.keys(sessionStorage)
+         const keys = Object.keys(localStorage)
          keys.forEach(key => {
             if (key.startsWith('flight-')) {
-               sessionStorage.removeItem(key)
+               localStorage.removeItem(key)
             }
          })
          
          // Store new flight data
          flightOffers.data.forEach((flight: any) => {
-            sessionStorage.setItem(`flight-${flight.id}`, JSON.stringify(flight))
+            localStorage.setItem(`flight-${flight.id}`, JSON.stringify({
+               ...flight,
+               tripId: searchParams.get('tripId')
+            }))
          })
       }
-   }, [flightOffers?.data])
+   }, [flightOffers?.data, searchParams])
 
    if (loading) {
       return <div className="text-center text-white">Loading...</div>
@@ -333,7 +336,7 @@ export default function FlightBooking() {
             {flightOffers?.data ? (
                flightOffers.data.map((flight: any) => {
                   if (typeof window !== 'undefined') {
-                     sessionStorage.setItem(`flight-${flight.id}`, JSON.stringify({
+                     localStorage.setItem(`flight-${flight.id}`, JSON.stringify({
                         ...flight,
                         tripId: searchParams.get('tripId')
                      }))
@@ -342,7 +345,9 @@ export default function FlightBooking() {
                   return (
                      <Link 
                         key={flight.id} 
-                        href={`/flight/${flight.id}?tripId=${searchParams.get('tripId')}`} 
+                        href={`/flight/${flight.id}?tripId=${searchParams.get('tripId')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="block"
                      >
                         <Card className="overflow-hidden hover:shadow-md transition-shadow">

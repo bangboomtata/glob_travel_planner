@@ -21,7 +21,7 @@ export default function FlightDetails({ params }: PageProps) {
   const router = useRouter()
 
   useEffect(() => {
-    const storedFlight = sessionStorage.getItem(`flight-${id}`)
+    const storedFlight = localStorage.getItem(`flight-${id}`)
     
     if (!storedFlight) {
       // Redirect to search page if no flight data is found
