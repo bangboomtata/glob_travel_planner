@@ -8,6 +8,8 @@ import { format, parseISO } from "date-fns"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+import { purchaseFlight } from '../action'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -31,6 +33,27 @@ export default function FlightDetails({ params }: PageProps) {
 
     setFlightData(JSON.parse(storedFlight))
   }, [id, router, tripId])
+
+  const handlePurchase = async () => {
+    try {
+      const result = await purchaseFlight(
+        flightData, 
+        parseInt(tripId as string)
+      )
+
+      if (!result.success) {
+        throw new Error(result.error)
+      }
+
+      // Show success message
+      alert('Flight purchased successfully!')
+      // Optionally close the window since it's in a new tab
+      window.close()
+    } catch (error) {
+      console.error('Error purchasing flight:', error)
+      alert('Failed to purchase flight. Please try again.')
+    }
+  }
 
   if (!flightData) {
     return <div>Loading...</div>
@@ -290,6 +313,16 @@ export default function FlightDetails({ params }: PageProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Add purchase button at the bottom */}
+      <div className="mt-6 flex justify-end">
+        <Button 
+          onClick={handlePurchase}
+          className="bg-primary text-white hover:bg-primary/90"
+        >
+          Purchase Flight
+        </Button>
+      </div>
     </div>
   )
 }

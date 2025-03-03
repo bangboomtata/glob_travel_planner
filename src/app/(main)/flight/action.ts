@@ -2,15 +2,17 @@
 
 import { getAmadeusToken } from '@/lib/utils'
 import flightData from './flightOfferDataExample.json'
+import { revalidatePath } from 'next/cache'
+import { PrismaClient } from '@prisma/client'
 
+const prisma = new PrismaClient()
+const CACHE_DURATION = 5 * 60 * 1000 
 
 let flightOffersCache: {
   key: string
   data: any
   timestamp: number
 } | null = null
-
-const CACHE_DURATION = 5 * 60 * 1000 
 
 export async function fetchFlightOffers(
    origin: string,
@@ -24,6 +26,38 @@ export async function fetchFlightOffers(
    return flightData
 }
 
+export async function purchaseFlight(flightDetails: any, itineraryId: number) {
+  try {
+    // Validate input
+    if (!flightDetails || !itineraryId) {
+      throw new Error('Missing required fields')
+    }
+
+    // Create flight record
+    const flight = await prisma.flight.create({
+      data: {
+        flightDetails,
+        itineraryId,
+      },
+    })
+
+    // Update itinerary status to BOOKED
+    await prisma.itinerary.update({
+      where: {
+        id: itineraryId,
+      },
+      data: {
+        status: 'BOOKED',
+      },
+    })
+
+    revalidatePath('/trips')
+    return { success: true, data: flight }
+  } catch (error) {
+    console.error('Error creating flight:', error)
+    return { success: false, error: 'Failed to purchase flight' }
+  }
+}
 
 // export async function fetchFlightOffers(
 //    origin: string,
