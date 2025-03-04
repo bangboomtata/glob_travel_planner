@@ -1,6 +1,6 @@
 'use server'
 
-import { getAmadeusToken } from '@/lib/utils'
+// import { getAmadeusToken } from '@/lib/utils'
 import flightData from './flightOfferDataExample.json'
 import { revalidatePath } from 'next/cache'
 import { PrismaClient } from '@prisma/client'
@@ -8,11 +8,11 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 const CACHE_DURATION = 5 * 60 * 1000 
 
-let flightOffersCache: {
-  key: string
-  data: any
-  timestamp: number
-} | null = null
+// let flightOffersCache: {
+//   key: string
+//   data: any
+//   timestamp: number
+// } | null = null
 
 export async function fetchFlightOffers(
    origin: string,

@@ -76,11 +76,6 @@ interface Itinerary {
    flight?: Flight
 }
 
-interface FlightOffer {
-   // Define the structure of a FlightOffer
-}
-
-// Type guard to check if a value matches GeneratedItinerary interface
 function isGeneratedItinerary(value: unknown): value is GeneratedItinerary {
    if (typeof value !== 'object' || value === null) return false
 
