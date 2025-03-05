@@ -4,8 +4,6 @@ import { useEffect, useState, use } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Calendar, Clock, Luggage, MapPin, Plane } from "lucide-react"
 import { format, parseISO } from "date-fns"
-
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
@@ -89,15 +87,7 @@ export default function FlightDetails({ params }: PageProps) {
     <div className="max-w-3xl mx-auto p-4">
       <Card className="mb-6">
         <CardHeader className="bg-primary/5">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-xl font-bold">Flight Offer</CardTitle>
-            <Badge variant="outline" className="text-sm font-medium">
-              {flightData.travelerPricings[0].fareDetailsBySegment[0].brandedFareLabel}
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6">
             <div>
               <h3 className="text-lg font-semibold">
                 {getAirlineName(flightData.itineraries[0].segments[0].carrierCode)}
@@ -115,6 +105,9 @@ export default function FlightDetails({ params }: PageProps) {
               <p className="text-sm text-muted-foreground">{flightData.numberOfBookableSeats} seats available</p>
             </div>
           </div>
+        </CardHeader>
+        <CardContent className="pt-6">
+
 
           {/* Outbound Flight */}
           <div className="mb-6">
@@ -145,7 +138,7 @@ export default function FlightDetails({ params }: PageProps) {
                       <Plane className="h-4 w-4 text-primary" />
                     </div>
                     <div className="h-full border-l border-dashed border-muted-foreground/30 mx-auto my-1" />
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full mt-8 bg-primary/10 flex items-center justify-center">
                       <MapPin className="h-4 w-4 text-primary" />
                     </div>
                   </div>
@@ -226,7 +219,7 @@ export default function FlightDetails({ params }: PageProps) {
                       <Plane className="h-4 w-4 text-primary" />
                     </div>
                     <div className="h-full border-l border-dashed border-muted-foreground/30 mx-auto my-1" />
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full mt-8 bg-primary/10 flex items-center justify-center">
                       <MapPin className="h-4 w-4 text-primary" />
                     </div>
                   </div>
