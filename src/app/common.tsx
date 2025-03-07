@@ -15,10 +15,6 @@ const navLink = [
       name: 'My Trips',
       url: '/trips',
    },
-   {
-      name: 'Dashboard',
-      url: '/dashboard',
-   },
 ]
 
 export function HeaderNav() {
@@ -41,10 +37,9 @@ export function HeaderNav() {
                      </Button>
                   </Link>
                ))}
-               {/* Example of using icons */}
-               <Button variant="link" className="rounded-full">
+               {/* <Button variant="link" className="rounded-full">
                   <UserRound className="h-5 w-5 text-white" />
-               </Button>
+               </Button> */}
             </nav>
          </header>
       </div>

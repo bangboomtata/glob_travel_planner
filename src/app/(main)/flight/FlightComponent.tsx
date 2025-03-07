@@ -10,7 +10,6 @@ import { Card } from '@/components/ui/card'
 import { Plane } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 
 enum ItineraryStatus {
    UNBOOKED = 'UNBOOKED',
@@ -517,12 +516,12 @@ export default function FlightBooking() {
          </div>
 
          {/* API Response Log */}
-         {/* <h2 className="mb-2 mt-4 text-xl font-semibold text-white">
+         <h2 className="mb-2 mt-4 text-xl font-semibold text-white">
             Flight Offers
          </h2>
          <pre className="overflow-auto whitespace-pre-wrap rounded-lg bg-gray-800 p-4 text-white">
             {JSON.stringify(flightOffers, null, 2)}
-         </pre> */}
+         </pre>
       </main>
    )
 }

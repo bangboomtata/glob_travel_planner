@@ -17,6 +17,32 @@ model Question {
   @@map("questions")
 }
 
+model Itinerary {
+  id                 Int             @id @default(autoincrement())
+  generatedItinerary Json
+  userId             Int
+  status             ItineraryStatus @default(UNBOOKED)
+  createdAt          DateTime        @default(now())
+
+  preferenceId       Int
+  preference         Preference     @relation(fields: [preferenceId], references: [id], onDelete: Cascade) 
+
+  flights            Flight[]        @relation("ItineraryFlights") 
+
+  @@map("itineraries")
+}
+
+model Flight {
+  id                 Int      @id @default(autoincrement())
+  flightDetails      Json?    
+  itineraryId        Int
+  createdAt          DateTime @default(now())
+
+  itinerary          Itinerary @relation("ItineraryFlights", fields: [itineraryId], references: [id], onDelete: Cascade) 
+
+  @@map("flights")
+}
+
 model Preference {
   id        Int      @id @default(autoincrement())
   userId    Int
@@ -28,31 +54,6 @@ model Preference {
   @@map("preferences")
 }
 
-model Itinerary {
-  id                 Int             @id @default(autoincrement())
-  generatedItinerary Json
-  userId             Int
-  status             ItineraryStatus @default(UNBOOKED)
-  createdAt          DateTime        @default(now())
-  
-  preferenceId       Int            
-  preference         Preference     @relation(fields: [preferenceId], references: [id])
-
-  flights            Flight[]        @relation("ItineraryFlights")
-
-  @@map("itineraries")
-}
-
-model Flight {
-  id                 Int      @id @default(autoincrement())
-  flightDetails      Json?    
-  itineraryId        Int
-  createdAt          DateTime @default(now())
-
-  itinerary          Itinerary @relation("ItineraryFlights", fields: [itineraryId], references: [id]) 
-
-  @@map("flights")
-}
 
 enum ItineraryStatus {
   UNBOOKED

@@ -15,13 +15,13 @@ import Link from 'next/link'
 
 export default function WelcomeOnboarding() {
    return (
-      <main className="container mx-auto max-w-3xl flex-col">
+      <main className="container mx-auto max-w-md flex-col">
          {/* Background Gradient need use client, make it a individual component*/}
          <BackgroundGradient className="p-3">
-            <Card className="w-full rounded-2xl max-w-4xl pb-4">
+            <Card className="w-full rounded-2xl pb-4 p-2">
                <CardHeader>
                   <CardTitle>
-                     Let&#39;s Get Started on Your Next Adventure!
+                     Let&#39;s Get Started!
                   </CardTitle>
                   <CardDescription>
                      Follow these steps to plan your perfect trip.
@@ -29,11 +29,11 @@ export default function WelcomeOnboarding() {
                </CardHeader>
                <CardContent>
                   <div className="space-y-4">
-                     <h3 className="text-lg font-semibold">Welcome aboard!</h3>
-                     <p>Here&#39;s how to get started with Glob! :</p>
+                     <h3 className="text-lg font-semibold">
+                        How to get started with Glob!:
+                     </h3>
                      <ul className="list-inside list-disc space-y-2">
                         <li>Set your travel preferences</li>
-                        <li>Explore destinations</li>
                         <li>Create your first trip itinerary</li>
                         <li>Book flights and accommodations</li>
                      </ul>
@@ -50,18 +50,6 @@ export default function WelcomeOnboarding() {
                         <ArrowRight className="ml-2 h-4 w-4" />
                      </Button>
                   </Link>
-                  {/* <Button
-                  variant="outline"
-                  onClick={() => {
-                     const tabs = ['getStarted', 'preferences', 'explore']
-                     const currentIndex = tabs.indexOf(activeTab)
-                     if (currentIndex > 0) {
-                        setActiveTab(tabs[currentIndex - 1])
-                     }
-                  }}
-               >
-                  Back
-               </Button> */}
                </CardFooter>
             </Card>
          </BackgroundGradient>

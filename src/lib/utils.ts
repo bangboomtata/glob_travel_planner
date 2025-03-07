@@ -20,7 +20,7 @@ const CLIENT_SECRET = process.env.NEXT_PUBLIC_AMADEUS_CLIENT_SECRET!;
 
 interface TokenCache {
   token: string
-  expiresAt: number // Unix timestamp
+  expiresAt: number
 }
 
 let cachedToken: TokenCache | null = null
@@ -60,7 +60,6 @@ export async function getAmadeusToken(): Promise<string> {
     // Cache the new token with expiration
     cachedToken = {
       token: data.access_token,
-      // Set expiration slightly before actual expiry to be safe
       expiresAt: Date.now() + (data.expires_in - 60) * 1000,
     }
 

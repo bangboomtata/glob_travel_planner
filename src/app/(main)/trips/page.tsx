@@ -77,17 +77,16 @@ export default function AIGeneratedItinerary() {
                                     passHref
                                  >
                                     <p className="text-lg font-semibold">
-                                       Destination:{' '}
                                        {
                                           itinerary.generatedItinerary
                                              .destination_country
                                        }
                                     </p>
                                     <p className="text-sm text-gray-600">
-                                       Date Created:
+                                       Date Created: {' '}
                                        {new Date(
                                           itinerary.createdAt
-                                       ).toLocaleDateString()}
+                                       ).toLocaleDateString('en-GB')}
                                     </p>
                                  </Link>
                                  <div className="flex flex-row gap-x-2 pr-4 pt-2">
@@ -115,8 +114,8 @@ export default function AIGeneratedItinerary() {
                            ))}
                         </div>
                      ) : (
-                        <p className="text-gray-600">
-                           No itineraries available.
+                        <p className="text-gray-600 text-center mt-4">
+                           You have not generated any trips yet
                         </p>
                      )}
                   </CardContent>

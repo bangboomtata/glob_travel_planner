@@ -1,6 +1,6 @@
 'use server'
 
-// import { getAmadeusToken } from '@/lib/utils'
+import { getAmadeusToken } from '@/lib/utils'
 import flightData from './flightOfferDataExample.json'
 import { revalidatePath } from 'next/cache'
 import { PrismaClient } from '@prisma/client'
@@ -8,23 +8,23 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 const CACHE_DURATION = 5 * 60 * 1000 
 
-// let flightOffersCache: {
-//   key: string
-//   data: any
-//   timestamp: number
-// } | null = null
+let flightOffersCache: {
+  key: string
+  data: any
+  timestamp: number
+} | null = null
 
-export async function fetchFlightOffers(
-   origin: string,
-   destination: string,
-   departureDate: string,
-   returnDate: string,
-   adults: number = 1,
-   children: number = 0,
-   nonStop: boolean = false
-) {
-   return flightData
-}
+// export async function fetchFlightOffers(
+//    origin: string,
+//    destination: string,
+//    departureDate: string,
+//    returnDate: string,
+//    adults: number = 1,
+//    children: number = 0,
+//    nonStop: boolean = false
+// ) {
+//    return flightData
+// }
 
 export async function purchaseFlight(flightDetails: any, itineraryId: number) {
   try {
@@ -59,84 +59,99 @@ export async function purchaseFlight(flightDetails: any, itineraryId: number) {
   }
 }
 
-// export async function fetchFlightOffers(
-//    origin: string,
-//    destination: string,
-//    departureDate: string,
-//    returnDate: string,
-//    adults: number = 1,
-//    children: number = 0,
-//    nonStop: boolean = false
-// ) {
-//    try {
-//       // Create a cache key from the request parameters
-//       const cacheKey = JSON.stringify({
-//          origin,
-//          destination,
-//          departureDate,
-//          returnDate,
-//          adults,
-//          children,
-//          nonStop
-//       })
+export async function fetchFlightOffers(
+   origin: string,
+   destination: string,
+   departureDate: string,
+   returnDate: string,
+   adults: number = 1,
+   children: number = 0,
+   nonStop: boolean = false
+) {
+   try {
+      // Create a cache key from the request parameters
+      const cacheKey = JSON.stringify({
+         origin,
+         destination,
+         departureDate,
+         returnDate,
+         adults,
+         children,
+         nonStop
+      })
 
-//       // Check cache
-//       if (flightOffersCache && 
-//           flightOffersCache.key === cacheKey && 
-//           Date.now() - flightOffersCache.timestamp < CACHE_DURATION) {
-//          console.log('Using cached flight offers')
-//          return flightOffersCache.data
-//       }
+      // Check cache
+      if (flightOffersCache && 
+          flightOffersCache.key === cacheKey && 
+          Date.now() - flightOffersCache.timestamp < CACHE_DURATION) {
+         console.log('Using cached flight offers')
+         return flightOffersCache.data
+      }
 
-//       console.log('Fetching fresh flight offers')
-//       const token = await getAmadeusToken()
-//       const endpoint = 'https://test.api.amadeus.com/v2/shopping/flight-offers'
+      console.log('Fetching fresh flight offers')
+      const token = await getAmadeusToken()
+      console.log('Token obtained:', token.substring(0, 10) + '...') // Log partial token for security
 
-//       const params = new URLSearchParams({
-//          originLocationCode: origin,
-//          destinationLocationCode: destination,
-//          departureDate: departureDate,
-//          returnDate: returnDate,
-//          adults: adults.toString(),
-//          children: children.toString(),
-//          nonStop: nonStop.toString(),
-//          currencyCode: 'GBP',
-//          max: '20',
-//       })
-
-//       console.log('API Request:', {
-//          url: `${endpoint}?${params.toString()}`,
-//          headers: {
-//             Authorization: `Bearer ${token}`,
-//          }
-//       })
-
-//       const response = await fetch(`${endpoint}?${params.toString()}`, {
-//          method: 'GET',
-//          headers: {
-//             Authorization: `Bearer ${token}`,
-//          },
-//       })
-
-//       if (!response.ok) {
-//          const errorText = await response.text()
-//          console.error('API Error Response:', errorText)
-//          throw new Error(`Failed to fetch flight offers: ${response.statusText}`)
-//       }
-
-//       const data = await response.json()
+      const endpoint = 'https://test.api.amadeus.com/v2/shopping/flight-offers'
       
-//       // Update cache
-//       flightOffersCache = {
-//          key: cacheKey,
-//          data: data,
-//          timestamp: Date.now()
-//       }
+      // Add Authorization header check
+      const headers = {
+         'Authorization': `Bearer ${token}`,
+         'Content-Type': 'application/json'  // Add content type header
+      }
+      
+      console.log('Request headers:', {
+         Authorization: `Bearer ${token.substring(0, 10)}...`,
+         'Content-Type': 'application/json'
+      })
 
-//       return data
-//    } catch (error) {
-//       console.error('Error fetching flight offers:', error)
-//       return { error: (error as Error).message }
-//    }
-// }
+      const params = new URLSearchParams({
+         originLocationCode: origin,
+         destinationLocationCode: destination,
+         departureDate: departureDate,
+         returnDate: returnDate,
+         adults: adults.toString(),
+         children: children.toString(),
+         nonStop: nonStop.toString(),
+         currencyCode: 'GBP',
+         max: '20',
+      })
+
+      const response = await fetch(`${endpoint}?${params.toString()}`, {
+         method: 'GET',
+         headers: headers,
+      })
+
+      // Add auth error checking
+      if (response.status === 401) {
+         console.error('Authentication failed. Token might be expired or invalid')
+         // You might want to retry with a new token here
+         throw new Error('Authentication failed')
+      }
+
+      if (!response.ok) {
+         const errorData = await response.json()
+         console.error('API Error Details:', {
+            status: response.status,
+            statusText: response.statusText,
+            errors: errorData.errors
+         })
+         throw new Error(`Failed to fetch flight offers: ${JSON.stringify(errorData.errors)}`)
+      }
+
+      const data = await response.json()
+      
+      // Update cache
+      flightOffersCache = {
+         key: cacheKey,
+         data: data,
+         timestamp: Date.now()
+      }
+
+      return data
+   } catch (error) {
+      console.error('Error fetching flight offers:', error)
+      return { error: (error as Error).message }
+   }
+}
 
