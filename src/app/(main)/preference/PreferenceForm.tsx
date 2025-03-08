@@ -84,6 +84,8 @@ export default function PreferenceForm({
             return preferences[question.id]?.value != null
          } else if (question.type === 'NUMBER_OF_TRAVELERS') {
             return preferences[question.id]?.value.adults >= 1
+         } else if (question.type === 'PLACES_TO_AVOID') {
+            return preferences[question.id]?.value !== undefined
          } else {
             return preferences[question.id]?.options?.length > 0
          }
@@ -169,10 +171,53 @@ export default function PreferenceForm({
             )
          case 'TRIP_DURATION':
          case 'AIRPORT':
-         case 'TRAVEL_TASTE':
-         case 'OUTDOOR_ACTIVITIES':
-         case 'ATMOSPHERE':
          case 'CULTURE':
+         case 'OUTDOOR_ACTIVITIES':
+            return (
+               <div className="space-y-4">
+                  <Label className="text-base font-medium leading-tight">
+                     {question.text}
+                  </Label>
+                  <div className="grid grid-cols-2 gap-y-4">
+                     {question.options.map((option, idx) => (
+                        <label
+                           key={idx}
+                           className="flex items-center space-x-2"
+                        >
+                           <Switch
+                              checked={preferences[question.id]?.options?.includes(option) || false}
+                              onCheckedChange={(checked) =>
+                                 setPreferences((prev) => {
+                                    const currentOptions = prev[question.id]?.options || []
+                                    
+                                    if (checked && currentOptions.length >= 1) {
+                                       alert('Please choose only one option')
+                                       return prev
+                                    }
+
+                                    const updatedOptions: string[] = checked
+                                       ? [option] // Only store the new option
+                                       : currentOptions.filter((opt: string) => opt !== option)
+
+                                    return {
+                                       ...prev,
+                                       [question.id]: {
+                                          question: question.text,
+                                          questionType: question.type,
+                                          options: updatedOptions,
+                                       },
+                                    }
+                                 })
+                              }
+                           />
+                           <span>{option}</span>
+                        </label>
+                     ))}
+                  </div>
+               </div>
+            )
+         case 'TRAVEL_TASTE':
+         case 'ATMOSPHERE':
             return (
                <div className="space-y-4">
                   <Label className="text-base font-medium leading-tight">
@@ -406,6 +451,31 @@ export default function PreferenceForm({
    const renderStep = () => {
       const questionType = questionTypes[step - 1]
       const questionsByType = questions.filter((q) => q.type === questionType)
+
+      if (questionsByType.length > 0) {
+         const question = questionsByType[0]
+         if (!preferences[question.id]) {
+            if (questionType === 'NUMBER_OF_TRAVELERS') {
+               setPreferences(prev => ({
+                  ...prev,
+                  [question.id]: {
+                     question: question.text,
+                     questionType: question.type,
+                     value: { adults: 1, children: 0 }
+                  }
+               }))
+            } else if (questionType === 'BUDGET') {
+               setPreferences(prev => ({
+                  ...prev,
+                  [question.id]: {
+                     question: question.text,
+                     questionType: question.type,
+                     value: 750
+                  }
+               }))
+            }
+         }
+      }
 
       // Add debugging log
       // console.log('Current step:', step)

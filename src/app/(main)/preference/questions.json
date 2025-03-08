@@ -31,7 +31,7 @@
       "options": ["4 days, 3 nights", "5 days, 4 nights", "6 days, 5 nights"]
    },
    {
-      "question": "Which of the following UK airports are you able to fly from?",
+      "question": "Which of the following UK airport are you able to fly from?",
       "type": "AIRPORT",
       "options": [
          "London (All)",
