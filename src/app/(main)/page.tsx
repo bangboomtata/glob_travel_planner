@@ -15,10 +15,10 @@ import Link from 'next/link'
 
 export default function WelcomeOnboarding() {
    return (
-      <main className="container mx-auto max-w-md flex-col">
+      <main className="container mx-auto max-w-lg flex-col">
          {/* Background Gradient need use client, make it a individual component*/}
          <BackgroundGradient className="p-3">
-            <Card className="w-full rounded-2xl pb-4 p-2">
+            <Card className="w-full rounded-2xl p-6">
                <CardHeader>
                   <CardTitle>
                      Let&#39;s Get Started!

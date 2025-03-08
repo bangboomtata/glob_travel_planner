@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
    Card,
@@ -82,7 +82,7 @@ export default function PreferenceForm({
             return preferences[question.id]?.date
          } else if (question.type === 'BUDGET') {
             return preferences[question.id]?.value != null
-         } else if (question.type === 'NUMBER_OF_TRAVELLERS') {
+         } else if (question.type === 'NUMBER_OF_TRAVELERS') {
             return preferences[question.id]?.value.adults >= 1
          } else {
             return preferences[question.id]?.options?.length > 0
@@ -100,9 +100,9 @@ export default function PreferenceForm({
    // Number of Passengers
    const incrementPassengers = (type: 'adults' | 'children') => {
       if (type === 'adults') {
-         setAdults((prev) => Math.min(prev + 1, 9)) // Max 9 adults
+         setAdults((prev) => Math.min(prev + 1, 5)) // Max 5 adults
       } else {
-         setChildren((prev) => Math.min(prev + 1, 9)) // Max 9 children
+         setChildren((prev) => Math.min(prev + 1, 3)) // Max 3 children
       }
    }
 
@@ -173,6 +173,30 @@ export default function PreferenceForm({
                   </div>
                </div>
             )
+         case 'PLACES_TO_AVOID':
+            return (
+               <div className="space-y-4">
+                  <Label className="text-base font-medium leading-tight">
+                     {question.text}
+                  </Label>
+                  <input
+                     type="text"
+                     placeholder="Enter countries to avoid (comma-separated)"
+                     value={preferences[question.id]?.value || ''}
+                     onChange={(e) =>
+                        setPreferences((prev) => ({
+                           ...prev,
+                           [question.id]: {
+                              question: question.text,
+                              questionType: question.type,
+                              value: e.target.value,
+                           },
+                        }))
+                     }
+                     className="w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+               </div>
+            )
          case 'DIETARY_RESTRICTIONS':
          case 'TRIP_DURATION':
          case 'AIRPORT':
@@ -227,7 +251,7 @@ export default function PreferenceForm({
                   </div>
                </div>
             )
-         case 'NUMBER_OF_TRAVELLERS':
+         case 'NUMBER_OF_TRAVELERS':
             return (
                <div className="flex flex-wrap gap-4">
                   <div className="min-w-[200px] flex-1">

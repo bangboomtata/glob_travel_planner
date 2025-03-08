@@ -7,7 +7,6 @@
          "Adventure & Nature",
          "Relaxation & Beaches",
          "Striking Architecture",
-         "Cultural Exploration",
          "Winter & Northern Lights",
          "Seclusion & Nature"
       ]
@@ -26,11 +25,6 @@
       "question": "Do you prefer a destination with a bustling atmosphere or a quieter, more peaceful setting?",
       "type": "TRAVEL_TASTE_2",
       "options": ["Bustling & Lively", "Peaceful & Secluded"]
-   },
-   {
-      "question": "What kind of weather do you prefer for your trip?",
-      "type": "WEATHER",
-      "options": ["Warm & Sunny", "Cool & Mild", "Cold & Snowy", "Flexible"]
    },
    {
       "question": "How many travelers will be joining you on this trip?",
@@ -56,6 +50,10 @@
    {
       "question": "What's your preferred start date?",
       "type": "START_DATE"
+   },
+   {
+      "question": "Are there any places you prefer not to visit?",
+      "type": "PLACES_TO_AVOID"
    },
    {
       "question": "What’s your total budget (in £) for your trip?",

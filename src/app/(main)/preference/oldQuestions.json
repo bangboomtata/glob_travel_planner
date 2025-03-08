@@ -1,58 +1,39 @@
 [
    {
-      "question": "Doing outdoor activities",
-      "type": "TRAVEL_TASTE"
-   },
-   {
-      "question": "Being in nature",
-      "type": "TRAVEL_TASTE"
-   },
-   {
-      "question": "Wandering around charming villages",
-      "type": "TRAVEL_TASTE"
-   },
-   {
-      "question": "Visiting popular sites and landmarks",
-      "type": "TRAVEL_TASTE"
-   },
-   {
-      "question": "Going to places of historical significance",
-      "type": "TRAVEL_TASTE"
-   },
-   {
-      "question": "Visiting museums and art galleries",
-      "type": "TRAVEL_TASTE"
-   },
-   {
-      "question": "Enjoying local food",
-      "type": "TRAVEL_TASTE"
-   },
-   {
-      "question": "Are there any activities you do not want to do?",
-      "type": "DISLIKE_ACTIVITIES",
+      "question": "What type of experience are you looking for on this trip?",
+      "type": "TRAVEL_TASTE_2",
       "options": [
-         "Hiking",
-         "Swimming",
-         "Scuba Diving",
-         "Brewery/Distillery Tour",
-         "Nature Walk",
-         "Boat Trips",
-         "None"
+         "Romantic & Charming",
+         "Adventure & Nature",
+         "Relaxation & Beaches",
+         "Striking Architecture",
+         "Winter & Northern Lights",
+         "Seclusion & Nature"
       ]
    },
    {
-      "question": "What kind of weather do you prefer? (Warm = more than 15 degrees Celsius)",
+      "question": "How important are outdoor activities like hiking, skiing, or beach relaxation to you?",
+      "type": "TRAVEL_TASTE_2",
+      "options": ["Very Important", "Somewhat Important", "Not Important"]
+   },
+   {
+      "question": "How much do you enjoy exploring historical sites, museums, and local culture?",
+      "type": "TRAVEL_TASTE_2",
+      "options": ["Very Important", "Somewhat Important", "Not Important"]
+   },
+   {
+      "question": "Do you prefer a destination with a bustling atmosphere or a quieter, more peaceful setting?",
+      "type": "TRAVEL_TASTE_2",
+      "options": ["Bustling & Lively", "Peaceful & Secluded"]
+   },
+   {
+      "question": "What kind of weather do you prefer for your trip?",
       "type": "WEATHER",
-      "options": [
-         "I'm flexible",
-         "It would be great, not essential",
-         "I want warm weather"
-      ]
+      "options": ["Warm & Sunny", "Cool & Mild", "Cold & Snowy", "Flexible"]
    },
    {
-      "question": "Do you have any dietary restrictions we should know about for foodie experiences?",
-      "type": "DIETARY_RESTRICTIONS",
-      "options": ["None", "Vegan", "Vegetarian", "No Alcohol"]
+      "question": "How many travelers will be joining you on this trip?",
+      "type": "NUMBER_OF_TRAVELERS"
    },
    {
       "question": "How long would you like to be away for?",
@@ -76,16 +57,7 @@
       "type": "START_DATE"
    },
    {
-      "question": "Do you have any flexibility with your travel dates?",
-      "type": "START_DATE_FLEXIBILITY",
-      "options": [
-         "Flexible by +/- 1 day",
-         "Flexible by +/- 3 days",
-         "Not Flexible"
-      ]
-   },
-   {
-      "question": "What’s your total budget (in £) for your 4-day trip?",
+      "question": "What’s your total budget (in £) for your trip?",
       "type": "BUDGET"
    }
 ]
