@@ -143,36 +143,6 @@ export default function PreferenceForm({
       // console.log('Rendering question:', question)
 
       switch (question.type) {
-         case 'TRAVEL_TASTE_2':
-            return (
-               <div>
-                  <Label className="text-base font-medium leading-tight">
-                     {question.text}
-                  </Label>
-                  <div className="flex items-center space-x-4">
-                     <Slider
-                        value={[preferences[question.id]?.value || 3]}
-                        onValueChange={([value]) =>
-                           setPreferences((prev) => ({
-                              ...prev,
-                              [question.id]: {
-                                 question: question.text,
-                                 questionType: question.type,
-                                 value,
-                              },
-                           }))
-                        }
-                        max={5}
-                        min={1}
-                        step={1}
-                        className="flex-grow"
-                     />
-                     <span className="w-8 text-center text-xl font-medium">
-                        {preferences[question.id]?.value || 3}
-                     </span>
-                  </div>
-               </div>
-            )
          case 'PLACES_TO_AVOID':
             return (
                <div className="space-y-4">
@@ -197,13 +167,9 @@ export default function PreferenceForm({
                   />
                </div>
             )
-         case 'DIETARY_RESTRICTIONS':
          case 'TRIP_DURATION':
          case 'AIRPORT':
-         case 'START_DATE_FLEXIBILITY':
-         case 'DISLIKE_ACTIVITIES':
          case 'TRAVEL_TASTE':
-         case 'WEATHER':
          case 'OUTDOOR_ACTIVITIES':
          case 'ATMOSPHERE':
          case 'CULTURE':

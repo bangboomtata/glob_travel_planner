@@ -1,10 +1,10 @@
 [
    {
       "question": "What type of experience are you looking for on this trip?",
-      "type": "TRAVEL_TASTE_2",
+      "type": "TRAVEL_TASTE",
       "options": [
          "Romantic & Charming",
-         "Adventure & Nature",
+         "Bustling & Lively",
          "Relaxation & Beaches",
          "Striking Architecture",
          "Winter & Northern Lights",
@@ -13,18 +13,13 @@
    },
    {
       "question": "How important are outdoor activities like hiking, skiing, or beach relaxation to you?",
-      "type": "TRAVEL_TASTE_2",
+      "type": "OUTDOOR_ACTIVITIES",
       "options": ["Very Important", "Somewhat Important", "Not Important"]
    },
    {
       "question": "How much do you enjoy exploring historical sites, museums, and local culture?",
-      "type": "TRAVEL_TASTE_2",
+      "type": "CULTURE",
       "options": ["Very Important", "Somewhat Important", "Not Important"]
-   },
-   {
-      "question": "Do you prefer a destination with a bustling atmosphere or a quieter, more peaceful setting?",
-      "type": "TRAVEL_TASTE_2",
-      "options": ["Bustling & Lively", "Peaceful & Secluded"]
    },
    {
       "question": "How many travelers will be joining you on this trip?",
@@ -48,7 +43,7 @@
       ]
    },
    {
-      "question": "What's your preferred start date?",
+      "question": "When would you like to start your trip? (If you selected 'Winter & Northern Lights' as your travel preference, choose a suitable winter date range.)",
       "type": "START_DATE"
    },
    {
