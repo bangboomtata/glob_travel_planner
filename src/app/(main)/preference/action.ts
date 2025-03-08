@@ -87,9 +87,10 @@ export async function handleGenerateItinerary({
                "day": 1,
                "activities": [
                   {
-                     "time": "09:00",
-                     "description": "Arrival and hotel check-in",
-                     "details": "Settle into your accommodation, rest, and freshen up before heading out."
+                     "time": "10:00",
+                     "details": "Discover masterpieces of the Renaissance at one of Europe's most renowned art museums.",
+                     "description": "Visit the Uffizi Gallery",
+                     "googleMap": "https://www.google.com/maps/search/?api=1&query=Uffizi+Gallery+city+country"
                   }
                ]
             }

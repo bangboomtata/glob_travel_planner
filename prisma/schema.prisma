@@ -27,9 +27,20 @@ model Itinerary {
   preferenceId       Int
   preference         Preference     @relation(fields: [preferenceId], references: [id], onDelete: Cascade) 
 
-  flights            Flight[]        @relation("ItineraryFlights") 
+  flights            Flight[]        @relation("ItineraryFlights")
+  places             Place[]         @relation("ItineraryPlaces")
 
   @@map("itineraries")
+}
+
+model Place {
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String
+  googleMapLink String
+  itineraries   Itinerary[] @relation("ItineraryPlaces")
+
+  @@map("places")
 }
 
 model Flight {
