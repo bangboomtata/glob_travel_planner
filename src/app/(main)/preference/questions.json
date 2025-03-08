@@ -31,13 +31,10 @@
       "options": ["4 days, 3 nights", "5 days, 4 nights", "6 days, 5 nights"]
    },
    {
-      "question": "Which of the following UK airport are you able to fly from?",
+      "question": "Which of the following UK city are you able to fly from?",
       "type": "AIRPORT",
       "options": [
-         "London (All)",
-         "London Gatwick (LGW)",
-         "London Stansted (STN)",
-         "London Heathrow (LHR)",
+         "London (LON)",
          "Manchester (MAN)",
          "Birmingham (BHX)"
       ]
@@ -51,7 +48,7 @@
       "type": "PLACES_TO_AVOID"
    },
    {
-      "question": "What’s your total budget (in £) for your trip?",
+      "question": "What’s your total budget (in £) for your trip per person?",
       "type": "BUDGET"
    }
 ]

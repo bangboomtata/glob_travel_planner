@@ -275,7 +275,7 @@ export default function FlightBooking() {
             console.error('Error fetching itinerary or flights:', error)
          } finally {
             setLoading(false)
-            // Mark that we've made the initial fetch
+            // Mark initial fetch
             initialFetchMade.current = true
          }
       }

@@ -64,7 +64,7 @@ export async function handleGenerateItinerary({
       ### Rules:
       - Suggest a destination within Europe (excluding the UK). You are encouraged to suggest hidden gems or lesser-known destinations, such as Montenegro, Slovenia, or other unique locations that provide distinct travel experiences.
       - Ensure cultural and historical details are woven into the descriptions of each activity, providing context and enriching the travel experience.
-      - Include morning, afternoon, and evening activities, ensuring that the itinerary remains dynamic and engaging.
+      - Include morning, afternoon, and evening activities, recommend multiple famous tourist attractions and sightseeing spots, grouping nearby locations together whenever possible within a given time frame to optimize the experience and minimize travel time
       - Meals: Recommend local dishes for each meal, reflecting local culture and cuisine.
       - Commute time should be minimized by focusing primarily on attractions within the landing city. For trips lasting 5 days or more, suggest up to two additional cities, but this is optional and should enhance the experience.
       - Ensure the itinerary is tailored to the user's budget and trip duration.

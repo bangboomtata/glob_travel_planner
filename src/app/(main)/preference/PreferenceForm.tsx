@@ -371,7 +371,7 @@ export default function PreferenceForm({
                   </Label>
                   <div className="flex flex-row space-x-4">
                      <Slider
-                        value={[preferences[question.id]?.value ?? 750]} // Use nullish coalescing to handle 0
+                        value={[preferences[question.id]?.value ?? 1550]}
                         onValueChange={([value]) =>
                            setPreferences((prev) => ({
                               ...prev,
@@ -382,14 +382,13 @@ export default function PreferenceForm({
                               },
                            }))
                         }
-                        max={1000}
+                        max={2500}
                         min={500}
                         step={50}
                         className="flex-grow"
                      />
                      <span className="w-8 text-center text-xl font-medium">
-                        {preferences[question.id]?.value ?? 750}{' '}
-                        {/* Display the slider value correctly */}
+                        {preferences[question.id]?.value ?? 1550}{' '}
                      </span>
                   </div>
                </div>
@@ -470,7 +469,7 @@ export default function PreferenceForm({
                   [question.id]: {
                      question: question.text,
                      questionType: question.type,
-                     value: 750
+                     value: 1550
                   }
                }))
             }
