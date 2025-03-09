@@ -28,6 +28,10 @@ const calculateLayover = (previousArrival: string, nextDeparture: string) => {
   return `PT${Math.floor(diffInMinutes / 60)}H${diffInMinutes % 60}M`;
 };
 
+interface PageProps {
+   params: Promise<{ flightId: string }>
+}
+
 async function FlightDetails({ flightId }: { flightId: string }) {
    const flightData = await viewTripFlight(parseInt(flightId))
 
@@ -242,9 +246,7 @@ async function FlightDetails({ flightId }: { flightId: string }) {
 
 export default async function FlightDetailsPage({
    params,
-}: {
-   params: { flightId: string }
-}) {
+}: PageProps) {
    const { flightId } = await params
 
    return (
