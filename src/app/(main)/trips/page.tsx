@@ -17,6 +17,8 @@ interface Itinerary {
    userId: number
    status: 'UNBOOKED' | 'BOOKED' | 'NO_FLIGHTS'
    createdAt: Date
+   flightBooked: boolean
+   hotelBooked: boolean
 }
 
 export default function AIGeneratedItinerary() {
@@ -90,25 +92,49 @@ export default function AIGeneratedItinerary() {
                </Link>
                <div className="flex flex-row gap-x-2 pr-4 pt-2">
                   {itinerary.status !== 'NO_FLIGHTS' && (
-                     <Link
-                        className="w-full"
-                        href={itinerary.status === 'BOOKED' 
-                           ? `/trips/flight/${itinerary.id}`
-                           : `/flight?tripId=${itinerary.id}`}
-                        passHref
-                     >
-                        <Button className="h-[30px] w-[100px] bg-green-500 hover:bg-green-400 hover:text-black">
-                           {itinerary.status === 'BOOKED' ? 'View Flight' : 'Book Flights'}
-                        </Button>
-                     </Link>
+                     <div className="flex flex-row gap-x-2">
+                        <Link
+                           className="w-full"
+                           href={
+                              itinerary.status === 'BOOKED'
+                                 ? `/trips/flight/${itinerary.id}`
+                                 : `/flight?tripId=${itinerary.id}`
+                           }
+                           passHref
+                        >
+                           <Button className="h-[30px] w-[100px] bg-green-500 hover:bg-green-400 hover:text-black">
+                              {itinerary.flightBooked === true
+                                 ? 'Flight'
+                                 : 'Book Flights'}
+                           </Button>
+                        </Link>
+                        <Link
+                           className="w-full"
+                           href={
+                              itinerary.hotelBooked === true
+                                 ? `/trips/hotel/${itinerary.id}`
+                                 : `/hotel?tripId=${itinerary.id}`
+                           }
+                           passHref
+                        >
+                           <Button className="h-[30px] w-[100px] bg-green-500 hover:bg-green-400 hover:text-black">
+                              {itinerary.hotelBooked === true
+                                 ? 'Hotel'
+                                 : 'Book Hotel'}
+                           </Button>
+                        </Link>
+                     </div>
                   )}
-                  <Button
-                     variant="destructive"
-                     className="h-[30px] w-[60px] hover:bg-red-400 hover:text-black"
-                     onClick={() => handleDelete(itinerary.id)}
-                  >
-                     Delete
-                  </Button>
+                  {itinerary.hotelBooked === false &&
+                     itinerary.flightBooked === false && (
+                        <Button
+                           variant="destructive"
+                           className="h-[30px] w-[60px] hover:bg-red-400 hover:text-black"
+                           onClick={() => handleDelete(itinerary.id)}
+                        >
+                           Delete
+                        </Button>
+                     )}
                </div>
             </div>
          ))}
@@ -138,9 +164,12 @@ export default function AIGeneratedItinerary() {
                               {renderItineraryList(bookedItineraries)}
                            </TabsContent>
                            <TabsContent value="unbooked">
+                              <p className="mb-4 text-center text-lg font-semibold text-red-400">
+                                 Please book your flights before booking your
+                                 hotel!!!{' '}
+                              </p>
                               {renderItineraryList(unbookedItineraries)}
                            </TabsContent>
-                           
                         </ScrollArea>
                      </Tabs>
                   ) : (

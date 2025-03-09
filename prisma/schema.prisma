@@ -27,8 +27,12 @@ model Itinerary {
   preferenceId       Int
   preference         Preference     @relation(fields: [preferenceId], references: [id], onDelete: Cascade) 
 
+  flightBooked      Boolean   @default(false)
+  hotelBooked       Boolean   @default(false)
+  
   flights            Flight[]        @relation("ItineraryFlights")
   places             Place[]         @relation("ItineraryPlaces")
+  hotels             Hotel[]         @relation("ItineraryHotels")
 
   @@map("itineraries")
 }
@@ -51,6 +55,17 @@ model Flight {
   itinerary          Itinerary @relation("ItineraryFlights", fields: [itineraryId], references: [id], onDelete: Cascade) 
 
   @@map("flights")
+}
+
+model Hotel {
+  id                 Int      @id @default(autoincrement())
+  hotelDetails       Json?    
+  itineraryId        Int
+  createdAt          DateTime @default(now())
+
+  itinerary          Itinerary @relation("ItineraryHotels", fields: [itineraryId], references: [id], onDelete: Cascade) 
+
+  @@map("hotels")
 }
 
 model Preference {
