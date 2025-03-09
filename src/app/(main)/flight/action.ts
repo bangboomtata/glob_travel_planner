@@ -99,45 +99,18 @@ export async function fetchFlightOffers(
    returnDate: string,
    adults: number = 1,
    children: number = 0,
-   nonStop: boolean = false
+   nonStop: boolean = false,
+   tripId?: number
 ) {
    try {
-      // Create a cache key from the request parameters
-      const cacheKey = JSON.stringify({
-         origin,
-         destination,
-         departureDate,
-         returnDate,
-         adults,
-         children,
-         nonStop
-      })
+      // Log all inputs
+      console.log('Raw inputs:', { origin, destination, departureDate, returnDate })
+      console.log('Type of origin:', typeof origin)
 
-      // Check cache
-      if (flightOffersCache && 
-          flightOffersCache.key === cacheKey && 
-          Date.now() - flightOffersCache.timestamp < CACHE_DURATION) {
-         console.log('Using cached flight offers')
-         return flightOffersCache.data
-      }
-
-      console.log('Fetching fresh flight offers')
       const token = await getAmadeusToken()
-      console.log('Token obtained:', token.substring(0, 10) + '...') // Log partial token for security
-
       const endpoint = 'https://test.api.amadeus.com/v2/shopping/flight-offers'
       
-      // Add Authorization header check
-      const headers = {
-         'Authorization': `Bearer ${token}`,
-         'Content-Type': 'application/json'  // Add content type header
-      }
-      
-      console.log('Request headers:', {
-         Authorization: `Bearer ${token.substring(0, 10)}...`,
-         'Content-Type': 'application/json'
-      })
-
+      // Create and log params separately
       const params = new URLSearchParams({
          originLocationCode: origin,
          destinationLocationCode: destination,
@@ -147,13 +120,20 @@ export async function fetchFlightOffers(
          children: children.toString(),
          nonStop: nonStop.toString(),
          currencyCode: 'GBP',
-         max: '20',
+         max: '20'
       })
 
-      const response = await fetch(`${endpoint}?${params.toString()}`, {
-         method: 'GET',
-         headers: headers,
+      const url = `${endpoint}?${params.toString()}`
+      console.log('Constructed URL:', url)
+
+      const response = await fetch(url, {
+         headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+         }
       })
+
+      console.log('Response status:', response.status)
 
       // Add auth error checking
       if (response.status === 401) {
@@ -175,14 +155,21 @@ export async function fetchFlightOffers(
       const data = await response.json()
       
       // Check if no flights are available and update itinerary status
-      const tripId = new URL(origin).searchParams.get('tripId')
       if (tripId && (!data.data || data.data.length === 0)) {
-        await updateItineraryStatus(parseInt(tripId), true)
+         await updateItineraryStatus(tripId, true)
       }
       
       // Update cache
       flightOffersCache = {
-         key: cacheKey,
+         key: JSON.stringify({
+            origin,
+            destination,
+            departureDate,
+            returnDate,
+            adults,
+            children,
+            nonStop
+         }),
          data: data,
          timestamp: Date.now()
       }

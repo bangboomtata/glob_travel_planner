@@ -261,7 +261,8 @@ export default function FlightBooking() {
                   formattedReturnDate(),
                   numberOfAdults,
                   numberOfChildren,
-                  false
+                  false,
+                  tripId ? parseInt(tripId) : undefined
                )
 
                // Check for error in response
