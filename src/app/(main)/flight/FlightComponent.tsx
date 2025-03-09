@@ -1,10 +1,10 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState, useRef } from 'react'
 import { getItineraryPreferenceById } from '../trips/action'
 import { Prisma } from '@prisma/client'
-import { fetchFlightOffers } from './action'
+import { fetchFlightOffers, updateItineraryStatus } from './action'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Plane } from 'lucide-react'
@@ -113,6 +113,7 @@ function convertToItinerary(data: any): Itinerary | null {
 
 export default function FlightBooking() {
    const searchParams = useSearchParams()
+   const router = useRouter()
    const [itineraryPreference, setItineraryPreference] =
       useState<Itinerary | null>(null)
    const [loading, setLoading] = useState(true)
@@ -262,6 +263,32 @@ export default function FlightBooking() {
                   numberOfChildren,
                   false
                )
+
+               // Check for error in response
+               if ('error' in offers) {
+                  setFlightOffers(null)
+                  setLoading(false)
+                  
+                  // Show error message
+                  const errorDiv = document.createElement('div')
+                  errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg'
+                  errorDiv.textContent = `Error: ${offers.error}`
+                  document.body.appendChild(errorDiv)
+
+                  // Remove error message and redirect after 5 seconds
+                  setTimeout(() => {
+                     document.body.removeChild(errorDiv)
+                     router.push('/trips')
+                  }, 5000)
+
+                  return
+               }
+
+               // Update itinerary status if no flights found
+               if (tripId && (!offers.data || offers.data.length === 0)) {
+                  await updateItineraryStatus(parseInt(tripId), true)
+               }
+
                setFlightOffers(offers)
             } else {
                console.error('Missing required flight information:', {
@@ -273,15 +300,29 @@ export default function FlightBooking() {
             }
          } catch (error) {
             console.error('Error fetching itinerary or flights:', error)
+            setLoading(false)
+
+            // Show error message
+            const errorDiv = document.createElement('div')
+            errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg'
+            errorDiv.textContent = 'Failed to fetch flight information'
+            document.body.appendChild(errorDiv)
+
+            // Remove error message and redirect after 5 seconds
+            setTimeout(() => {
+               document.body.removeChild(errorDiv)
+               router.push('/trips')
+            }, 5000)
+
+            return
          } finally {
             setLoading(false)
-            // Mark initial fetch
             initialFetchMade.current = true
          }
       }
 
       fetchItineraryAndFlights()
-   }, [searchParams])
+   }, [searchParams, router])
 
    useEffect(() => {
       // Clear old flight data when loading new search results
@@ -524,13 +565,13 @@ export default function FlightBooking() {
             )}
          </div>
 
-         {/* API Response Log */}
-         <h2 className="mb-2 mt-4 text-xl font-semibold text-white">
+         {/* Remove or comment out the API Response Log */}
+         {/* <h2 className="mb-2 mt-4 text-xl font-semibold text-white">
             Flight Offers
          </h2>
          <pre className="overflow-auto whitespace-pre-wrap rounded-lg bg-gray-800 p-4 text-white">
             {JSON.stringify(flightOffers, null, 2)}
-         </pre>
+         </pre> */}
       </main>
    )
 }

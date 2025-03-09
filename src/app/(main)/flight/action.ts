@@ -59,6 +59,27 @@ export async function purchaseFlight(flightDetails: any, itineraryId: number) {
   }
 }
 
+export async function updateItineraryStatus(itineraryId: number, hasNoFlights: boolean) {
+  try {
+    const status = hasNoFlights ? 'NO_FLIGHTS' : 'UNBOOKED'
+    
+    const updatedItinerary = await prisma.itinerary.update({
+      where: {
+        id: itineraryId
+      },
+      data: {
+        status: status
+      }
+    })
+
+    revalidatePath('/trips')
+    return { success: true, data: updatedItinerary }
+  } catch (error) {
+    console.error('Error updating itinerary status:', error)
+    return { success: false, error: 'Failed to update itinerary status' }
+  }
+}
+
 export async function fetchFlightOffers(
    origin: string,
    destination: string,
@@ -140,6 +161,12 @@ export async function fetchFlightOffers(
       }
 
       const data = await response.json()
+      
+      // Check if no flights are available and update itinerary status
+      const tripId = new URL(origin).searchParams.get('tripId')
+      if (tripId && (!data.data || data.data.length === 0)) {
+        await updateItineraryStatus(parseInt(tripId), true)
+      }
       
       // Update cache
       flightOffersCache = {

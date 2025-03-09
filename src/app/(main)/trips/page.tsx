@@ -12,12 +12,14 @@ import { getItinerary, deleteItineraryById } from './action'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Badge } from '@/components/ui/badge'
 // import { bookTrip } from './action'
 
 interface Itinerary {
    id: number
    generatedItinerary: any
    userId: number
+   status: 'UNBOOKED' | 'BOOKED' | 'NO_FLIGHTS'
    createdAt: Date
 }
 
@@ -76,29 +78,38 @@ export default function AIGeneratedItinerary() {
                                     href={`/trips/${itinerary.id}`}
                                     passHref
                                  >
-                                    <p className="text-lg font-semibold">
-                                       {
-                                          itinerary.generatedItinerary
-                                             .destination_country
-                                       }
-                                    </p>
+                                    <div className="flex items-center gap-2">
+                                       <p className="text-lg font-semibold">
+                                          {
+                                             itinerary.generatedItinerary
+                                                .destination_country
+                                          }
+                                       </p>
+                                       {itinerary.status === 'NO_FLIGHTS' && (
+                                          <Badge variant="destructive" className="text-xs">
+                                             No Flights Available
+                                          </Badge>
+                                       )}
+                                    </div>
                                     <p className="text-sm text-gray-600">
-                                       Date Created: {' '}
+                                       Date Created:{' '}
                                        {new Date(
                                           itinerary.createdAt
                                        ).toLocaleDateString('en-GB')}
                                     </p>
                                  </Link>
                                  <div className="flex flex-row gap-x-2 pr-4 pt-2">
-                                    <Link
-                                       className="w-full"
-                                       href={`/flight?tripId=${itinerary.id}`}
-                                       passHref
-                                    >
-                                       <Button className="h-[30px] w-[100px] bg-green-500 hover:bg-green-400 hover:text-black">
-                                          Book Flights
-                                       </Button>
-                                    </Link>
+                                    {itinerary.status !== 'NO_FLIGHTS' && (
+                                       <Link
+                                          className="w-full"
+                                          href={`/flight?tripId=${itinerary.id}`}
+                                          passHref
+                                       >
+                                          <Button className="h-[30px] w-[100px] bg-green-500 hover:bg-green-400 hover:text-black">
+                                             Book Flights
+                                          </Button>
+                                       </Link>
+                                    )}
 
                                     <Button
                                        variant="destructive"

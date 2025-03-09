@@ -68,6 +68,7 @@ model Preference {
 enum ItineraryStatus {
   UNBOOKED
   BOOKED
+  NO_FLIGHTS
 }
 
 model User {
