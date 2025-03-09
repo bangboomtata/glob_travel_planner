@@ -48,7 +48,7 @@ export default function FlightDetails({ params }: PageProps) {
       await new Promise(resolve => setTimeout(resolve, 3000))
 
       alert('Flight purchased successfully!')
-      window.close()
+      router.push('/trips')
     } catch (error) {
       console.error('Error purchasing flight:', error)
       alert('Failed to purchase flight. Please try again.')
