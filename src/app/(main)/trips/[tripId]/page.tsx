@@ -14,6 +14,9 @@ import {
    AccordionTrigger,
 } from '@/components/ui/accordion'
 import { getItineraryById } from '../action' 
+import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { MapPin } from 'lucide-react'
 
 interface Itinerary {
    id: number
@@ -62,45 +65,42 @@ export default async function TripByIdPage({
                      {new Date(itinerary.createdAt).toLocaleDateString()}
                   </p>
                </CardHeader>
-               <CardContent>
-                  <ScrollArea className="h-[60vh] pr-4">
-                     {displayItinerary.map((day: any, dayIndex: number) => (
-                        <div key={dayIndex} className="mb-6">
-                           <h3 className="mb-2 text-lg font-semibold">
-                              Day {day.day}
-                           </h3>
-                           {day.activities.map(
-                              (activity: any, actIndex: number) => (
-                                 <Accordion
-                                    key={actIndex}
-                                    type="single"
-                                    collapsible
-                                    defaultValue={`activity-${actIndex}`}
-                                    className="mx-auto w-full max-w-4xl"
-                                 >
-                                    <AccordionItem
-                                       value={`activity-${actIndex}`}
-                                    >
-                                       <AccordionTrigger className="font-medium text-gray-800">
-                                          {activity.time} -{' '}
-                                          {activity.description}
-                                       </AccordionTrigger>
-                                       <AccordionContent>
-                                          <p>{activity.details}</p>
-                                       </AccordionContent>
-                                    </AccordionItem>
-                                 </Accordion>
-                              )
-                           )}
-                        </div>
-                     ))}
+               <CardContent className=''>
+                  <ScrollArea className="h-full pr-4">
+                     <Accordion 
+                        type="multiple" 
+                        defaultValue={displayItinerary.map((_:any, index:number) => `day-${index}`)}
+                        className="mx-auto w-full max-w-4xl"
+                     >
+                        {displayItinerary.map((day: any, dayIndex: number) => (
+                           <AccordionItem key={dayIndex} value={`day-${dayIndex}`}>
+                              <AccordionTrigger className="font-medium text-gray-800">
+                                 <h3 className="text-lg font-semibold text-left">
+                                    Day {day.day}
+                                 </h3>
+                              </AccordionTrigger>
+                              <AccordionContent>
+                                 {day.activities.map(
+                                    (activity: any, actIndex: number) => (
+                                       <Link href={activity.googleMap} target="_blank" key={actIndex}>
+                                          <div className="mb-4 border-l-2 border-gray-200 pl-4 relative group hover:bg-gray-50 rounded-r transition-colors duration-200 p-2">
+                                             <Badge className="absolute right-2 top-2 hover:bg-gray-600 flex items-center gap-1">
+                                                <MapPin size={14} /> Explore
+                                             </Badge>
+                                             <h4 className="font-medium text-gray-800 pr-20">
+                                                {activity.time} - {activity.description}
+                                             </h4>
+                                             <p className="mt-2 text-gray-600">{activity.details}</p>
+                                          </div>
+                                       </Link>
+                                    )
+                                 )}
+                              </AccordionContent>
+                           </AccordionItem>
+                        ))}
+                     </Accordion>
                   </ScrollArea>
                </CardContent>
-               <CardFooter>
-                  <p className="text-sm text-gray-600">
-                     We hope you enjoy your journey!
-                  </p>
-               </CardFooter>
             </Card>
          </BackgroundGradient>
       </main>
