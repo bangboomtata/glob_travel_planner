@@ -73,3 +73,30 @@ export async function viewTripFlight(tripId: number) {
       throw new Error('Failed to fetch flight details');
    }
 }
+
+export async function viewTripHotel(hotelId: number) {
+  try {
+    const hotel = await prisma.hotel.findUnique({
+      where: {
+        id: hotelId,
+      },
+    })
+
+    if (!hotel) {
+      throw new Error('Hotel not found')
+    }
+
+    // Parse JSON if it's a string, otherwise use as is
+    const parsedHotelDetails = typeof hotel.hotelDetails === 'string' 
+      ? JSON.parse(hotel.hotelDetails as string)
+      : hotel.hotelDetails
+
+    return {
+      ...hotel,
+      hotelDetails: parsedHotelDetails
+    }
+  } catch (error) {
+    console.error('Error fetching hotel:', error)
+    throw error
+  }
+}

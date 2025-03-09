@@ -92,7 +92,7 @@ export default function AIGeneratedItinerary() {
                </Link>
                <div className="flex flex-row gap-x-2 pr-4 pt-2">
                   {itinerary.status !== 'NO_FLIGHTS' && (
-                     <div className='flex flex-row gap-x-2'>
+                     <div className="flex flex-row gap-x-2">
                         <Link
                            className="w-full"
                            href={
@@ -104,7 +104,7 @@ export default function AIGeneratedItinerary() {
                         >
                            <Button className="h-[30px] w-[100px] bg-green-500 hover:bg-green-400 hover:text-black">
                               {itinerary.flightBooked === true
-                                 ? 'View Flight'
+                                 ? 'Flight'
                                  : 'Book Flights'}
                            </Button>
                         </Link>
@@ -119,19 +119,22 @@ export default function AIGeneratedItinerary() {
                         >
                            <Button className="h-[30px] w-[100px] bg-green-500 hover:bg-green-400 hover:text-black">
                               {itinerary.hotelBooked === true
-                                 ? 'View Hotel'
+                                 ? 'Hotel'
                                  : 'Book Hotel'}
                            </Button>
                         </Link>
                      </div>
                   )}
-                  <Button
-                     variant="destructive"
-                     className="h-[30px] w-[60px] hover:bg-red-400 hover:text-black"
-                     onClick={() => handleDelete(itinerary.id)}
-                  >
-                     Delete
-                  </Button>
+                  {itinerary.hotelBooked === false &&
+                     itinerary.flightBooked === false && (
+                        <Button
+                           variant="destructive"
+                           className="h-[30px] w-[60px] hover:bg-red-400 hover:text-black"
+                           onClick={() => handleDelete(itinerary.id)}
+                        >
+                           Delete
+                        </Button>
+                     )}
                </div>
             </div>
          ))}
@@ -161,7 +164,10 @@ export default function AIGeneratedItinerary() {
                               {renderItineraryList(bookedItineraries)}
                            </TabsContent>
                            <TabsContent value="unbooked">
-                              <p className='text-center text-red-400 text-lg font-semibold mb-4'>Please book your flights before booking your hotel!!!   </p>
+                              <p className="mb-4 text-center text-lg font-semibold text-red-400">
+                                 Please book your flights before booking your
+                                 hotel!!!{' '}
+                              </p>
                               {renderItineraryList(unbookedItineraries)}
                            </TabsContent>
                         </ScrollArea>
