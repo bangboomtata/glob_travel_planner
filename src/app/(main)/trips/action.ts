@@ -1,7 +1,6 @@
 'use server'
 
 import { PrismaClient, QuestionType } from '@prisma/client'
-import { fetchFlightOffers } from '@/app/(main)/flight/action'
 
 const prisma = new PrismaClient()
 

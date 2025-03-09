@@ -1,7 +1,7 @@
 'use server'
 
 import { getAmadeusToken } from '@/lib/utils'
-import flightData from './flightOfferDataExample.json'
+// import flightData from './flightOfferDataExample.json'
 import { revalidatePath } from 'next/cache'
 import { PrismaClient } from '@prisma/client'
 
@@ -26,37 +26,49 @@ let flightOffersCache: {
 //    return flightData
 // }
 
-export async function purchaseFlight(flightDetails: any, itineraryId: number) {
-  try {
-    // Validate input
-    if (!flightDetails || !itineraryId) {
-      throw new Error('Missing required fields')
-    }
+export async function purchaseFlight(flightData: any, tripId: number) {
+   try {
+      // Create flight record
+      await prisma.flight.create({
+         data: {
+            flightDetails: flightData,
+            itineraryId: tripId,
+         },
+      })
 
-    // Create flight record
-    const flight = await prisma.flight.create({
-      data: {
-        flightDetails,
-        itineraryId,
-      },
-    })
+      // Update itinerary flightBooked status
+      await prisma.itinerary.update({
+         where: { id: tripId },
+         data: {
+            flightBooked: true,
+            // Update status to BOOKED only if both flight and hotel are booked
+            status: {
+               set: await checkAndUpdateBookingStatus(tripId)
+            }
+         },
+      })
 
-    // Update itinerary status to BOOKED
-    await prisma.itinerary.update({
-      where: {
-        id: itineraryId,
-      },
-      data: {
-        status: 'BOOKED',
-      },
-    })
+      return { success: true }
+   } catch (error) {
+      console.error('Error purchasing flight:', error)
+      return { success: false, error: 'Failed to purchase flight' }
+   }
+}
 
-    revalidatePath('/trips')
-    return { success: true, data: flight }
-  } catch (error) {
-    console.error('Error creating flight:', error)
-    return { success: false, error: 'Failed to purchase flight' }
-  }
+// Helper function to check both bookings and return appropriate status
+async function checkAndUpdateBookingStatus(tripId: number) {
+   const itinerary = await prisma.itinerary.findUnique({
+      where: { id: tripId },
+      select: {
+         flightBooked: true,
+         hotelBooked: true
+      }
+   });
+
+   if (!itinerary) throw new Error('Itinerary not found');
+
+   // Return the enum value instead of string
+   return (itinerary.flightBooked && itinerary.hotelBooked) ? 'BOOKED' as const : 'UNBOOKED' as const;
 }
 
 export async function updateItineraryStatus(itineraryId: number, hasNoFlights: boolean) {
