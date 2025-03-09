@@ -95,8 +95,8 @@ export default function AIGeneratedItinerary() {
                                        href={`/flight?tripId=${itinerary.id}`}
                                        passHref
                                     >
-                                       <Button className="h-[30px] w-[60px] bg-green-500 hover:bg-green-400 hover:text-black">
-                                          Book
+                                       <Button className="h-[30px] w-[100px] bg-green-500 hover:bg-green-400 hover:text-black">
+                                          Book Flights
                                        </Button>
                                     </Link>
 

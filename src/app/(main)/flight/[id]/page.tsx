@@ -19,12 +19,12 @@ export default function FlightDetails({ params }: PageProps) {
   const tripId = searchParams.get('tripId')
   const [flightData, setFlightData] = useState<any>(null)
   const router = useRouter()
+  const [isPurchasing, setIsPurchasing] = useState(false)
 
   useEffect(() => {
     const storedFlight = localStorage.getItem(`flight-${id}`)
     
     if (!storedFlight) {
-      // Redirect to search page if no flight data is found
       router.push(`/flight?tripId=${tripId}`)
       return
     }
@@ -34,6 +34,8 @@ export default function FlightDetails({ params }: PageProps) {
 
   const handlePurchase = async () => {
     try {
+      setIsPurchasing(true) 
+      
       const result = await purchaseFlight(
         flightData, 
         parseInt(tripId as string)
@@ -43,13 +45,15 @@ export default function FlightDetails({ params }: PageProps) {
         throw new Error(result.error)
       }
 
-      // Show success message
+      await new Promise(resolve => setTimeout(resolve, 3000))
+
       alert('Flight purchased successfully!')
-      // Optionally close the window since it's in a new tab
       window.close()
     } catch (error) {
       console.error('Error purchasing flight:', error)
       alert('Failed to purchase flight. Please try again.')
+    } finally {
+      setIsPurchasing(false) 
     }
   }
 
@@ -68,7 +72,6 @@ export default function FlightDetails({ params }: PageProps) {
     return `${hours}h ${minutes}m`
   }
 
-  // Helper function to get airline name from code
   const getAirlineName = (code: string) => {
     const airlines: Record<string, string> = {
       AZ: "Alitalia",
@@ -307,13 +310,20 @@ export default function FlightDetails({ params }: PageProps) {
         </CardContent>
       </Card>
 
-      {/* Add purchase button at the bottom */}
       <div className="mt-6 flex justify-end">
         <Button 
           onClick={handlePurchase}
-          className="bg-primary text-white hover:bg-primary/90"
+          className="bg-red-500 text-white hover:bg-red-400"
+          disabled={isPurchasing}
         >
-          Purchase Flight
+          {isPurchasing ? (
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+              Purchasing...
+            </div>
+          ) : (
+            'Purchase Flight'
+          )}
         </Button>
       </div>
     </div>

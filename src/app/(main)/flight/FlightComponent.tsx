@@ -228,12 +228,12 @@ export default function FlightBooking() {
                convertedData?.preference?.answers || {}
             ).find((answer) => answer.questionType === 'AIRPORT')?.options?.[0]
 
-            if (departureCity === 'London') {
+            if (departureCity === 'London (LON)') {
                origin = 'LON'
-            } else if (departureCity === 'Manchester') {
+            } else if (departureCity === 'Manchester (MAN)') {
                origin = 'MAN'
             } else if (departureCity === 'Birmingham') {
-               origin = 'BHX'
+               origin = 'BHX (BHX)'
             } else {
                throw new Error('Invalid departure city')
             }
@@ -328,188 +328,197 @@ export default function FlightBooking() {
 
          <div className="space-y-4">
             {flightOffers?.data ? (
-               flightOffers.data.map((flight: any) => {
-                  if (typeof window !== 'undefined') {
-                     localStorage.setItem(
-                        `flight-${flight.id}`,
-                        JSON.stringify({
-                           ...flight,
-                           tripId: searchParams.get('tripId'),
-                        })
-                     )
-                  }
+               flightOffers.data.length === 0 ? (
+                  <div className="text-center py-8 bg-white rounded-lg shadow">
+                     <h3 className="text-xl font-semibold text-gray-800 mb-2">No Flights Available</h3>
+                     <p className="text-gray-600">
+                        We couldn't find any flights matching your criteria. Please try different dates or airports.
+                     </p>
+                  </div>
+               ) : (
+                  flightOffers.data.map((flight: any) => {
+                     if (typeof window !== 'undefined') {
+                        localStorage.setItem(
+                           `flight-${flight.id}`,
+                           JSON.stringify({
+                              ...flight,
+                              tripId: searchParams.get('tripId'),
+                           })
+                        )
+                     }
 
-                  return (
-                     <Link
-                        key={flight.id}
-                        href={`/flight/${flight.id}?tripId=${searchParams.get('tripId')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block"
-                     >
-                        <Card className="mx-auto max-w-[400px] overflow-hidden transition-shadow hover:shadow-md md:max-w-[10000px]">
-                           <div className="flex flex-col items-center justify-center gap-4 py-4 md:flex-row md:items-center md:justify-evenly">
-                              <div className="flex w-full items-center justify-center gap-1 md:gap-3">
-                                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 md:h-12 md:w-12">
-                                    <Plane className="h-6 w-6 text-primary" />
-                                 </div>
-                                 <div>
-                                    <p className="text-base text-black md:text-sm md:text-muted-foreground">
-                                       {flight.itineraries[0].segments.length >
-                                       1 ? (
-                                          <span className="text-yellow-600 dark:text-yellow-500">
-                                             {flight.itineraries[0].segments
-                                                .length - 1}{' '}
-                                             stop
-                                          </span>
-                                       ) : (
-                                          'Direct'
-                                       )}
-                                    </p>
-                                 </div>
-                              </div>
-
-                              <div className="flex w-full flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
-                                 {/* Outbound */}
-                                 <div className="flex items-center gap-2">
-                                    <div className="text-right">
-                                       <p className="font-medium">
-                                          {format(
-                                             parseISO(
-                                                flight.itineraries[0]
-                                                   .segments[0].departure.at
-                                             ),
-                                             'HH:mm'
-                                          )}
-                                       </p>
-                                       <p className="text-xs text-muted-foreground">
-                                          {
-                                             flight.itineraries[0].segments[0]
-                                                .departure.iataCode
-                                          }
-                                       </p>
-                                    </div>
-                                    <div className="mx-2 flex flex-col items-center">
-                                       <div className="text-xs text-muted-foreground">
-                                          {formatDuration(
-                                             flight.itineraries[0].duration
-                                          )}
-                                       </div>
-                                       <div className="my-1 h-px w-16 bg-muted-foreground/30"></div>
-                                       <div className="text-xs text-muted-foreground">
-                                          {flight.itineraries[0].segments
-                                             .length > 1
-                                             ? `via ${flight.itineraries[0].segments[0].arrival.iataCode}`
-                                             : 'Direct'}
-                                       </div>
+                     return (
+                        <Link
+                           key={flight.id}
+                           href={`/flight/${flight.id}?tripId=${searchParams.get('tripId')}`}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="block"
+                        >
+                           <Card className="mx-auto max-w-[400px] overflow-hidden transition-shadow hover:shadow-md md:max-w-[10000px]">
+                              <div className="flex flex-col items-center justify-center gap-4 py-4 md:flex-row md:items-center md:justify-evenly">
+                                 <div className="flex w-full items-center justify-center gap-1 md:gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 md:h-12 md:w-12">
+                                       <Plane className="h-6 w-6 text-primary" />
                                     </div>
                                     <div>
-                                       <p className="font-medium">
-                                          {format(
-                                             parseISO(
-                                                flight.itineraries[0].segments[
+                                       <p className="text-base text-black md:text-sm md:text-muted-foreground">
+                                          {flight.itineraries[0].segments.length >
+                                          1 ? (
+                                             <span className="text-yellow-600 dark:text-yellow-500">
+                                                {flight.itineraries[0].segments
+                                                   .length - 1}{' '}
+                                                stop
+                                             </span>
+                                          ) : (
+                                             'Direct'
+                                          )}
+                                       </p>
+                                    </div>
+                                 </div>
+
+                                 <div className="flex w-full flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
+                                    {/* Outbound */}
+                                    <div className="flex items-center gap-2">
+                                       <div className="text-right">
+                                          <p className="font-medium">
+                                             {format(
+                                                parseISO(
                                                    flight.itineraries[0]
-                                                      .segments.length - 1
-                                                ].arrival.at
-                                             ),
-                                             'HH:mm'
-                                          )}
-                                       </p>
-                                       <p className="text-xs text-muted-foreground">
-                                          {
-                                             flight.itineraries[0].segments[
-                                                flight.itineraries[0].segments
-                                                   .length - 1
-                                             ].arrival.iataCode
-                                          }
-                                       </p>
+                                                      .segments[0].departure.at
+                                                ),
+                                                'HH:mm'
+                                             )}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                             {
+                                                flight.itineraries[0].segments[0]
+                                                   .departure.iataCode
+                                             }
+                                          </p>
+                                       </div>
+                                       <div className="mx-2 flex flex-col items-center">
+                                          <div className="text-xs text-muted-foreground">
+                                             {formatDuration(
+                                                flight.itineraries[0].duration
+                                             )}
+                                          </div>
+                                          <div className="my-1 h-px w-16 bg-muted-foreground/30"></div>
+                                          <div className="text-xs text-muted-foreground">
+                                             {flight.itineraries[0].segments
+                                                .length > 1
+                                                ? `via ${flight.itineraries[0].segments[0].arrival.iataCode}`
+                                                : 'Direct'}
+                                          </div>
+                                       </div>
+                                       <div>
+                                          <p className="font-medium">
+                                             {format(
+                                                parseISO(
+                                                   flight.itineraries[0].segments[
+                                                      flight.itineraries[0]
+                                                         .segments.length - 1
+                                                   ].arrival.at
+                                                ),
+                                                'HH:mm'
+                                             )}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                             {
+                                                flight.itineraries[0].segments[
+                                                   flight.itineraries[0].segments
+                                                      .length - 1
+                                                ].arrival.iataCode
+                                             }
+                                          </p>
+                                       </div>
+                                    </div>
+
+                                    {/* Return */}
+                                    <div className="flex items-center gap-2">
+                                       <div className="text-right">
+                                          <p className="font-medium">
+                                             {format(
+                                                parseISO(
+                                                   flight.itineraries[1]
+                                                      .segments[0].departure.at
+                                                ),
+                                                'HH:mm'
+                                             )}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                             {
+                                                flight.itineraries[1].segments[0]
+                                                   .departure.iataCode
+                                             }
+                                          </p>
+                                       </div>
+                                       <div className="mx-2 flex flex-col items-center">
+                                          <div className="text-xs text-muted-foreground">
+                                             {formatDuration(
+                                                flight.itineraries[1].duration
+                                             )}
+                                          </div>
+                                          <div className="my-1 h-px w-16 bg-muted-foreground/30"></div>
+                                          <div className="text-xs text-muted-foreground">
+                                             {flight.itineraries[1].segments
+                                                .length > 1
+                                                ? `via ${flight.itineraries[1].segments[0].arrival.iataCode}`
+                                                : 'Direct'}
+                                          </div>
+                                       </div>
+                                       <div>
+                                          <p className="font-medium">
+                                             {format(
+                                                parseISO(
+                                                   flight.itineraries[1].segments[
+                                                      flight.itineraries[1]
+                                                         .segments.length - 1
+                                                   ].arrival.at
+                                                ),
+                                                'HH:mm'
+                                             )}
+                                          </p>
+                                          <p className="text-xs text-muted-foreground">
+                                             {
+                                                flight.itineraries[1].segments[
+                                                   flight.itineraries[1].segments
+                                                      .length - 1
+                                                ].arrival.iataCode
+                                             }
+                                          </p>
+                                       </div>
                                     </div>
                                  </div>
 
-                                 {/* Return */}
-                                 <div className="flex items-center gap-2">
-                                    <div className="text-right">
-                                       <p className="font-medium">
-                                          {format(
-                                             parseISO(
-                                                flight.itineraries[1]
-                                                   .segments[0].departure.at
-                                             ),
-                                             'HH:mm'
-                                          )}
+                                 <div className="flex w-full flex-row items-center justify-center gap-y-2 space-x-6 border-l-2 border-gray-300 md:flex-col md:items-center md:space-x-0">
+                                    <div className="text-center">
+                                       <p className="text-lg font-semibold md:text-xl md:font-bold">
+                                          {flight.price.currency}{' '}
+                                          {flight.price.total}
                                        </p>
-                                       <p className="text-xs text-muted-foreground">
-                                          {
-                                             flight.itineraries[1].segments[0]
-                                                .departure.iataCode
-                                          }
-                                       </p>
-                                    </div>
-                                    <div className="mx-2 flex flex-col items-center">
-                                       <div className="text-xs text-muted-foreground">
-                                          {formatDuration(
-                                             flight.itineraries[1].duration
-                                          )}
-                                       </div>
-                                       <div className="my-1 h-px w-16 bg-muted-foreground/30"></div>
-                                       <div className="text-xs text-muted-foreground">
-                                          {flight.itineraries[1].segments
-                                             .length > 1
-                                             ? `via ${flight.itineraries[1].segments[0].arrival.iataCode}`
-                                             : 'Direct'}
-                                       </div>
+                                       {flight.numberOfBookableSeats < 5 && (
+                                          <p className="text-sm font-semibold text-muted-foreground text-red-500">
+                                             {flight.numberOfBookableSeats} seats
+                                             left
+                                          </p>
+                                       )}
                                     </div>
                                     <div>
-                                       <p className="font-medium">
-                                          {format(
-                                             parseISO(
-                                                flight.itineraries[1].segments[
-                                                   flight.itineraries[1]
-                                                      .segments.length - 1
-                                                ].arrival.at
-                                             ),
-                                             'HH:mm'
-                                          )}
-                                       </p>
-                                       <p className="text-xs text-muted-foreground">
-                                          {
-                                             flight.itineraries[1].segments[
-                                                flight.itineraries[1].segments
-                                                   .length - 1
-                                             ].arrival.iataCode
-                                          }
-                                       </p>
+                                       <Button
+                                          className="bg-green-500 hover:bg-green-300"
+                                          size="sm"
+                                       >
+                                          Book
+                                       </Button>
                                     </div>
                                  </div>
                               </div>
-
-                              <div className="flex w-full flex-row items-center justify-center gap-y-2 space-x-6 border-l-2 border-gray-300 md:flex-col md:items-center md:space-x-0">
-                                 <div className="text-center">
-                                    <p className="text-lg font-semibold md:text-xl md:font-bold">
-                                       {flight.price.currency}{' '}
-                                       {flight.price.total}
-                                    </p>
-                                    {flight.numberOfBookableSeats < 5 && (
-                                       <p className="text-sm font-semibold text-muted-foreground text-red-500">
-                                          {flight.numberOfBookableSeats} seats
-                                          left
-                                       </p>
-                                    )}
-                                 </div>
-                                 <div>
-                                    <Button
-                                       className="bg-green-500 hover:bg-green-300"
-                                       size="sm"
-                                    >
-                                       Book
-                                    </Button>
-                                 </div>
-                              </div>
-                           </div>
-                        </Card>
-                     </Link>
-                  )
-               })
+                           </Card>
+                        </Link>
+                     )
+                  })
+               )
             ) : (
                <div className="text-white">Loading flights...</div>
             )}
