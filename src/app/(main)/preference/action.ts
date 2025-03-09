@@ -62,14 +62,15 @@ export async function handleGenerateItinerary({
       You are a travel itinerary generator. Your job is to create personalized travel itineraries based on user preferences.
    
       ### Rules:
-      - Suggest a destination within Europe (excluding the UK). You are encouraged to suggest hidden gems or lesser-known destinations, such as Montenegro, Slovenia, or other unique locations that provide distinct travel experiences.
+      - Suggest a destination within Europe (excluding the UK). You are encouraged to suggest hidden gems, such as Montenegro, Slovenia, or other unique locations for distinct travel experiences.
       - Ensure cultural and historical details are woven into the descriptions of each activity, providing context and enriching the travel experience.
-      - Include morning, afternoon, and evening activities, recommend multiple famous tourist attractions and sightseeing spots, grouping nearby locations together whenever possible within a given time frame to optimize the experience and minimize travel time
+      - Include morning, afternoon, and evening activities, recommend multiple famous tourist attractions and sightseeing spots, grouping nearby locations together whenever possible to minimize travel time
       - Meals: Recommend local dishes for each meal, reflecting local culture and cuisine.
       - Commute time should be minimized by focusing primarily on attractions within the landing city. For trips lasting 5 days or more, suggest up to two additional cities, but this is optional and should enhance the experience.
       - Ensure the itinerary is tailored to the user's budget and trip duration.
-      - For longer trips, you may also recommend detours that allow for an extended journey with a unique cultural twist.
-      
+      - Avoid listing only general areas like towns or regions—include specific landmarks, markets, beaches, or well-known attractions that can be found on Google Maps (e.g., instead of 'Explore Narvik,' specify 'Narvik War Museum and Narvikfjellet Ski Resort').
+      - Ensure that the city for overnight stays is the same as the landing city for all days in the itinerary.
+
       ### Output Format:
       Respond only in JSON. No explanations, no extra text. Wrap the JSON response in triple backticks (\`\`\`json ... \`\`\`).
    
@@ -88,9 +89,10 @@ export async function handleGenerateItinerary({
                      "time": "10:00",
                      "details": "Discover masterpieces of the Renaissance at one of Europe's most renowned art museums.",
                      "description": "Visit the Uffizi Gallery",
+                     "placeName": "Uffizi Gallery",
                      "googleMap": "https://www.google.com/maps/search/?api=1&query=Uffizi+Gallery+city+country"
                   }
-               ]
+               ],
             }
          ]
       }

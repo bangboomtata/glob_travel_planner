@@ -14,7 +14,8 @@
       "db:format": "prisma format",
       "add-shadcn": "shadcn-ui@latest add",
       "postinstall": "prisma generate",
-      "db:question-upload": "npx ts-node -T prisma/question-upload.ts"
+      "db:question-upload": "npx ts-node -T prisma/question-upload.ts",
+      "db:extract-places": "npx ts-node -T prisma/place-extractor.ts"
    },
    "dependencies": {
       "@prisma/client": "^6.0.1",

@@ -36,7 +36,6 @@ model Itinerary {
 model Place {
   id            Int         @id @default(autoincrement())
   name          String
-  description   String
   googleMapLink String
   itineraries   Itinerary[] @relation("ItineraryPlaces")
 
