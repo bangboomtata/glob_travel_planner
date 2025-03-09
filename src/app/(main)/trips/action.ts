@@ -86,7 +86,6 @@ export async function viewTripHotel(hotelId: number) {
       throw new Error('Hotel not found')
     }
 
-    // Parse JSON if it's a string, otherwise use as is
     const parsedHotelDetails = typeof hotel.hotelDetails === 'string' 
       ? JSON.parse(hotel.hotelDetails as string)
       : hotel.hotelDetails
