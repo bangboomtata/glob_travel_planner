@@ -96,7 +96,7 @@ export default function AIGeneratedItinerary() {
                         <Link
                            className="w-full"
                            href={
-                              itinerary.status === 'BOOKED'
+                              itinerary.flightBooked === true
                                  ? `/trips/flight/${itinerary.id}`
                                  : `/flight?tripId=${itinerary.id}`
                            }
