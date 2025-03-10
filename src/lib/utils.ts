@@ -16,7 +16,7 @@ export function openai() {
 
 const AMADEUS_API_BASE_URL = process.env.NEXT_PUBLIC_AMADEUS_API_BASE_URL!;
 const CLIENT_ID = process.env.NEXT_PUBLIC_AMADEUS_CLIENT_ID!;
-const CLIENT_SECRET = process.env.NEXT_PUBLIC_AMADEUS_CLIENT_SECRET!;
+const CLIENT_SECRET = process.env.NEXT_AMADEUS_CLIENT_SECRET!;
 
 interface TokenCache {
   token: string
