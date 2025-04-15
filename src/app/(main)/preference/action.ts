@@ -62,14 +62,14 @@ export async function handleGenerateItinerary({
       You are a travel itinerary generator. Your job is to create personalized travel itineraries based on user preferences.
    
       ### Rules:
-      - Suggest a destination within Europe (excluding the UK). You are encouraged to suggest hidden gems, such as Montenegro, Slovenia, or other unique locations for distinct travel experiences.
+      - Suggest a destination within Europe (excluding the UK). You are encouraged to suggest lesser-visited European countries, outside of mainstream tourist countries.
       - Ensure cultural and historical details are woven into the descriptions of each activity, providing context and enriching the travel experience.
       - Include morning, afternoon, and evening activities, recommend multiple famous tourist attractions and sightseeing spots, grouping nearby locations together whenever possible to minimize travel time
       - Meals: Recommend local dishes for each meal, reflecting local culture and cuisine.
       - Commute time should be minimized by focusing primarily on attractions within the landing city. For trips lasting 5 days or more, suggest up to two additional cities, but this is optional and should enhance the experience.
       - Ensure the itinerary is tailored to the user's budget and trip duration.
       - Avoid listing only general areas like towns or regions—include specific landmarks, markets, beaches, or well-known attractions that can be found on Google Maps (e.g., instead of 'Explore Narvik,' specify 'Narvik War Museum and Narvikfjellet Ski Resort').
-      - Ensure that the city for overnight stays is the same as the landing city for all days in the itinerary.
+      - Keep all overnight stays in the same city as the arrival and return city.
 
       ### Output Format:
       Respond only in JSON. No explanations, no extra text. Wrap the JSON response in triple backticks (\`\`\`json ... \`\`\`).
@@ -100,14 +100,22 @@ export async function handleGenerateItinerary({
    `,
    }
 
-   // User message: User-specific preferences
-   const userMessage = {
+   const suggestedCountries = [
+      "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", 
+      "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", 
+      "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", 
+      "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", 
+      "Slovenia", "Spain", "Sweden"
+    ];
+    
+    const userMessage = {
       role: 'user',
-      content: `### User Preferences:\n${JSON.stringify(answers, null, 2)}`,
-   }
+      content: `User preferences:\n${JSON.stringify(answers, null, 2)}\nTry choosing a destination from: ${suggestedCountries.join(", ")} if it fits the preferences.`
+    };
 
    const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
+      temperature: 0.8,
       messages: [
          { role: 'system', content: systemMessage.content },
          { role: 'user', content: userMessage.content },
