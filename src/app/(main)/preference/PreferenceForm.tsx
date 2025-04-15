@@ -85,7 +85,7 @@ export default function PreferenceForm({
          } else if (question.type === 'NUMBER_OF_TRAVELERS') {
             return preferences[question.id]?.value.adults >= 1
          } else if (question.type === 'PLACES_TO_AVOID') {
-            return preferences[question.id]?.value !== undefined
+            return true
          } else {
             return preferences[question.id]?.options?.length > 0
          }
@@ -185,11 +185,16 @@ export default function PreferenceForm({
                            className="flex items-center space-x-2"
                         >
                            <Switch
-                              checked={preferences[question.id]?.options?.includes(option) || false}
+                              checked={
+                                 preferences[question.id]?.options?.includes(
+                                    option
+                                 ) || false
+                              }
                               onCheckedChange={(checked) =>
                                  setPreferences((prev) => {
-                                    const currentOptions = prev[question.id]?.options || []
-                                    
+                                    const currentOptions =
+                                       prev[question.id]?.options || []
+
                                     if (checked && currentOptions.length >= 1) {
                                        alert('Please choose only one option')
                                        return prev
@@ -197,7 +202,9 @@ export default function PreferenceForm({
 
                                     const updatedOptions: string[] = checked
                                        ? [option] // Only store the new option
-                                       : currentOptions.filter((opt: string) => opt !== option)
+                                       : currentOptions.filter(
+                                            (opt: string) => opt !== option
+                                         )
 
                                     return {
                                        ...prev,
@@ -455,22 +462,22 @@ export default function PreferenceForm({
          const question = questionsByType[0]
          if (!preferences[question.id]) {
             if (questionType === 'NUMBER_OF_TRAVELERS') {
-               setPreferences(prev => ({
+               setPreferences((prev) => ({
                   ...prev,
                   [question.id]: {
                      question: question.text,
                      questionType: question.type,
-                     value: { adults: 1, children: 0 }
-                  }
+                     value: { adults: 1, children: 0 },
+                  },
                }))
             } else if (questionType === 'BUDGET') {
-               setPreferences(prev => ({
+               setPreferences((prev) => ({
                   ...prev,
                   [question.id]: {
                      question: question.text,
                      questionType: question.type,
-                     value: 1550
-                  }
+                     value: 1550,
+                  },
                }))
             }
          }
@@ -546,8 +553,18 @@ export default function PreferenceForm({
                         >
                            Previous
                         </Button>
-                        <div className="text-md font-normal">
-                           Step {step} of {totalSteps}
+                        <div className="flex flex-col items-center gap-1">
+                           <span className="text-sm font-medium">
+                              {Math.round((step / totalSteps) * 100)}%
+                           </span>
+                           <div className="h-2 w-[200px] overflow-hidden rounded-full bg-gray-200">
+                              <div
+                                 className="h-full bg-primary transition-all duration-300 ease-in-out"
+                                 style={{
+                                    width: `${(step / totalSteps) * 100}%`,
+                                 }}
+                              />
+                           </div>
                         </div>
                         {step === totalSteps ? (
                            <>
