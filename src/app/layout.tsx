@@ -1,7 +1,10 @@
+'use client'
+
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
 import { HeaderNav } from '@/app/common'
+import { SessionProvider } from "next-auth/react"
 
 const geistSans = localFont({
    src: './fonts/GeistVF.woff',
@@ -14,11 +17,6 @@ const geistMono = localFont({
    weight: '100 900',
 })
 
-export const metadata: Metadata = {
-   title: 'Glob!',
-   description: 'Your personal AI travel assistant',
-}
-
 export default function RootLayout({
    children,
 }: Readonly<{
@@ -27,12 +25,14 @@ export default function RootLayout({
    return (
       <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
          <body className="bg-black py-8 font-sans flex flex-col gap-y-4">
-            <div>
-               <HeaderNav />
-            </div>
-            <div className="mt-6">
-               {children}
-            </div>
+            <SessionProvider>
+               <div>
+                  <HeaderNav />
+               </div>
+               <div className="mt-6">
+                  {children}
+               </div>
+            </SessionProvider>
          </body>
       </html>
    )

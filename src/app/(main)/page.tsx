@@ -1,4 +1,4 @@
-'using client'
+'use client'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,10 +12,17 @@ import {
 import { BackgroundGradient } from '@/components/ui/background-gradient'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 export default function WelcomeOnboarding() {
+   const { data: session } = useSession();
    return (
       <main className="container mx-auto max-w-lg flex-col">
+         {session?.user && (
+            <pre className="bg-gray-100 text-black p-2 rounded mb-4">
+               {JSON.stringify({ id: session.user.id, email: session.user.email }, null, 2)}
+            </pre>
+         )}
          <BackgroundGradient className="p-3">
             <Card className="w-full rounded-2xl p-6">
                <CardHeader>

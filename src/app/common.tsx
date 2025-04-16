@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { UserRound } from 'lucide-react'
+import { LogOut, UserRound } from 'lucide-react'
+import { useSession, signOut } from 'next-auth/react'
 
 const navLink = [
    {
@@ -18,6 +19,7 @@ const navLink = [
 ]
 
 export function HeaderNav() {
+   const { data: session } = useSession();
    return (
       <div className="flex flex-col items-center gap-y-2">
          <header>
@@ -37,9 +39,19 @@ export function HeaderNav() {
                      </Button>
                   </Link>
                ))}
-               {/* <Button variant="link" className="rounded-full">
-                  <UserRound className="h-5 w-5 text-white" />
-               </Button> */}
+               {session?.user ? (
+                  <>
+                    <Button variant="link" className="rounded-full text-white" onClick={() => signOut({ callbackUrl: '/' })}>
+                    <LogOut className="h-5 w-5" />
+                    </Button>
+                  </>
+               ) : (
+                  <Link href="/login" prefetch={false}>
+                    <Button variant="link" className="rounded-full text-white">
+                      <UserRound className="h-5 w-5" />
+                    </Button>
+                  </Link>
+               )}
             </nav>
          </header>
       </div>

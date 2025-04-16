@@ -35,7 +35,7 @@ export async function getPreferencesByID(id: string) {
 export async function getUserbyUserId(userId: number) {
    const data = await prisma.user.findUnique({
       where: {
-         id: 1,
+         id: userId.toString(),
       },
    })
    return data
