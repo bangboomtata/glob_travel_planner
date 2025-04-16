@@ -43,7 +43,7 @@ interface PreferenceFormProps {
       type: QuestionType
       options: string[]
    }[]
-   userId: number
+   userId: string
 }
 
 export default function PreferenceForm({
@@ -136,7 +136,6 @@ export default function PreferenceForm({
       setLoading(true)
       try {
          const response = await handleGenerateItinerary({
-            userId,
             answers: preferences,
          })
          setItinerary(response)

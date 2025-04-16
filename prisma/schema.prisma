@@ -63,7 +63,7 @@ model Question {
 model Itinerary {
   id                 Int             @id @default(autoincrement())
   generatedItinerary Json
-  userId             Int
+  userId             String
   status             ItineraryStatus @default(UNBOOKED)
   createdAt          DateTime        @default(now())
 
@@ -113,7 +113,7 @@ model Hotel {
 
 model Preference {
   id        Int      @id @default(autoincrement())
-  userId    Int
+  userId    String
   answers   Json
   createdAt DateTime @default(now())
 

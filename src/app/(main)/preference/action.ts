@@ -2,6 +2,8 @@
 
 import { PrismaClient, QuestionType } from '@prisma/client'
 import { OpenAI } from 'openai'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 const prisma = new PrismaClient()
 const openai = new OpenAI()
@@ -32,23 +34,21 @@ export async function getPreferencesByID(id: string) {
    })
    return data
 }
-export async function getUserbyUserId(userId: number) {
-   const data = await prisma.user.findUnique({
-      where: {
-         id: userId.toString(),
-      },
-   })
-   return data
-}
 
 export async function handleGenerateItinerary({
-   userId,
    answers,
 }: {
-   userId: number
    answers: any
 }) {
-   // Save preferences to the database
+   // Get the current session
+   const session = await getServerSession(authOptions)
+   if (!session?.user?.id) {
+      throw new Error('Not authenticated')
+   }
+   const userId = session.user.id
+
+   console.log('userId:', userId, typeof userId);
+
    const preference = await prisma.preference.create({
       data: {
          answers,

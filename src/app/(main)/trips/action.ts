@@ -13,6 +13,14 @@ export async function getItinerary() {
    return data
 }
 
+export async function getItineraryByUserId(userId: string) {
+   const data = await prisma.itinerary.findMany({
+      where: { userId },
+      orderBy: { id: 'desc' },
+   })
+   return data
+}
+
 export async function getItineraryById(tripId: number) {
    const data = await prisma.itinerary.findUnique({
     where: { id: tripId },

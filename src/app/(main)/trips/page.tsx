@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
-import { getItinerary, deleteItineraryById } from './action'
+import { getItinerary, deleteItineraryById, getItineraryByUserId } from './action'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -15,7 +15,7 @@ import { useSession } from 'next-auth/react'
 interface Itinerary {
    id: number
    generatedItinerary: any
-   userId: number
+   userId: string
    status: 'UNBOOKED' | 'BOOKED' | 'NO_FLIGHTS'
    createdAt: Date
    flightBooked: boolean
@@ -30,8 +30,10 @@ export default function AIGeneratedItinerary() {
    useEffect(() => {
       async function fetchItinerary() {
          try {
-            const data = await getItinerary()
-            setAllItinerary(data)
+            if (session?.user?.id) {
+               const data = await getItineraryByUserId(session.user.id)
+               setAllItinerary(data)
+            }
          } catch (error) {
             console.error('Error fetching itinerary:', error)
          } finally {
@@ -39,7 +41,11 @@ export default function AIGeneratedItinerary() {
          }
       }
       fetchItinerary()
-   }, [])
+   }, [session?.user?.id])
+
+   if (!session?.user?.id) {
+      return <div className="text-center text-white">Please log in.</div>
+   }
 
    if (loading) {
       return <div className="text-center text-white">Loading...</div>
