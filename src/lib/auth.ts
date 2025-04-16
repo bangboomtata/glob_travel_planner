@@ -36,6 +36,14 @@ declare module "next-auth" {
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
+    callbacks: {
+        async session({ session, token, user }) {
+          if (session.user && token.sub) {
+            session.user.id = token.sub;
+          }
+          return session;
+        },
+      },
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,

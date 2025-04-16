@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useSession } from 'next-auth/react'
 // import { bookTrip } from './action'
 
 interface Itinerary {
@@ -22,6 +23,7 @@ interface Itinerary {
 }
 
 export default function AIGeneratedItinerary() {
+   const { data: session } = useSession();
    const [allItinerary, setAllItinerary] = useState<Itinerary[]>([])
    const [loading, setLoading] = useState(true)
 
@@ -143,6 +145,11 @@ export default function AIGeneratedItinerary() {
 
    return (
       <main className="container mx-auto min-h-full max-w-3xl flex-col">
+         {/* {session?.user && (
+            <pre className="bg-gray-100 text-black p-2 rounded mb-4">
+               {JSON.stringify({ id: session.user.id, email: session.user.email }, null, 2)}
+            </pre>
+         )} */}
          <BackgroundGradient className="p-3">
             <Card className="w-full max-w-4xl rounded-2xl pb-6">
                <CardHeader>
