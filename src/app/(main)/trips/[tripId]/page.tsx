@@ -21,8 +21,17 @@ import { MapPin } from 'lucide-react'
 interface Itinerary {
    id: number
    generatedItinerary: any
-   userId: number
+   userId: string
+   status: 'UNBOOKED' | 'BOOKED' | 'NO_FLIGHTS'
    createdAt: Date
+   flightBooked: boolean
+   hotelBooked: boolean
+   preference?: {
+      id: number
+      userId: string
+      createdAt: Date
+      answers: any
+   }
 }
 
 export default async function TripByIdPage({

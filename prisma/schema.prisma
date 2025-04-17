@@ -60,6 +60,18 @@ model Question {
   @@map("questions")
 }
 
+model Preference {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  answers   Json
+  createdAt DateTime @default(now())
+
+  itineraries Itinerary[]
+
+  @@map("preferences")
+}
+
+
 model Itinerary {
   id                 Int             @id @default(autoincrement())
   generatedItinerary Json
@@ -110,18 +122,6 @@ model Hotel {
 
   @@map("hotels")
 }
-
-model Preference {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  answers   Json
-  createdAt DateTime @default(now())
-
-  itineraries Itinerary[]
-
-  @@map("preferences")
-}
-
 
 enum ItineraryStatus {
   UNBOOKED
