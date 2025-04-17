@@ -3,7 +3,11 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BackgroundGradient } from '@/components/ui/background-gradient'
-import { getItinerary, deleteItineraryById, getItineraryByUserId } from './action'
+import {
+   getItinerary,
+   deleteItineraryById,
+   getItineraryByUserId,
+} from './action'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -23,7 +27,7 @@ interface Itinerary {
 }
 
 export default function AIGeneratedItinerary() {
-   const { data: session } = useSession();
+   const { data: session } = useSession()
    const [allItinerary, setAllItinerary] = useState<Itinerary[]>([])
    const [loading, setLoading] = useState(true)
 
@@ -100,7 +104,16 @@ export default function AIGeneratedItinerary() {
                </Link>
                <div className="flex flex-row gap-x-2 pr-4 pt-2">
                   {itinerary.status !== 'NO_FLIGHTS' && (
-                     <div className="flex flex-row gap-x-2">
+                     <div className="flex flex-col gap-x-2 sm:flex-row">
+                        <Link
+                           className="w-full"
+                           href={`/trips/${itinerary.id}`}
+                           passHref
+                        >
+                           <Button className="h-[30px] w-[100px] bg-blue-500 hover:bg-blue-400 hover:text-black">
+                              View Itinerary
+                           </Button>
+                        </Link>
                         <Link
                            className="w-full"
                            href={
@@ -131,18 +144,18 @@ export default function AIGeneratedItinerary() {
                                  : 'Book Hotel'}
                            </Button>
                         </Link>
+                        {itinerary.hotelBooked === false &&
+                           itinerary.flightBooked === false && (
+                              <Button
+                                 variant="destructive"
+                                 className="h-[30px] w-[60px] hover:bg-red-400 hover:text-black"
+                                 onClick={() => handleDelete(itinerary.id)}
+                              >
+                                 Delete
+                              </Button>
+                           )}
                      </div>
                   )}
-                  {itinerary.hotelBooked === false &&
-                     itinerary.flightBooked === false && (
-                        <Button
-                           variant="destructive"
-                           className="h-[30px] w-[60px] hover:bg-red-400 hover:text-black"
-                           onClick={() => handleDelete(itinerary.id)}
-                        >
-                           Delete
-                        </Button>
-                     )}
                </div>
             </div>
          ))}

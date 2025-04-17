@@ -64,10 +64,12 @@ export default function PreferenceForm({
 
    if (loading) {
       return (
-         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg text-center">
-               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-               <p className="text-xl font-semibold">Generating Your Travel Itinerary...</p>
+         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="rounded-lg bg-white p-6 text-center">
+               <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500"></div>
+               <p className="text-xl font-semibold">
+                  Generating Your Travel Itinerary...
+               </p>
             </div>
          </div>
       )
@@ -563,7 +565,9 @@ export default function PreferenceForm({
                         >
                            Previous
                         </Button>
-                        <div className="flex flex-col items-center gap-1">
+
+                        {/* Progress bar only shown on sm and larger screens */}
+                        <div className="hidden flex-col items-center gap-1 sm:flex">
                            <span className="text-sm font-medium">
                               {Math.round((step / totalSteps) * 100)}%
                            </span>
@@ -576,50 +580,48 @@ export default function PreferenceForm({
                               />
                            </div>
                         </div>
+
                         {step === totalSteps ? (
-                           <>
-                              <AlertDialog
-                                 open={showDialog}
-                                 onOpenChange={setShowDialog}
-                              >
-                                 <AlertDialogTrigger asChild>
-                                    <Button
-                                       variant="ghost"
-                                       onClick={handleFinish}
-                                       size="lg"
-                                       disabled={loading}
+                           <AlertDialog
+                              open={showDialog}
+                              onOpenChange={setShowDialog}
+                           >
+                              <AlertDialogTrigger asChild>
+                                 <Button
+                                    variant="ghost"
+                                    onClick={handleFinish}
+                                    size="lg"
+                                    disabled={loading}
+                                 >
+                                    {loading
+                                       ? 'Generating...'
+                                       : 'Generate Itinerary'}
+                                 </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                 <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                       Generate Itinerary
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                       Are you sure you want to generate your
+                                       itinerary with the current preferences?
+                                       This will create a personalized travel
+                                       plan based on your selections.
+                                    </AlertDialogDescription>
+                                 </AlertDialogHeader>
+                                 <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                       Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                       onClick={handleConfirmedGeneration}
                                     >
-                                       {loading
-                                          ? 'Generating...'
-                                          : 'Generate Itinerary'}
-                                    </Button>
-                                 </AlertDialogTrigger>
-                                 <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                       <AlertDialogTitle>
-                                          Generate Itinerary
-                                       </AlertDialogTitle>
-                                       <AlertDialogDescription>
-                                          Are you sure you want to generate your
-                                          itinerary with the current
-                                          preferences? This will create a
-                                          personalized travel plan based on your
-                                          selections.
-                                       </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                       <AlertDialogCancel>
-                                          Cancel
-                                       </AlertDialogCancel>
-                                       <AlertDialogAction
-                                          onClick={handleConfirmedGeneration}
-                                       >
-                                          Continue
-                                       </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                 </AlertDialogContent>
-                              </AlertDialog>
-                           </>
+                                       Continue
+                                    </AlertDialogAction>
+                                 </AlertDialogFooter>
+                              </AlertDialogContent>
+                           </AlertDialog>
                         ) : (
                            <Button variant="ghost" onClick={nextStep} size="lg">
                               Next
