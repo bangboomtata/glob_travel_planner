@@ -181,10 +181,73 @@ export default function PreferenceForm({
                   />
                </div>
             )
-         case 'TRIP_DURATION':
          case 'AIRPORT':
+            return (
+               <div className="space-y-4">
+                  <Label className="text-base font-medium leading-tight">
+                     {question.text}
+                  </Label>
+                  <div className="grid grid-cols-2 gap-y-4">
+                     {question.options.map((option, idx) => {
+                        const isLondon = option === 'London (LON)'
+                        return (
+                           <label
+                              key={idx}
+                              className="flex items-center space-x-2"
+                              onClick={(e) => {
+                                 if (!isLondon) {
+                                    e.preventDefault()
+                                    alert('This airport is unavailable due to limitations of Amadeus Developer\'s Edition API. Please select London (LON) instead.')
+                                 }
+                              }}
+                           >
+                              <Switch
+                                 checked={
+                                    preferences[question.id]?.options?.includes(
+                                       option
+                                    ) || false
+                                 }
+                                 disabled={!isLondon}
+                                 onCheckedChange={(checked) => {
+                                    setPreferences((prev) => {
+                                       const currentOptions =
+                                          prev[question.id]?.options || []
+
+                                       if (checked && currentOptions.length >= 1) {
+                                          alert('Please choose only one option')
+                                          return prev
+                                       }
+
+                                       const updatedOptions: string[] = checked
+                                          ? [option] // Only store the new option
+                                          : currentOptions.filter(
+                                               (opt: string) => opt !== option
+                                            )
+
+                                       return {
+                                          ...prev,
+                                          [question.id]: {
+                                             question: question.text,
+                                             questionType: question.type,
+                                             options: updatedOptions,
+                                          },
+                                       }
+                                    })
+                                 }}
+                              />
+                              <span className={!isLondon ? 'text-gray-400 cursor-not-allowed' : ''}>
+                                 {option}
+                                 {!isLondon && ' (Unavailable)'}
+                              </span>
+                           </label>
+                        )
+                     })}
+                  </div>
+               </div>
+            )
          case 'CULTURE':
          case 'OUTDOOR_ACTIVITIES':
+         case 'TRIP_DURATION':
             return (
                <div className="space-y-4">
                   <Label className="text-base font-medium leading-tight">
